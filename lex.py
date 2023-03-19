@@ -24,6 +24,9 @@ tokens = (
     'FLOAT',
     'PRINT',
     'VAR',
+    'EQUALS',
+    'MOREEQ',
+    'LESSEQ',
     
 )
 
@@ -63,6 +66,18 @@ def t_INT(t):
 
 def t_MORELESS(t):
     r'<>'
+    t.value = (t.value)    
+    return t
+    # identifica <>
+
+def t_MOREEQ(t):
+    r'>='
+    t.value = (t.value)    
+    return t
+    # identifica <>
+
+def t_LESSEQ(t):
+    r'<='
     t.value = (t.value)    
     return t
     # identifica <>
