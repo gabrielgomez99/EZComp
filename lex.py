@@ -10,7 +10,6 @@ tokens = (
     'DIVIDE',
     'LPAREN',
     'RPAREN',
-    'EQUALS',
     'ID',
     'COMMENT',
     'IF',
@@ -78,6 +77,12 @@ def t_MOREEQ(t):
 
 def t_LESSEQ(t):
     r'<='
+    t.value = (t.value)    
+    return t
+    # identifica <>
+
+def t_EQUALS(t):
+    r'=='
     t.value = (t.value)    
     return t
     # identifica <>

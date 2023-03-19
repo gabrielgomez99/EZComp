@@ -1,5 +1,6 @@
 import ply.yacc as yacc
-import lex.py as tokens
+from lex import tokens
+from lex import literals
 
 # Empieza el programa
 def p_programa_start(p):
@@ -8,13 +9,13 @@ def p_programa_start(p):
 	'''
 def p_programa_start_1(p):
 	'''
-	programa_start		: VARS 
+	programa_start_1		: VARS 
                         | empty
 	'''
 	
 def p_VARS(p):
 	'''
-	VARS		        : var ID VARS_I ':' TIPO ';' VARS_1 
+	VARS		        : VAR ID VARS_I ':' TIPO ';' VARS_1 
 	'''
 def p_VARS_I(p):
 	'''
@@ -35,7 +36,7 @@ def p_TIPO(p):
 
 def p_BLOQUE(p):
 	'''
-	BLOQUE		        : '{'BLOQUE_1'}'
+	BLOQUE		        : '{' BLOQUE_1 '}'
 	'''
 def p_BLOQUE_1(p):
 	'''
@@ -65,20 +66,21 @@ def p_EXP(p):
 	'''	
 def p_EXP_1(p):
 	'''
-	EXP_1     		    : + EXP
-                        | - EXP
+	EXP_1     		    : '+' EXP
+                        | '-' EXP
                         | empty
 	'''	
 def p_EXPRESION_1(p):
 	'''
 	EXPRESION_1		    : '>' EXPRESION
                         | '<' EXPRESION
-                        | <> EXPRESION
+                        | MORELESS EXPRESION
+                        | empty
 	'''	
 	
 def p_ESCRITURA(p):
 	'''
-	ESCRITURA		    : PRINT '('ESCRITURA_1')'';'
+	ESCRITURA		    : PRINT '(' ESCRITURA_1 ')' ';'
 	'''	
 def p_ESCRITURA_1(p):
 	'''
@@ -93,7 +95,7 @@ def p_ESCRITURA_2(p):
 	
 def p_CONDICION(p):
 	'''
-	CONDICION		    : IF '('EXPRESION')' BLOQUE CONDICION_1';'
+	CONDICION		    : IF '(' EXPRESION ')' BLOQUE CONDICION_1 ';'
 	'''	
 def p_CONDICION_1(p):
 	'''
@@ -107,20 +109,20 @@ def p_TERMINO(p):
 	'''	
 def p_TERMINO_1(p):
 	'''
-	TERMINO_1 		    : * TERMINO
-                        | / TERMINO
+	TERMINO_1 		    : '*' TERMINO
+                        | '/' TERMINO
                         | empty
 	'''	
 
 def p_FACTOR(p):
 	'''
-	FACTOR   		    : '('EXPRESION')'
+	FACTOR   		    : '(' EXPRESION ')' FACTOR_1
                         | FACTOR_1 VAR_CTE
 	'''	
 def p_FACTOR_1(p):
 	'''
-	FACTOR_1  		    : +
-                        | -
+	FACTOR_1  		    : '+'
+                        | '-'
                         | empty
 	'''	
 
@@ -130,9 +132,25 @@ def p_VAR_CTE(p):
                         | INT
                         | FLOAT
 	'''	
-	
+
+# Empty symbol = ε
+def p_empty(p):
+	'''
+	empty				: 
+	'''
+	pass
+
+def p_error(p):
+    if p:
+         print("Syntax error at token", p.type)
+         # Just discard the token and tell the parser it's okay.
+         parser.errok()
+    else:
+         print("Syntax error at EOF")
+
+    	
 # Crea el objeto parser
-parser = yacc.yacc()
+parser = yacc.yacc(debug=True)
 
 # Lee de un archivo de entrada
 with open('test_input.txt', 'r') as f:
