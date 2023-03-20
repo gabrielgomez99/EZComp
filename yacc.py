@@ -154,10 +154,10 @@ def p_error(p):
 
     	
 # Crea el objeto parser
-parser = yacc.yacc(debug=True)
+parser = yacc.yacc()
 
 # Lee de un archivo de entrada
-with open('test_input.txt', 'r') as f:
+with open('texto.txt', 'r') as f:
     input_data = f.read()
 
 # Parsea el input
