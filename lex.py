@@ -73,19 +73,19 @@ def t_MOREEQ(t):
     r'>='
     t.value = (t.value)    
     return t
-    # identifica <>
+    # identifica >=
 
 def t_LESSEQ(t):
     r'<='
     t.value = (t.value)    
     return t
-    # identifica <>
+    # identifica <=
 
 def t_EQUALS(t):
     r'=='
     t.value = (t.value)    
     return t
-    # identifica <>
+    # identifica ==
 
 def t_CTESTRING(t):
     r'\"[a-zA-Z_0-9_ ]*?\"'
@@ -115,15 +115,15 @@ def t_error(t):
 lex = lex.lex()
 
 # Probarlo
-data = '''
-3 + 20.1 
-'''
+#data = '''
+#<=
+#'''
 
-lex.input(data)
+#lex.input(data)
 
 # Tokenize
-while True:
-    tok = lex.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
+#while True:
+#    tok = lex.token()
+#    if not tok: 
+#        break      # Ya no mas input
+#    print(tok)

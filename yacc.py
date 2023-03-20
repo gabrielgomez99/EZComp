@@ -9,7 +9,7 @@ def p_programa_start(p):
 	'''
 def p_programa_start_1(p):
 	'''
-	programa_start_1		: VARS 
+	programa_start_1	: VARS 
                         | empty
 	'''
 	
@@ -30,8 +30,8 @@ def p_VARS_1(p):
 	
 def p_TIPO(p):
 	'''
-	TIPO		        : INT
-                        | FLOAT
+	TIPO		        : FLOAT
+                        | INT
 	'''
 
 def p_BLOQUE(p):
@@ -140,12 +140,16 @@ def p_empty(p):
 	'''
 	pass
 
+errorFlag = False
+
 def p_error(p):
     if p:
-         print("Syntax error at token", p.type)
-         # Just discard the token and tell the parser it's okay.
+         print(f"Syntax error at token {p.type} ({p.value}) in line {p.lineno}")
+         # Se descarta el token y dice que siga avanzando reportantodo el error
+         errorFlag = True
          parser.errok()
     else:
+         errorFlag = True
          print("Syntax error at EOF")
 
     	
@@ -160,4 +164,8 @@ with open('test_input.txt', 'r') as f:
 result = parser.parse(input_data)
 
 # Imprime el resultado de parseo
-print(result)
+if errorFlag == False:
+    print("Se compilo correctamente")
+else:
+	print("No se compilo correctamente")
+
