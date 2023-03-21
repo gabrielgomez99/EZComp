@@ -19,7 +19,7 @@ def p_VARS(p):
 	'''
 def p_VARS_I(p):
 	'''
-	VARS_I		        : ID VARS_I 
+	VARS_I		        : ',' ID VARS_I 
                         | empty
 	'''
 def p_VARS_1(p):
@@ -53,7 +53,7 @@ def p_ESTATUTO(p):
 
 def p_ASIGNACION(p):
 	'''
-	ASIGNACION		    : ID '=' EXPRESION
+	ASIGNACION		    : ID '=' EXPRESION ';'
 	'''	
 
 def p_EXPRESION(p):
@@ -89,7 +89,7 @@ def p_ESCRITURA_1(p):
 	'''	
 def p_ESCRITURA_2(p):
 	'''
-	ESCRITURA_2		    : ESCRITURA_1
+	ESCRITURA_2		    : ',' ESCRITURA_1
                         | empty
 	'''	
 	

@@ -1,1 +1,11 @@
-program x ; { n = 2 + 3 }
+program ejemplo; 
+var x, y : int; z : float;
+{
+    x = 10;
+    y = 10;
+    z = 1.1;
+
+    if (x < 11) {
+        print("it is less than 11");
+        };
+}

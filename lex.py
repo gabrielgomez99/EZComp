@@ -39,7 +39,7 @@ reserved = {
    'int' : 'INT',
    'float' : 'FLOAT',
    'var' : 'VAR',
-
+   'print' : 'PRINT'
 }
 
 # Tokens que son de un valor y son literales
