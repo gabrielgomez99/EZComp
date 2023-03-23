@@ -72,9 +72,9 @@ def p_EXP_1(p):
 	'''	
 def p_EXPRESION_1(p):
 	'''
-	EXPRESION_1		    : '>' EXPRESION
-                        | '<' EXPRESION
-                        | MORELESS EXPRESION
+	EXPRESION_1		    : '>' EXP
+                        | '<' EXP
+                        | NE EXP
                         | empty
 	'''	
 	
@@ -116,7 +116,7 @@ def p_TERMINO_1(p):
 
 def p_FACTOR(p):
 	'''
-	FACTOR   		    : '(' EXPRESION ')' FACTOR_1
+	FACTOR   		    : '(' EXPRESION ')'
                         | FACTOR_1 VAR_CTE
 	'''	
 def p_FACTOR_1(p):
