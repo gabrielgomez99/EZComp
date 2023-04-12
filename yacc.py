@@ -10,21 +10,21 @@ def p_programa_start(p):
 def p_programa_start_1(p):
 	'''
 	programa_start_1	: VARS 
-                        | empty
+		| empty
 	'''
 	
 def p_VARS(p):
 	'''
-	VARS		        : VAR ID VARS_I ':' TIPO ';' VARS_1 
-	'''
-def p_VARS_I(p):
-	'''
-	VARS_I		        : ',' ID VARS_I 
-                        | empty
+	VARS		        : VAR ID VARS_1 ':' TIPO ';' VARS_2 
 	'''
 def p_VARS_1(p):
 	'''
-	VARS_1		        : ID VARS_I ':' TIPO ';' VARS_1
+	VARS_1		        : ',' ID VARS_1 
+                        | empty
+	'''
+def p_VARS_2(p):
+	'''
+	VARS_2		        : ID VARS_1 ':' TIPO ';' VARS_2
                         | empty
 	'''
 	
@@ -129,8 +129,8 @@ def p_FACTOR_1(p):
 def p_VAR_CTE(p):
 	'''
 	VAR_CTE 		    : ID
-                        | INT
                         | FLOAT
+                        | INT
 	'''	
 
 # Empty symbol = ε
