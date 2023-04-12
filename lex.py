@@ -1,6 +1,5 @@
 # Aqui va las instrucciones de analizador lexico
 import ply.lex as lex
-import re
 
 # Definimos los tokens
 tokens = (
@@ -16,13 +15,14 @@ tokens = (
     'THEN',
     'ELSE',
     'WHILE',
-    'MORELESS',
+    'LE',
     'CTESTRING',
     'PROGRAM',
     'INT',
     'FLOAT',
     'PRINT',
     'VAR',
+    'NE',
     'EQUALS',
     'MOREEQ',
     'LESSEQ',
@@ -63,7 +63,7 @@ def t_INT(t):
     return t
     #identifica numeros
 
-def t_MORELESS(t):
+def t_NE(t):
     r'<>'
     t.value = (t.value)    
     return t
