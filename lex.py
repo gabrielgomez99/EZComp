@@ -3,12 +3,6 @@ import ply.lex as lex
 
 # Definimos los tokens
 tokens = (
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
     'ID',
     'COMMENT',
     'IF',
@@ -17,7 +11,8 @@ tokens = (
     'WHILE',
     'LE',
     'CTESTRING',
-    'PROGRAM',
+    'MAIN',
+    'VOID',
     'INT',
     'FLOAT',
     'PRINT',
@@ -26,7 +21,19 @@ tokens = (
     'EQUALS',
     'MOREEQ',
     'LESSEQ',
-    
+    'READ',
+    'WHILE',
+    'FOR',
+    'ARR',
+    'CHAR',
+    'FILE',
+    'DATAFRAME',
+    'OR',
+    'MEAN',
+    'MEDIAN',
+    'MODE',
+    'VARIANCE',
+    'STDDEV'
 )
 
 # Son palabras reservadas del leguaje entonces se tratan diferente
@@ -39,11 +46,20 @@ reserved = {
    'int' : 'INT',
    'float' : 'FLOAT',
    'var' : 'VAR',
-   'print' : 'PRINT'
+   'print' : 'PRINT',
+   'mean' : 'MEAN',
+   'median' : 'MEDIAN',
+   'mode' : 'MODE',
+   'variance' : 'VARIANCE',
+   'stdDev' : 'STDDEV',
+   'dataframe' : 'DATAFRAME',
+   'file' : 'FILE',
+   'read' : 'READ',
+   'arr' : 'ARR'
 }
 
 # Tokens que son de un valor y son literales
-literals = [ '+','-','*','/','=','(',')',';',':','[',']','{','}','>','<','.',',','"']
+literals = [ '+','-','*','/','=','(',')',';',':','[',']','{','}','>','<','.',',','"','&']
 
 def t_COMMENT(t):
     r'\#.*'
@@ -64,7 +80,13 @@ def t_INT(t):
     #identifica numeros
 
 def t_NE(t):
-    r'<>'
+    r'!='
+    t.value = (t.value)    
+    return t
+    # identifica <>
+
+def t_OR(t):
+    r'||'
     t.value = (t.value)    
     return t
     # identifica <>

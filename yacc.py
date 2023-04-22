@@ -3,45 +3,44 @@ from lex import tokens
 from lex import literals
 
 # Empieza el programa
-def p_programa_start(p):
+def p_PROGRAMA_START(p):
 	'''
-	programa_start	: PROGRAM ID ';' programa_start_1 BLOQUE
+	programa_start	: DEC_VAR PROGRAMA_START_1 MAIN '{' DEC_VAR BLOQUE '}'
 	'''
-def p_programa_start_1(p):
+def p_PROGRAMA_START_1(p):
 	'''
-	programa_start_1	: VARS 
+	programa_start_1	: FUNCION PROGRAMA_START_1 
+		| empty
+	'''
+
+def p_FUNCION(p):
+	'''
+	FUNCION	: func FUNCION_1 ID '(' PARAM ')' '{' DEC_VAR BLOQUE '}'
 		| empty
 	'''
 	
-def p_VARS(p):
+def p_FUNCION_1(p):
 	'''
-	VARS	: VAR ID VARS_1 ':' TIPO ';' VARS_2 
+	FUNCION_1	: VOID 
+		| TIPO_SIMPLE
 	'''
-def p_VARS_1(p):
+
+def p_PARAM(p):
 	'''
-	VARS_1	: ',' ID VARS_1 
-        | empty
+	PARAM	: TIPO_SIMPLE ID PARAM_1 
+		| empty
 	'''
-def p_VARS_2(p):
+
+def p_PARAM_1(p):
 	'''
-	VARS_2	: ID VARS_1 ':' TIPO ';' VARS_2
-        | empty
-	'''
-	
-def p_TIPO(p):
-	'''
-	TIPO	: FLOAT
-    	| INT
+	PARAM_1	: ',' TIPO_SIMPLE ID PARAM_1 
+		| empty
 	'''
 
 def p_BLOQUE(p):
 	'''
-	BLOQUE	: '{' BLOQUE_1 '}'
-	'''
-def p_BLOQUE_1(p):
-	'''
-	BLOQUE_1	: ESTATUTO BLOQUE_1
-        | empty
+	BLOQUE	:  ESTATUTO BLOQUE
+		| empty
 	'''
 
 def p_ESTATUTO(p):
@@ -49,89 +48,234 @@ def p_ESTATUTO(p):
 	ESTATUTO	: ASIGNACION
         | CONDICION
 		| ESCRITURA
+		| LECTURA
+		| WHILE
+		| FOR
+		| LLAMADA
+		| FUNC_ESPECIALES
+		| RETURN
 	'''
 
 def p_ASIGNACION(p):
 	'''
-	ASIGNACION	: ID '=' EXPRESION ';'
+	ASIGNACION	: VARIABLE '=' EXP ';'
 	'''	
 
-def p_EXPRESION(p):
+def p_CONDICION(p):
 	'''
-	EXPRESION	: EXP EXPRESION_1
-	'''		
-def p_EXP(p):
-	'''
-	EXP	: TERMINO EXP_1
+	CONDICION	: IF '(' EXP ')' '{' BLOQUE '}' CONDICION_1
 	'''	
-def p_EXP_1(p):
+def p_CONDICION_1(p):
 	'''
-	EXP_1	: '+' EXP
-        | '-' EXP
-        | empty
+	CONDICION_1	: ELSE '{' BLOQUE '}'
+    	| empty
 	'''	
-def p_EXPRESION_1(p):
-	'''
-	EXPRESION_1	: '>' EXP
-        | '<' EXP
-        | NE EXP
-        | empty
-	'''	
-	
+
 def p_ESCRITURA(p):
 	'''
 	ESCRITURA	: PRINT '(' ESCRITURA_1 ')' ';'
 	'''	
 def p_ESCRITURA_1(p):
 	'''
-	ESCRITURA_1	: CTESTRING ESCRITURA_2
-        | EXPRESION ESCRITURA_2
+	ESCRITURA_1	: EXP ESCRITURA_2
+        | CTESTRING ESCRITURA_2
 	'''	
 def p_ESCRITURA_2(p):
 	'''
 	ESCRITURA_2	: ',' ESCRITURA_1
     	| empty
 	'''	
-	
-def p_CONDICION(p):
+
+def p_LECTURA(p):
 	'''
-	CONDICION	: IF '(' EXPRESION ')' BLOQUE CONDICION_1 ';'
-	'''	
-def p_CONDICION_1(p):
-	'''
-	CONDICION_1	: ELSE BLOQUE
-    	| empty
+	LECTURA	: READ '(' VARIABLE ')' ';'
 	'''	
 
-def p_TERMINO(p):
+def p_LLAMADA(p):
 	'''
-	TERMINO	: FACTOR TERMINO_1
+	LLAMADA	: ID '(' EXP LLAMADA_1 ')' ';'
 	'''	
-def p_TERMINO_1(p):
+def p_LLAMADA_1(p):
 	'''
-	TERMINO_1	: '*' TERMINO
-    	| '/' TERMINO
-    	| empty
+	LLAMADA_1	: ',' EXP LLAMADA_1
+		| empty
+	'''
+
+def p_WHILE(p):
+	'''
+	WHILE	: WHILE '(' EXP ')' '{' BLOQUE '}'
+	'''
+
+def p_FOR(p):
+	'''
+	FOR	: FOR '(' ID '=' EXP ':' EXP ':' EXP ')' '{' BLOQUE '}'
+	'''
+
+def p_DEC_VAR(p):
+	'''
+	DEC_VAR	: VAR DEC_VAR
+		| ARREGLO DEC_VAR
+		| empty
+	'''
+
+def p_VAR(p):
+	'''
+	VAR	: VAR VAR_1 ID VAR_2 ';'
 	'''	
 
-def p_FACTOR(p):
+def p_VAR_1(p):
 	'''
-	FACTOR	: '(' EXPRESION ')'
-		| FACTOR_1 VAR_CTE
-	'''	
-def p_FACTOR_1(p):
+	VAR_1	:  TIPO_COMPUESTO
+		| TIPO_SIMPLE
 	'''
-	FACTOR_1	: '+'
-    	| '-'
-    	| empty
+
+def p_VAR_2(p):
+	'''
+	VAR_2	:  ',' ID VAR_2
+		| empty
+	'''
+
+def p_ARREGLO(p):
+	'''
+	ARREGLO	: ARR TIPO_SIMPLE ID [ CTESTRING ] ARREGLO_1 ';'
+		| empty
 	'''	
 
-def p_VAR_CTE(p):
+def p_ARREGLO(p):
 	'''
-	VAR_CTE	: ID
-    	| FLOAT
+	ARREGLO_1	: ARR TIPO_SIMPLE ID [ CTESTRING ] ARREGLO_1 ';'
+		| empty
+	'''	
+
+def p_TIPO_SIMPLE(p):
+	'''
+	TIPO_SIMPLE	: FLOAT
     	| INT
+	    | CTESTRING
+	'''
+
+def p_TIPO_COMPUESTO(p):
+	'''
+	TIPO_COMPUESTO	: FILE
+    	| DATAFRAME
+	'''
+
+def p_VARIABLE(p):
+	'''
+	VARIABLE	: ID VARIABLE_1
 	'''	
+def p_VARIABLE_1(p):
+	'''
+	VARIABLE_1	: [ EXP ] VARIABLE_2
+    	| empty
+	'''	
+def p_VARIABLE_2(p):
+	'''
+	VARIABLE_2	: [ EXP ]
+    	| empty
+	'''			
+	
+def p_EXP(p):
+	'''
+	EXP	: T_EXP EXP_1
+	'''	
+def p_EXP_1(p):
+	'''
+	EXP_1	: OR EXP
+        | empty
+	'''	
+
+def p_T_EXP(p):
+	'''
+	T_EXP	: G_EXP T_EXP_1
+	'''
+def p_T_EXP_1(p):
+	'''
+	T_EXP_1	: '&' G_EXP
+        | empty
+	'''	
+
+def p_G_EXP(p):
+	'''
+	G_EXP	: M_EXP G_EXP_1
+        | empty
+	'''	
+
+def p_G_EXP_1(p):
+	'''
+	G_EXP_1	: '<' M_EXP
+        | '>' M_EXP
+		| EQUALS M_EXP
+		| NE M_EXP
+		| empty 
+	'''		
+
+def p_M_EXP(p):
+	'''
+	M_EXP	: T M_EXP_1
+        | empty
+	'''	
+def p_M_EXP_1(p):
+	'''
+	M_EXP_1	: '+' M_EXP
+		| '-' M_EXP
+        | empty
+	'''
+
+def p_T(p):
+	'''
+	T	: F T_1
+	'''			
+def p_T_1(p):
+	'''
+	T	: '*' T
+        | '/' T
+		| empty
+	'''
+
+def p_F(p):
+	'''
+	F	: ( EXP )
+        | TIPO_SIMPLE
+		| VARIABLE
+		| LLAMADA
+		| empty
+	'''
+
+def p_FUNC_ESPECIALES(p):
+	'''
+	FUNC_ESPECIALES	: MEAN
+        | MEDIAN
+		| MODE
+		| VARIANCE
+		| STANDARD_DEV
+		| HISTOGRAMA
+	'''
+
+def p_MEAN(p):
+	'''
+	MEAN	: MEAN '(' ARREGLO ')'
+	'''	
+
+def p_MEDIAN(p):
+	'''
+	MEDIAN	: MEDIAN '(' ARREGLO ')'
+	'''	
+
+def p_MODE(p):
+	'''
+	MODE	: MODE '(' ARREGLO ')'
+	'''	
+
+def p_VARIANCE(p):
+	'''
+	VARIANCE	: VARIANCE '(' ARREGLO ')'
+	'''	
+
+def p_STANDARD_DEV(p):
+	'''
+	STANDARD_DEV	: STDDEV '(' ARREGLO ')'
+	'''		
 
 # Empty symbol = ε
 def p_empty(p):

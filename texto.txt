@@ -1,11 +1,33 @@
-program ejemplo; 
-var x, y : int; z : float;
-{
-    x = 10;
+var int x , y;
+func void ejVoid (){
+    var int z;
+}
+func int ejfunc (int a, int b){
+    x = 10
+    arr int d[3];
+    arr int e[3][3];
+    if (x < a){
+        x = a;
+    }
+    else{
+        x = b;
+    }
+    return x*2;
+}
+main {
+    var int c;
+    x = 5;
     y = 10;
-    z = 1.1;
-
-    if (x < 11) {
-        print("it is less than 11");
-        };
+    c = 1;
+    print("hola mundo");
+    read(c);
+    while(x < 9){
+        x = x + 1;
+    }
+    for(c = 1: c < 3: c = c + 1){
+        x = x * 2;
+    }
+    ejVoid();
+    ejfunc(1,1+2);
+    mean(d);
 }
