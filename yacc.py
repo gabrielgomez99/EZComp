@@ -46,11 +46,11 @@ def p_BLOQUE(p):
 def p_ESTATUTO(p):
 	'''
 	ESTATUTO	: ASIGNACION
-        | CONDICION
+        	| CONDICION
 		| ESCRITURA
 		| LECTURA
-		| WHILE
-		| FOR
+		| WHILE_C
+		| FOR_C
 		| LLAMADA
 		| FUNC_ESPECIALES
 		| RETURN
@@ -101,56 +101,56 @@ def p_LLAMADA_1(p):
 		| empty
 	'''
 
-def p_WHILE(p):
+def p_WHILE_C(p):
 	'''
-	WHILE	: WHILE '(' EXP ')' '{' BLOQUE '}'
+	WHILE_C	: WHILE '(' EXP ')' '{' BLOQUE '}'
 	'''
 
-def p_FOR(p):
+def p_FOR_C(p):
 	'''
-	FOR	: FOR '(' ID '=' EXP ':' EXP ':' EXP ')' '{' BLOQUE '}'
+	FOR_C	: FOR '(' ID '=' EXP ':' EXP ':' EXP ')' '{' BLOQUE '}'
 	'''
 
 def p_DEC_VAR(p):
 	'''
-	DEC_VAR	: VAR DEC_VAR
+	DEC_VAR	: VARS DEC_VAR
 		| ARREGLO DEC_VAR
 		| empty
 	'''
 
-def p_VAR(p):
+def p_VARS(p):
 	'''
-	VAR	: VAR VAR_1 ID VAR_2 ';'
+	VARS	: VAR VAR_1 ID VARS_2 ';'
 	'''	
 
-def p_VAR_1(p):
+def p_VARS_1(p):
 	'''
-	VAR_1	:  TIPO_COMPUESTO
+	VARS_1	:  TIPO_COMPUESTO
 		| TIPO_SIMPLE
 	'''
 
-def p_VAR_2(p):
+def p_VARS_2(p):
 	'''
-	VAR_2	:  ',' ID VAR_2
+	VARS_2	:  ',' ID VARS_2
 		| empty
 	'''
 
 def p_ARREGLO(p):
 	'''
-	ARREGLO	: ARR TIPO_SIMPLE ID [ CTESTRING ] ARREGLO_1 ';'
+	ARREGLO	: ARR TIPO_SIMPLE ID '[' CTESTRING ']' ARREGLO_1 ';'
 		| empty
 	'''	
 
-def p_ARREGLO(p):
+def p_ARREGLO_1(p):
 	'''
-	ARREGLO_1	: ARR TIPO_SIMPLE ID [ CTESTRING ] ARREGLO_1 ';'
+	ARREGLO_1	: ARR TIPO_SIMPLE ID '[' CTESTRING ']' ARREGLO_1 ';'
 		| empty
 	'''	
 
 def p_TIPO_SIMPLE(p):
 	'''
 	TIPO_SIMPLE	: FLOAT
-    	| INT
+    		| INT
 	    | CTESTRING
 	'''
 
@@ -166,12 +166,12 @@ def p_VARIABLE(p):
 	'''	
 def p_VARIABLE_1(p):
 	'''
-	VARIABLE_1	: [ EXP ] VARIABLE_2
+	VARIABLE_1	: '[' EXP ']' VARIABLE_2
     	| empty
 	'''	
 def p_VARIABLE_2(p):
 	'''
-	VARIABLE_2	: [ EXP ]
+	VARIABLE_2	: '[' EXP ']'
     	| empty
 	'''			
 	
@@ -204,7 +204,7 @@ def p_G_EXP(p):
 def p_G_EXP_1(p):
 	'''
 	G_EXP_1	: '<' M_EXP
-        | '>' M_EXP
+        	| '>' M_EXP
 		| EQUALS M_EXP
 		| NE M_EXP
 		| empty 
@@ -219,7 +219,7 @@ def p_M_EXP_1(p):
 	'''
 	M_EXP_1	: '+' M_EXP
 		| '-' M_EXP
-        | empty
+        	| empty
 	'''
 
 def p_T(p):
@@ -229,14 +229,14 @@ def p_T(p):
 def p_T_1(p):
 	'''
 	T	: '*' T
-        | '/' T
+        	| '/' T
 		| empty
 	'''
 
 def p_F(p):
 	'''
-	F	: ( EXP )
-        | TIPO_SIMPLE
+	F	: '(' EXP ')'
+        	| TIPO_SIMPLE
 		| VARIABLE
 		| LLAMADA
 		| empty
@@ -244,38 +244,43 @@ def p_F(p):
 
 def p_FUNC_ESPECIALES(p):
 	'''
-	FUNC_ESPECIALES	: MEAN
-        | MEDIAN
-		| MODE
-		| VARIANCE
+	FUNC_ESPECIALES	: MEAN_F
+        	| MEDIAN_F
+		| MODE_F
+		| VARIANCE_F
 		| STANDARD_DEV
 		| HISTOGRAMA
 	'''
 
-def p_MEAN(p):
+def p_MEAN_F(p):
 	'''
-	MEAN	: MEAN '(' ARREGLO ')'
+	MEAN_F	: MEAN '(' ARREGLO ')'
 	'''	
 
-def p_MEDIAN(p):
+def p_MEDIAN_F(p):
 	'''
-	MEDIAN	: MEDIAN '(' ARREGLO ')'
+	MEDIAN_F	: MEDIAN '(' ARREGLO ')'
 	'''	
 
-def p_MODE(p):
+def p_MODE_F(p):
 	'''
-	MODE	: MODE '(' ARREGLO ')'
+	MODE_F	: MODE '(' ARREGLO ')'
 	'''	
 
-def p_VARIANCE(p):
+def p_VARIANCE_F(p):
 	'''
-	VARIANCE	: VARIANCE '(' ARREGLO ')'
+	VARIANCE_F	: VARIANCE '(' ARREGLO ')'
 	'''	
 
 def p_STANDARD_DEV(p):
 	'''
 	STANDARD_DEV	: STDDEV '(' ARREGLO ')'
 	'''		
+
+def p_HISTOGRAMA(p):
+	'''
+	HISTOGRAMA	: HISTOGRAM '(' ARREGLO ')'
+	'''	
 
 # Empty symbol = ε
 def p_empty(p):

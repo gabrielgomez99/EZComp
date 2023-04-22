@@ -33,7 +33,8 @@ tokens = (
     'MEDIAN',
     'MODE',
     'VARIANCE',
-    'STDDEV'
+    'STDDEV',
+    'HISTOGRAM'
 )
 
 # Son palabras reservadas del leguaje entonces se tratan diferente
@@ -55,7 +56,8 @@ reserved = {
    'dataframe' : 'DATAFRAME',
    'file' : 'FILE',
    'read' : 'READ',
-   'arr' : 'ARR'
+   'arr' : 'ARR',
+   'histogram' : 'HISTOGRAM'
 }
 
 # Tokens que son de un valor y son literales
@@ -86,10 +88,10 @@ def t_NE(t):
     # identifica <>
 
 def t_OR(t):
-    r'||'
+    r'\|\|'
     t.value = (t.value)    
     return t
-    # identifica <>
+    # identifica ||
 
 def t_MOREEQ(t):
     r'>='
