@@ -6,10 +6,7 @@ tokens = (
     'ID',
     'COMMENT',
     'IF',
-    'THEN',
     'ELSE',
-    'WHILE',
-    'LE',
     'CTESTRING',
     'MAIN',
     'VOID',
@@ -25,7 +22,6 @@ tokens = (
     'WHILE',
     'FOR',
     'ARR',
-    'CHAR',
     'FILE',
     'DATAFRAME',
     'OR',
@@ -34,16 +30,19 @@ tokens = (
     'MODE',
     'VARIANCE',
     'STDDEV',
-    'HISTOGRAM'
+    'HISTOGRAM',
+    'FUNC',
+    'RETURN',
+    'CTEINT',
+    'CTEFLOAT'
 )
 
 # Son palabras reservadas del leguaje entonces se tratan diferente
 reserved = {
    'if' : 'IF',
-   'then' : 'THEN',
    'else' : 'ELSE',
    'while' : 'WHILE',
-   'program' : 'PROGRAM',
+   'for' : 'FOR',
    'int' : 'INT',
    'float' : 'FLOAT',
    'var' : 'VAR',
@@ -53,11 +52,15 @@ reserved = {
    'mode' : 'MODE',
    'variance' : 'VARIANCE',
    'stdDev' : 'STDDEV',
+   'histogram' : 'HISTOGRAM',
    'dataframe' : 'DATAFRAME',
    'file' : 'FILE',
    'read' : 'READ',
    'arr' : 'ARR',
-   'histogram' : 'HISTOGRAM'
+   'func' : 'FUNC',
+   'return' : 'RETURN',
+   'void' : 'VOID',
+   'main' : 'MAIN'
 }
 
 # Tokens que son de un valor y son literales
@@ -68,14 +71,14 @@ def t_COMMENT(t):
     pass
     # Es para dejar pasar comentarios
     
-def t_FLOAT(t):
+def t_CTEFLOAT(t):
     r'[-+]?[\d]+\.[\d+]?'
     t.value = float(t.value)    
     return t
     #identifica numeros
 
 # Definimos el token de numeros
-def t_INT(t):
+def t_CTEINT(t):
     r'\d+'
     t.value = int(t.value)    
     return t

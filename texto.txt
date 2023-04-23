@@ -3,18 +3,21 @@ func void ejVoid (){
     var int z;
 }
 func int ejfunc (int a, int b){
-    x = 10
     arr int d[3];
     arr int e[3][3];
-    if (x < a){
+    if (x <= a){
         x = a;
     }
     else{
         x = b;
     }
+    if (x >= a){
+        x = a;
+    }
     return x*2;
 }
 main {
+    #HOLA
     var int c;
     x = 5;
     y = 10;
@@ -24,7 +27,7 @@ main {
     while(x < 9){
         x = x + 1;
     }
-    for(c = 1: c < 3: c = c + 1){
+    for(c = 1; q < 3; f = g + 1;){
         x = x * 2;
     }
     ejVoid();

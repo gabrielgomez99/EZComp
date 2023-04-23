@@ -5,18 +5,17 @@ from lex import literals
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	programa_start	: DEC_VAR PROGRAMA_START_1 MAIN '{' DEC_VAR BLOQUE '}'
+	PROGRAMA_START	: DEC_VAR PROGRAMA_START_1 MAIN '{' DEC_VAR BLOQUE '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
-	programa_start_1	: FUNCION PROGRAMA_START_1 
+	PROGRAMA_START_1	: FUNCION PROGRAMA_START_1 
 		| empty
 	'''
 
 def p_FUNCION(p):
 	'''
-	FUNCION	: func FUNCION_1 ID '(' PARAM ')' '{' DEC_VAR BLOQUE '}'
-		| empty
+	FUNCION	: FUNC FUNCION_1 ID '(' PARAM ')' '{' DEC_VAR BLOQUE '}'
 	'''
 	
 def p_FUNCION_1(p):
@@ -53,7 +52,8 @@ def p_ESTATUTO(p):
 		| FOR_C
 		| LLAMADA
 		| FUNC_ESPECIALES
-		| RETURN
+		| COMM
+		| RETURN_F
 	'''
 
 def p_ASIGNACION(p):
@@ -93,11 +93,16 @@ def p_LECTURA(p):
 
 def p_LLAMADA(p):
 	'''
-	LLAMADA	: ID '(' EXP LLAMADA_1 ')' ';'
+	LLAMADA	: ID '(' LLAMADA_1 ')' ';'
 	'''	
 def p_LLAMADA_1(p):
 	'''
-	LLAMADA_1	: ',' EXP LLAMADA_1
+	LLAMADA_1	:  EXP LLAMADA_2
+		| empty
+	'''
+def p_LLAMADA_2(p):
+	'''
+	LLAMADA_2	: ',' EXP LLAMADA_2
 		| empty
 	'''
 
@@ -108,7 +113,7 @@ def p_WHILE_C(p):
 
 def p_FOR_C(p):
 	'''
-	FOR_C	: FOR '(' ID '=' EXP ':' EXP ':' EXP ')' '{' BLOQUE '}'
+	FOR_C	: FOR '(' ID '=' EXP ';' EXP ';' ASIGNACION ')' '{' BLOQUE '}'
 	'''
 
 def p_DEC_VAR(p):
@@ -120,7 +125,7 @@ def p_DEC_VAR(p):
 
 def p_VARS(p):
 	'''
-	VARS	: VAR VAR_1 ID VARS_2 ';'
+	VARS	: VAR VARS_1 ID VARS_2 ';'
 	'''	
 
 def p_VARS_1(p):
@@ -137,13 +142,12 @@ def p_VARS_2(p):
 
 def p_ARREGLO(p):
 	'''
-	ARREGLO	: ARR TIPO_SIMPLE ID '[' CTESTRING ']' ARREGLO_1 ';'
-		| empty
+	ARREGLO	: ARR TIPO_SIMPLE ID '[' CTEINT ']' ARREGLO_1 ';'
 	'''	
 
 def p_ARREGLO_1(p):
 	'''
-	ARREGLO_1	: ARR TIPO_SIMPLE ID '[' CTESTRING ']' ARREGLO_1 ';'
+	ARREGLO_1	: '[' CTEINT ']' ARREGLO_1
 		| empty
 	'''	
 
@@ -198,7 +202,6 @@ def p_T_EXP_1(p):
 def p_G_EXP(p):
 	'''
 	G_EXP	: M_EXP G_EXP_1
-        | empty
 	'''	
 
 def p_G_EXP_1(p):
@@ -207,13 +210,14 @@ def p_G_EXP_1(p):
         	| '>' M_EXP
 		| EQUALS M_EXP
 		| NE M_EXP
+		| LESSEQ M_EXP
+		| MOREEQ M_EXP
 		| empty 
 	'''		
 
 def p_M_EXP(p):
 	'''
 	M_EXP	: T M_EXP_1
-        | empty
 	'''	
 def p_M_EXP_1(p):
 	'''
@@ -228,7 +232,7 @@ def p_T(p):
 	'''			
 def p_T_1(p):
 	'''
-	T	: '*' T
+	T_1	: '*' T
         	| '/' T
 		| empty
 	'''
@@ -236,10 +240,10 @@ def p_T_1(p):
 def p_F(p):
 	'''
 	F	: '(' EXP ')'
-        	| TIPO_SIMPLE
+        	| CTEFLOAT
+		| CTEINT
 		| VARIABLE
 		| LLAMADA
-		| empty
 	'''
 
 def p_FUNC_ESPECIALES(p):
@@ -254,38 +258,49 @@ def p_FUNC_ESPECIALES(p):
 
 def p_MEAN_F(p):
 	'''
-	MEAN_F	: MEAN '(' ARREGLO ')'
+	MEAN_F	: MEAN '(' VARIABLE ')' ';'
 	'''	
 
 def p_MEDIAN_F(p):
 	'''
-	MEDIAN_F	: MEDIAN '(' ARREGLO ')'
+	MEDIAN_F	: MEDIAN '(' VARIABLE ')' ';'
 	'''	
 
 def p_MODE_F(p):
 	'''
-	MODE_F	: MODE '(' ARREGLO ')'
+	MODE_F	: MODE '(' VARIABLE ')' ';'
 	'''	
 
 def p_VARIANCE_F(p):
 	'''
-	VARIANCE_F	: VARIANCE '(' ARREGLO ')'
+	VARIANCE_F	: VARIANCE '(' VARIABLE ')' ';'
 	'''	
 
 def p_STANDARD_DEV(p):
 	'''
-	STANDARD_DEV	: STDDEV '(' ARREGLO ')'
+	STANDARD_DEV	: STDDEV '(' VARIABLE ')' ';'
 	'''		
 
 def p_HISTOGRAMA(p):
 	'''
-	HISTOGRAMA	: HISTOGRAM '(' ARREGLO ')'
+	HISTOGRAMA	: HISTOGRAM '(' VARIABLE ')' ';'
 	'''	
+
+def p_RETURN_F(p):
+	'''
+	RETURN_F	: RETURN EXP ';' 
+	'''	
+
+# Empty symbol = ε
+def p_COMM(p):
+	'''
+	COMM	: COMMENT
+	'''
 
 # Empty symbol = ε
 def p_empty(p):
 	'''
-	empty				: 
+	empty	: 
 	'''
 	pass
 
