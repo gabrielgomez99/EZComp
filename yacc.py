@@ -52,7 +52,6 @@ def p_ESTATUTO(p):
 		| FOR_C
 		| LLAMADA
 		| FUNC_ESPECIALES
-		| COMM
 		| RETURN_F
 	'''
 
@@ -78,7 +77,7 @@ def p_ESCRITURA(p):
 def p_ESCRITURA_1(p):
 	'''
 	ESCRITURA_1	: EXP ESCRITURA_2
-        | CTESTRING ESCRITURA_2
+        | CHAR ESCRITURA_2
 	'''	
 def p_ESCRITURA_2(p):
 	'''
@@ -155,7 +154,7 @@ def p_TIPO_SIMPLE(p):
 	'''
 	TIPO_SIMPLE	: FLOAT
     		| INT
-	    | CTESTRING
+	    | CHAR
 	'''
 
 def p_TIPO_COMPUESTO(p):
@@ -208,10 +207,10 @@ def p_G_EXP_1(p):
 	'''
 	G_EXP_1	: '<' M_EXP
         	| '>' M_EXP
-		| EQUALS M_EXP
+		| EQ M_EXP
 		| NE M_EXP
-		| LESSEQ M_EXP
-		| MOREEQ M_EXP
+		| LTEQ M_EXP
+		| GTEQ M_EXP
 		| empty 
 	'''		
 
@@ -290,12 +289,6 @@ def p_RETURN_F(p):
 	'''
 	RETURN_F	: RETURN EXP ';' 
 	'''	
-
-# Empty symbol = ε
-def p_COMM(p):
-	'''
-	COMM	: COMMENT
-	'''
 
 # Empty symbol = ε
 def p_empty(p):

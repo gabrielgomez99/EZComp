@@ -7,17 +7,17 @@ tokens = (
     'COMMENT',
     'IF',
     'ELSE',
-    'CTESTRING',
     'MAIN',
     'VOID',
     'INT',
     'FLOAT',
+    'CHAR',
     'PRINT',
     'VAR',
     'NE',
-    'EQUALS',
-    'MOREEQ',
-    'LESSEQ',
+    'EQ',
+    'GTEQ',
+    'LTEQ',
     'READ',
     'WHILE',
     'FOR',
@@ -33,6 +33,7 @@ tokens = (
     'HISTOGRAM',
     'FUNC',
     'RETURN',
+    'CTECHAR',
     'CTEINT',
     'CTEFLOAT'
 )
@@ -45,6 +46,7 @@ reserved = {
    'for' : 'FOR',
    'int' : 'INT',
    'float' : 'FLOAT',
+   'char' : 'CHAR',
    'var' : 'VAR',
    'print' : 'PRINT',
    'mean' : 'MEAN',
@@ -96,25 +98,25 @@ def t_OR(t):
     return t
     # identifica ||
 
-def t_MOREEQ(t):
+def t_GTEQ(t):
     r'>='
     t.value = (t.value)    
     return t
     # identifica >=
 
-def t_LESSEQ(t):
+def t_LTEQ(t):
     r'<='
     t.value = (t.value)    
     return t
     # identifica <=
 
-def t_EQUALS(t):
+def t_EQ(t):
     r'=='
     t.value = (t.value)    
     return t
     # identifica ==
 
-def t_CTESTRING(t):
+def t_CHAR(t):
     r'\"[a-zA-Z_0-9_ ]*?\"'
     t.value = t.value[1:-1]
     return t

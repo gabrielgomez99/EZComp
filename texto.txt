@@ -17,7 +17,6 @@ func int ejfunc (int a, int b){
     return x*2;
 }
 main {
-    #HOLA
     var int c;
     x = 5;
     y = 10;
