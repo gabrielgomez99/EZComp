@@ -1,6 +1,15 @@
 import ply.yacc as yacc
 from lex import tokens
 from lex import literals
+from cuboSemantico import cuboSemantico
+from tablas import tablaVar
+from tablas import tablaFunc
+from tablas import dictFunc
+
+tempStackDecVar = []
+tempTipo = ''
+tempYAxis = 0
+tempScope = 0
 
 #Este diccionario sirvira para poder convertir a un valor que acepta el cubo semantico para poder ver que tipo es la operacion
 Conversion = {
@@ -34,7 +43,7 @@ def p_PROGRAMA_START_1(p):
 	'''
 	PROGRAMA_START_1	: FUNCION PROGRAMA_START_1 
 		| empty
-	'''
+	'''	
 
 def p_FUNCION(p):
 	'''
@@ -145,10 +154,27 @@ def p_DEC_VAR(p):
 		| empty
 	'''
 
+def p_meter_Dec_Var(p):
+	'''
+	meter_Dec_Var	: 
+	'''
+	global tempStackDecVar
+	tempStackDecVar.append(0)
+	tempStackDecVar.append(0)
+
 def p_VARS(p):
 	'''
-	VARS	: VAR VARS_1 ID VARS_2 ';'
+	VARS	: VAR VARS_1 ID seen_ID dec_axis meter_Dec_Var VARS_2 ';'
 	'''	
+
+def p_seenID(p):
+	'''
+	seen_ID	: 
+	'''
+	global tempStackDecVar
+	tempStackDecVar.append(p[-1])
+	tempStackDecVar.append(tempScope)
+	tempStackDecVar.append(tempTipo)
 
 def p_VARS_1(p):
 	'''
@@ -158,20 +184,50 @@ def p_VARS_1(p):
 
 def p_VARS_2(p):
 	'''
-	VARS_2	:  ',' ID VARS_2
+	VARS_2	:  ',' ID seen_ID dec_axis meter_Dec_Var VARS_2
 		| empty
 	'''
+def p_dec_axis(p):
+	'''
+	dec_axis	: 
+	'''
+	global tempStackDecVar
+	tempStackDecVar.append(None)
+	tempStackDecVar.append(None)
+
 
 def p_ARREGLO(p):
 	'''
-	ARREGLO	: ARR TIPO_SIMPLE ID '[' CTEINT ']' ARREGLO_1 ';'
+	ARREGLO	: ARR TIPO_SIMPLE ID seen_ID '[' CTEINT seen_xAxis ']' ARREGLO_1 dec_yAxis ';'
 	'''	
+
+def p_seen_xAxis(p):
+	'''
+	seen_xAxis	: 
+	'''	
+	global tempStackDecVar
+	tempStackDecVar.append(p[-1])
 
 def p_ARREGLO_1(p):
 	'''
-	ARREGLO_1	: '[' CTEINT ']' ARREGLO_1
+	ARREGLO_1	: '[' CTEINT seen_yAxis ']' 
 		| empty
 	'''	
+
+def p_dec_yAxis(p):
+	'''
+	dec_yAxis	: 
+	'''	
+	global tempYAxis
+	tempStackDecVar.append(tempYAxis)
+	tempYAxis = 0
+
+def p_seen_yAxis(p):
+	'''
+	seen_yAxis	: 
+	'''	
+	global tempYAxis
+	tempYAxis = p[-1]
 
 def p_TIPO_SIMPLE(p):
 	'''
@@ -179,17 +235,21 @@ def p_TIPO_SIMPLE(p):
     		| INT
 	    | CHAR
 	'''
+	global tempTipo
+	tempTipo = Conversion[p[1]]
 
 def p_TIPO_COMPUESTO(p):
 	'''
 	TIPO_COMPUESTO	: FILE
     	| DATAFRAME
 	'''
+	global tempTipo
+	tempTipo = Conversion[p[1]]
 
 def p_VARIABLE(p):
 	'''
-	VARIABLE	: ID VARIABLE_1
-	'''	
+	VARIABLE	: ID seen_ID VARIABLE_1
+	'''
 def p_VARIABLE_1(p):
 	'''
 	VARIABLE_1	: '[' EXP ']' VARIABLE_2
@@ -337,7 +397,7 @@ def p_error(p):
 parser = yacc.yacc()
 
 # Lee de un archivo de entrada
-with open('texto.txt', 'r') as f:
+with open('texto copy.txt', 'r') as f:
     input_data = f.read()
 
 # Parsea el input
@@ -346,6 +406,7 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
+    print(tempStackDecVar)
 else:
 	print("No se compilo correctamente")
 

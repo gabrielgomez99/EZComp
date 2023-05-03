@@ -1,6 +1,6 @@
 var int x , y;
 func void ejVoid (){
-    var int z;
+    var float z;
 }
 func int ejfunc (int a, int b){
     arr int d[3];
