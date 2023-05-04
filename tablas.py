@@ -60,7 +60,7 @@ class dictFunc :
         self.param.update({id : {'type' : type, 'value' : value, 'dirV' : dirV}})
 
     def agregaFunc(self,func):
-        self.dictionary.update({(self.cont) : {'func' : func}})
+        self.dictionary.update({(self.cont) : {'param' : self.param, 'func' : func}})
         self.cont = self.cont + 1
           
         

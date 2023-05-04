@@ -63,10 +63,10 @@ def p_meter_DecVar_a_func(p):
 	'''
 	meter_DecVar_a_func	: 
 	'''
-	global dictFunciones, tempFuncion, tempVars
+	global dictFunciones, tempFuncion, tempVars, tempQParam, contVarsEnFunc
 	tempFuncion.addVars(tempVars)
 	while not tempQParam.empty():
-		dictFunciones.addParam(tempQParam.get(),tempQParam.get(),tempQParam.get(),tempQParam.get())
+		dictFunciones.addParam(tempFuncion)
 	dictFunciones.agregaFunc(tempFuncion)
 
 def p_FUNCION(p):
@@ -248,7 +248,7 @@ def p_meter_Dec_Var(p):
 	'''
 	meter_Dec_Var	: 
 	'''
-	global tempQDecVar
+	global tempQDecVar, contVarsEnFunc
 	tempQDecVar.put(0)
 	tempQDecVar.put(0)
 	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
@@ -465,7 +465,7 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    print(dictFunciones.__dict__)
+    print(dictFunciones.dictionary)
 else:
 	print("No se compilo correctamente")
 
