@@ -1,4 +1,5 @@
 import ply.yacc as yacc
+import queue
 from lex import tokens
 from lex import literals
 from cuboSemantico import cuboSemantico
@@ -6,10 +7,14 @@ from tablas import tablaVar
 from tablas import tablaFunc
 from tablas import dictFunc
 
-tempStackDecVar = []
+tempQDecVar = queue.Queue()
 tempTipo = ''
 tempYAxis = 0
 tempScope = 0
+tempVars = tablaVar()
+tempTipoFunc = 0
+tempFuncion = tablaFunc(0,0)
+dictFunciones = dictFunc()
 
 #Este diccionario sirvira para poder convertir a un valor que acepta el cubo semantico para poder ver que tipo es la operacion
 Conversion = {
@@ -30,14 +35,15 @@ Conversion = {
 'NE' : 15,
 'GoTo' : 16,
 'GoToV' : 17,
-'GotoF' : 18
+'GotoF' : 18,
+'void'	: 19
 }
 
 
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	PROGRAMA_START	: DEC_VAR PROGRAMA_START_1 MAIN '{' DEC_VAR BLOQUE '}'
+	PROGRAMA_START	: DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN '{' DEC_VAR BLOQUE '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
@@ -47,27 +53,27 @@ def p_PROGRAMA_START_1(p):
 
 def p_FUNCION(p):
 	'''
-	FUNCION	: FUNC FUNCION_1 ID '(' PARAM ')' '{' DEC_VAR BLOQUE '}'
+	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM ')' '{' DEC_VAR BLOQUE '}' meter_Func
 	'''
 	
 def p_FUNCION_1(p):
 	'''
-	FUNCION_1	: VOID 
+	FUNCION_1	: VOID seen_void
 		| TIPO_SIMPLE
 	'''
 
 def p_PARAM(p):
 	'''
-	PARAM	: TIPO_SIMPLE ID PARAM_1 
+	PARAM	: TIPO_SIMPLE ID seen_Id seen_Param PARAM_1
 		| empty
 	'''
 
 def p_PARAM_1(p):
 	'''
-	PARAM_1	: ',' TIPO_SIMPLE ID PARAM_1 
+	PARAM_1	: ',' TIPO_SIMPLE ID seen_Id seen_Param PARAM_1 
 		| empty
 	'''
-
+	
 def p_BLOQUE(p):
 	'''
 	BLOQUE	:  ESTATUTO BLOQUE
@@ -154,27 +160,10 @@ def p_DEC_VAR(p):
 		| empty
 	'''
 
-def p_meter_Dec_Var(p):
-	'''
-	meter_Dec_Var	: 
-	'''
-	global tempStackDecVar
-	tempStackDecVar.append(0)
-	tempStackDecVar.append(0)
-
 def p_VARS(p):
 	'''
-	VARS	: VAR VARS_1 ID seen_ID dec_axis meter_Dec_Var VARS_2 ';'
+	VARS	: VAR VARS_1 ID seen_Id dec_axis meter_Dec_Var VARS_2 ';'
 	'''	
-
-def p_seenID(p):
-	'''
-	seen_ID	: 
-	'''
-	global tempStackDecVar
-	tempStackDecVar.append(p[-1])
-	tempStackDecVar.append(tempScope)
-	tempStackDecVar.append(tempTipo)
 
 def p_VARS_1(p):
 	'''
@@ -184,29 +173,14 @@ def p_VARS_1(p):
 
 def p_VARS_2(p):
 	'''
-	VARS_2	:  ',' ID seen_ID dec_axis meter_Dec_Var VARS_2
+	VARS_2	:  ',' ID seen_Id dec_axis meter_Dec_Var VARS_2
 		| empty
 	'''
-def p_dec_axis(p):
-	'''
-	dec_axis	: 
-	'''
-	global tempStackDecVar
-	tempStackDecVar.append(None)
-	tempStackDecVar.append(None)
-
 
 def p_ARREGLO(p):
 	'''
-	ARREGLO	: ARR TIPO_SIMPLE ID seen_ID '[' CTEINT seen_xAxis ']' ARREGLO_1 dec_yAxis ';'
+	ARREGLO	: ARR TIPO_SIMPLE ID seen_Id '[' CTEINT seen_xAxis ']' ARREGLO_1 dec_yAxis ';'
 	'''	
-
-def p_seen_xAxis(p):
-	'''
-	seen_xAxis	: 
-	'''	
-	global tempStackDecVar
-	tempStackDecVar.append(p[-1])
 
 def p_ARREGLO_1(p):
 	'''
@@ -214,28 +188,14 @@ def p_ARREGLO_1(p):
 		| empty
 	'''	
 
-def p_dec_yAxis(p):
-	'''
-	dec_yAxis	: 
-	'''	
-	global tempYAxis
-	tempStackDecVar.append(tempYAxis)
-	tempYAxis = 0
-
-def p_seen_yAxis(p):
-	'''
-	seen_yAxis	: 
-	'''	
-	global tempYAxis
-	tempYAxis = p[-1]
-
 def p_TIPO_SIMPLE(p):
 	'''
 	TIPO_SIMPLE	: FLOAT
     		| INT
 	    | CHAR
 	'''
-	global tempTipo
+	global tempTipo, tempTipoFunc
+	tempTipoFunc = Conversion[p[1]]
 	tempTipo = Conversion[p[1]]
 
 def p_TIPO_COMPUESTO(p):
@@ -248,7 +208,7 @@ def p_TIPO_COMPUESTO(p):
 
 def p_VARIABLE(p):
 	'''
-	VARIABLE	: ID seen_ID VARIABLE_1
+	VARIABLE	: ID seen_Id VARIABLE_1
 	'''
 def p_VARIABLE_1(p):
 	'''
@@ -380,6 +340,104 @@ def p_empty(p):
 	'''
 	pass
 
+
+#Puntos Semanticos
+
+def p_quitar_Global(p):
+	'''
+	quitar_Global	: 
+	'''
+	global tempScope
+	tempScope = 1
+
+def p_meter_DecVar_a_func(p):
+	'''
+	meter_DecVar_a_func	: 
+	'''
+	global dictFunciones, tempFuncion, tempVars
+	tempFuncion.addVars(tempVars)
+	dictFunciones.agregaFunc(tempFuncion)
+
+def p_seen_void(p):
+	'''
+	seen_void	:
+	'''
+	global tempTipoFunc
+	tempTipoFunc = Conversion[p[-1]]
+
+def p_seen_IdFunc(p):
+	'''
+	seen_IdFunc	:
+	'''
+	global tempFuncion
+	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
+
+def p_meter_Func(p):
+	'''
+	meter_Func	:
+	'''
+	global tempFuncion, dictFunciones
+	dictFunciones.agregaFunc(tempFuncion)
+
+
+def p_seen_Param(p):
+	'''
+	seen_Param	: 
+	'''
+	global tempFuncion
+	tempFuncion.addParam(tempTipo,tempId,10,9000)
+
+def p_seenId(p):
+	'''
+	seen_Id	: 
+	'''
+	global tempQDecVar, tempId
+	tempId = p[-1] #Sirve para guardar id de param
+	tempQDecVar.put(p[-1])
+	tempQDecVar.put(tempScope)
+	tempQDecVar.put(tempTipo)
+
+def p_dec_axis(p):
+	'''
+	dec_axis	: 
+	'''
+	global tempQDecVar
+	tempQDecVar.put(None)
+	tempQDecVar.put(None)
+
+def p_meter_Dec_Var(p):
+	'''
+	meter_Dec_Var	: 
+	'''
+	global tempQDecVar
+	tempQDecVar.put(0)
+	tempQDecVar.put(0)
+	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
+
+def p_seen_xAxis(p):
+	'''
+	seen_xAxis	: 
+	'''	
+	global tempQDecVar
+	tempQDecVar.put(p[-1])
+
+def p_dec_yAxis(p):
+	'''
+	dec_yAxis	: 
+	'''	
+	global tempYAxis
+	tempQDecVar.put(tempYAxis)
+	tempYAxis = 0
+
+def p_seen_yAxis(p):
+	'''
+	seen_yAxis	: 
+	'''	
+	global tempYAxis
+	tempYAxis = p[-1]
+
+
+
 errorFlag = False
 
 def p_error(p):
@@ -406,7 +464,8 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    print(tempStackDecVar)
+    for i in range(len(dictFunciones.list)):
+    	print(dictFunciones.list[i]['func'].imprimirFunc())
 else:
 	print("No se compilo correctamente")
 
