@@ -30,38 +30,21 @@ class tablaFunc :
         self.param = {}
         self.tablaDeVariables = {}
 
+    def addParam(self,type,id,value,dirV):
+        self.param.update({id : {'type' : type, 'value' : value, 'dirV' : dirV}})
+
     def addVars(self,tablaVars):
         self.tablaDeVariables.update(tablaVars)
 
-    """ def imprimirTablaVar(self,id):
-        print(self.tablaDeVariables[id])
-
-    def imprimirAllParam(self):
-        for key, value in self.param.items():
-            print(key, ":", value)
-    
-    def imprimirAll(self):
-        print('Type: \n',self.type)
-        print('Id: \n',self.id)
-        print('Parameters: ')
-        for key, value in self.param.items():
-            print(key, ":", value)
-        print('Table of variables: ')
-        for key, value in self.tablaDeVariables.items():
-            print(key, ":", value) """
+    def imprimirFunc(self):
+        print({'Params' : self.param, 'Tabla de Variables' : self.tablaDeVariables})
 
 class dictFunc :
     def __init__(self):
-        self.cont = 0
-        self.param = {}
-        self.dictionary = {}
-        
-    def addParam(self,id,type,value,dirV):
-        self.param.update({id : {'type' : type, 'value' : value, 'dirV' : dirV}})
+        self.list = []
 
     def agregaFunc(self,func):
-        self.dictionary.update({(self.cont) : {'param' : self.param, 'func' : func}})
-        self.cont = self.cont + 1
+        self.list.append({'func' : func})
           
         
 """ d = dictFunc()

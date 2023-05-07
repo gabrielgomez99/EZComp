@@ -8,7 +8,6 @@ from tablas import tablaFunc
 from tablas import dictFunc
 
 tempQDecVar = queue.Queue()
-tempQParam = queue.Queue()
 tempTipo = ''
 tempYAxis = 0
 tempScope = 0
@@ -52,26 +51,9 @@ def p_PROGRAMA_START_1(p):
 		| empty
 	'''	
 
-def p_quitar_Global(p):
-	'''
-	quitar_Global	: 
-	'''
-	global tempScope
-	tempScope = 1
-
-def p_meter_DecVar_a_func(p):
-	'''
-	meter_DecVar_a_func	: 
-	'''
-	global dictFunciones, tempFuncion, tempVars, tempQParam, contVarsEnFunc
-	tempFuncion.addVars(tempVars)
-	while not tempQParam.empty():
-		dictFunciones.addParam(tempFuncion)
-	dictFunciones.agregaFunc(tempFuncion)
-
 def p_FUNCION(p):
 	'''
-	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM meter_Func ')' '{' DEC_VAR BLOQUE '}'
+	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM ')' '{' DEC_VAR BLOQUE '}' meter_Func
 	'''
 	
 def p_FUNCION_1(p):
@@ -79,27 +61,6 @@ def p_FUNCION_1(p):
 	FUNCION_1	: VOID seen_void
 		| TIPO_SIMPLE
 	'''
-
-def p_seen_void(p):
-	'''
-	seen_void	:
-	'''
-	global tempTipoFunc
-	tempTipoFunc = Conversion[p[-1]]
-
-def p_seen_IdFunc(p):
-	'''
-	seen_IdFunc	:
-	'''
-	global tempIdFunc
-	tempIdFunc = p[-1]
-
-def p_meter_Func(p):
-	'''
-	meter_Func	:
-	'''
-	global tempFuncion, tempTipoFunc
-	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
 
 def p_PARAM(p):
 	'''
@@ -112,18 +73,7 @@ def p_PARAM_1(p):
 	PARAM_1	: ',' TIPO_SIMPLE ID seen_Id seen_Param PARAM_1 
 		| empty
 	'''
-
-def p_seen_Param(p):
-	'''
-	seen_Param	: 
-	'''
-	global tempFuncion
-	tempQParam.put(tempTipo)
-	tempQParam.put(tempId)
-	tempQParam.put(10)
-	tempQParam.put(9000)
 	
-
 def p_BLOQUE(p):
 	'''
 	BLOQUE	:  ESTATUTO BLOQUE
@@ -215,16 +165,6 @@ def p_VARS(p):
 	VARS	: VAR VARS_1 ID seen_Id dec_axis meter_Dec_Var VARS_2 ';'
 	'''	
 
-def p_seenId(p):
-	'''
-	seen_Id	: 
-	'''
-	global tempQDecVar, tempId
-	tempId = p[-1] #Sirve para guardar id de param
-	tempQDecVar.put(p[-1])
-	tempQDecVar.put(tempScope)
-	tempQDecVar.put(tempTipo)
-
 def p_VARS_1(p):
 	'''
 	VARS_1	:  TIPO_COMPUESTO
@@ -236,56 +176,17 @@ def p_VARS_2(p):
 	VARS_2	:  ',' ID seen_Id dec_axis meter_Dec_Var VARS_2
 		| empty
 	'''
-def p_dec_axis(p):
-	'''
-	dec_axis	: 
-	'''
-	global tempQDecVar
-	tempQDecVar.put(None)
-	tempQDecVar.put(None)
-
-def p_meter_Dec_Var(p):
-	'''
-	meter_Dec_Var	: 
-	'''
-	global tempQDecVar, contVarsEnFunc
-	tempQDecVar.put(0)
-	tempQDecVar.put(0)
-	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
-
 
 def p_ARREGLO(p):
 	'''
 	ARREGLO	: ARR TIPO_SIMPLE ID seen_Id '[' CTEINT seen_xAxis ']' ARREGLO_1 dec_yAxis ';'
 	'''	
 
-def p_seen_xAxis(p):
-	'''
-	seen_xAxis	: 
-	'''	
-	global tempQDecVar
-	tempQDecVar.put(p[-1])
-
 def p_ARREGLO_1(p):
 	'''
 	ARREGLO_1	: '[' CTEINT seen_yAxis ']' 
 		| empty
 	'''	
-
-def p_dec_yAxis(p):
-	'''
-	dec_yAxis	: 
-	'''	
-	global tempYAxis
-	tempQDecVar.put(tempYAxis)
-	tempYAxis = 0
-
-def p_seen_yAxis(p):
-	'''
-	seen_yAxis	: 
-	'''	
-	global tempYAxis
-	tempYAxis = p[-1]
 
 def p_TIPO_SIMPLE(p):
 	'''
@@ -439,6 +340,104 @@ def p_empty(p):
 	'''
 	pass
 
+
+#Puntos Semanticos
+
+def p_quitar_Global(p):
+	'''
+	quitar_Global	: 
+	'''
+	global tempScope
+	tempScope = 1
+
+def p_meter_DecVar_a_func(p):
+	'''
+	meter_DecVar_a_func	: 
+	'''
+	global dictFunciones, tempFuncion, tempVars
+	tempFuncion.addVars(tempVars)
+	dictFunciones.agregaFunc(tempFuncion)
+
+def p_seen_void(p):
+	'''
+	seen_void	:
+	'''
+	global tempTipoFunc
+	tempTipoFunc = Conversion[p[-1]]
+
+def p_seen_IdFunc(p):
+	'''
+	seen_IdFunc	:
+	'''
+	global tempFuncion
+	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
+
+def p_meter_Func(p):
+	'''
+	meter_Func	:
+	'''
+	global tempFuncion, dictFunciones
+	dictFunciones.agregaFunc(tempFuncion)
+
+
+def p_seen_Param(p):
+	'''
+	seen_Param	: 
+	'''
+	global tempFuncion
+	tempFuncion.addParam(tempTipo,tempId,10,9000)
+
+def p_seenId(p):
+	'''
+	seen_Id	: 
+	'''
+	global tempQDecVar, tempId
+	tempId = p[-1] #Sirve para guardar id de param
+	tempQDecVar.put(p[-1])
+	tempQDecVar.put(tempScope)
+	tempQDecVar.put(tempTipo)
+
+def p_dec_axis(p):
+	'''
+	dec_axis	: 
+	'''
+	global tempQDecVar
+	tempQDecVar.put(None)
+	tempQDecVar.put(None)
+
+def p_meter_Dec_Var(p):
+	'''
+	meter_Dec_Var	: 
+	'''
+	global tempQDecVar
+	tempQDecVar.put(0)
+	tempQDecVar.put(0)
+	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
+
+def p_seen_xAxis(p):
+	'''
+	seen_xAxis	: 
+	'''	
+	global tempQDecVar
+	tempQDecVar.put(p[-1])
+
+def p_dec_yAxis(p):
+	'''
+	dec_yAxis	: 
+	'''	
+	global tempYAxis
+	tempQDecVar.put(tempYAxis)
+	tempYAxis = 0
+
+def p_seen_yAxis(p):
+	'''
+	seen_yAxis	: 
+	'''	
+	global tempYAxis
+	tempYAxis = p[-1]
+
+
+
 errorFlag = False
 
 def p_error(p):
@@ -465,7 +464,8 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    print(dictFunciones.dictionary)
+    for i in range(len(dictFunciones.list)):
+    	print(dictFunciones.list[i]['func'].imprimirFunc())
 else:
 	print("No se compilo correctamente")
 
