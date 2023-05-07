@@ -53,7 +53,7 @@ def p_PROGRAMA_START_1(p):
 
 def p_FUNCION(p):
 	'''
-	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM ')' '{' DEC_VAR BLOQUE '}' meter_Func
+	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM ')' '{' DEC_VAR meter_DecVar_a_func BLOQUE '}'
 	'''
 	
 def p_FUNCION_1(p):
@@ -357,6 +357,7 @@ def p_meter_DecVar_a_func(p):
 	global dictFunciones, tempFuncion, tempVars
 	tempFuncion.addVars(tempVars)
 	dictFunciones.agregaFunc(tempFuncion)
+	tempVars = tablaVar()
 
 def p_seen_void(p):
 	'''
@@ -371,14 +372,6 @@ def p_seen_IdFunc(p):
 	'''
 	global tempFuncion
 	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
-
-def p_meter_Func(p):
-	'''
-	meter_Func	:
-	'''
-	global tempFuncion, dictFunciones
-	dictFunciones.agregaFunc(tempFuncion)
-
 
 def p_seen_Param(p):
 	'''

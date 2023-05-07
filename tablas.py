@@ -1,3 +1,4 @@
+import json
 class tablaVar :
     def __init__(self):
         self.variables = {}#Se crea un diccionario vacio que se ira actualizando con las varibales
@@ -33,7 +34,9 @@ class tablaFunc :
         self.tablaDeVariables.update(tablaVars)
 
     def imprimirFunc(self):
-        print({'Params' : self.param, 'Tabla de Variables' : self.tablaDeVariables})
+        #print({'Params' : self.param, 'Tabla de Variables' : self.tablaDeVariables})
+        print(json.dumps(self.param,indent=4,sort_keys=False))
+        print(json.dumps(self.tablaDeVariables,indent=4,sort_keys=False))
 
 class dictFunc :
     def __init__(self):
