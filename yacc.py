@@ -465,7 +465,7 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     for i in range(len(dictFunciones.list)):
-    	print(dictFunciones.list[i]['func'].imprimirFunc())
+    	dictFunciones.list[i]['func'].imprimirFunc()
 else:
 	print("No se compilo correctamente")
 

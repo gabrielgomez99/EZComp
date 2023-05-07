@@ -15,10 +15,6 @@ class tablaVar :
             }
         })
 
-    #Imprime dado un id un los atributos de una variable
-    def imprimir(self):
-        print(self.variables)
-
     #Esto es para poder iterar
     def __iter__(self):
         return iter(self.variables.items())
