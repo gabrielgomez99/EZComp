@@ -1,3 +1,27 @@
+#Este diccionario sirvira para poder convertir a un valor que acepta el cubo semantico para poder ver que tipo es la operacion
+Conversion = {
+'int' : 1,
+'float' : 2,
+'char' : 3,
+'bool' : 4,
+'+' : 5,
+'-' : 6,
+'*' : 7,
+'/' : 8,
+'=' : 9,
+'>' : 10,
+'GTEQ' : 11,
+'<' : 12,
+'LTEQ' : 13,
+'EQ' : 14,
+'NE' : 15,
+'GoTo' : 16,
+'GoToV' : 17,
+'GotoF' : 18,
+'void'	: 19,
+'(' : 20
+}
+
 cuboSemantico = {
         '1': { # Se definen las operaciones para INT
             '1' : {

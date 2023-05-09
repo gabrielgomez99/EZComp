@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 import queue
+from cuboSemantico import Conversion
 from lex import tokens
 from lex import literals
 from cuboSemantico import cuboSemantico
@@ -16,28 +17,6 @@ tempTipoFunc = 0
 tempFuncion = tablaFunc(0,0)
 dictFunciones = dictFunc()
 
-#Este diccionario sirvira para poder convertir a un valor que acepta el cubo semantico para poder ver que tipo es la operacion
-Conversion = {
-'int' : 1,
-'float' : 2,
-'char' : 3,
-'bool' : 4,
-'+' : 5,
-'-' : 6,
-'*' : 7,
-'/' : 8,
-'=' : 9,
-'>' : 10,
-'GTEQ' : 11,
-'<' : 12,
-'LTEQ' : 13,
-'EQ' : 14,
-'NE' : 15,
-'GoTo' : 16,
-'GoToV' : 17,
-'GotoF' : 18,
-'void'	: 19
-}
 
 
 # Empieza el programa
@@ -223,17 +202,17 @@ def p_VARIABLE_2(p):
 	
 def p_EXP(p):
 	'''
-	EXP	: T_EXP EXP_1
+	EXP	: T_EXP EXP_1 end_OR
 	'''	
 def p_EXP_1(p):
 	'''
-	EXP_1	: OR EXP
+	EXP_1	: OR seen_OR EXP
         | empty
 	'''	
 
 def p_T_EXP(p):
 	'''
-	T_EXP	: G_EXP T_EXP_1
+	T_EXP	: G_EXP T_EXP_1 end_And
 	'''
 def p_T_EXP_1(p):
 	'''

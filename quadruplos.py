@@ -1,14 +1,4 @@
-class listQuads :
-    #Se inicializa una lista para poder guardar un objeto quadruplo en cada indice
-    lista = []
-    def __init__(self,operator,op1,op2,res):
-        self.lista.append(quadruplo(operator,op1,op2,res))
-        self.types = [] #Stack que guarda el tipo
-        self.operandos = [] #Stack que guarda los operandos
-        self.operator = [] #Stack que guarda los operadores
-        self.jumps = [] #Stack que guarda los saltos
-        self.resTemp = 0 #Stack que guarda los resultados
-        self.index = 1 #Nos dice en que indice vamos
+from cuboSemantico import cuboSemantico as Cubo
 
 class quadruplo :
     def __init__(self,operator,op1,op2,res):
@@ -20,6 +10,69 @@ class quadruplo :
     def Imprimir(self):
         print('(',self.operator,',',self.op1,',',self.op2,',',self.res,')')
 
+class listQuads :
+    #Se inicializa una lista para poder guardar un objeto quadruplo en cada indice
+    lista = []
+    def __init__(self,operator,op1,op2,res):
+        self.lista.append(quadruplo(operator,op1,op2,res))
+        self.types = [] #Stack que guarda el tipo
+        self.operandos = [] #Stack que guarda los operandos
+        self.operator = [] #Stack que guarda los operadores
+        self.jumps = [] #Stack que guarda los saltos
+        self.resTemp = 0 #Stack que guarda los resultados
+        self.pointer = 1 #Nos apunta hacia adelante de la instruccion que hicimos
+
+# <INSERT INTO STACK>
+    def insertOperando_Type(self,newOperando, newType):
+        self.types.append(newType)
+        self.operandos.append(newOperando)
+
+    def insertOperator(self, newOperator):
+        self.operator.append(newOperator)
+
+    # <POP POPS>
+    def popOperator(self):
+        return self.operator.pop()
+
+    def popOperando(self):
+        return self.operandos.pop()
+
+    def popType(self):
+        return self.types.pop()
+
+    def popJump(self):
+        return self.jumps.pop()
+
+    def popParen(self):
+        try:
+            self.operator.pop(self.operator.index(10))
+        except ValueError:
+            print("Not Found")
+
+    # <GET FROM STACK OR GET POINTER>
+    def getOperator(self):
+        return self.operator[-1]
+
+    def getOperando(self):
+        return self.operandos[-1]
+
+    def getType(self):
+        return self.operandos[-1]
+
+    def getJump(self):
+        return self.operandos[-1]
+
+    def getPointer(self):
+        return self.pointer
+
+    # <TYPE CHECKING>
+    def checkTypeMismatch(self, leftType, rightType, operator):
+        try:
+            if (Cubo[leftType][rightType][operator]):
+                return Cubo[leftType][rightType][operator]
+        except:
+            print("ERROR: TypeMismatch")
+            exit()
 
 q1 = []
 q1.append(quadruplo(1,2,3,4))
