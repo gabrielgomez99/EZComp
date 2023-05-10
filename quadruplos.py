@@ -1,4 +1,5 @@
 from cuboSemantico import cuboSemantico as Cubo
+from cuboSemantico import Conversion
 
 class quadruplo :
     def __init__(self,operator,op1,op2,res):
@@ -22,7 +23,7 @@ class listQuads :
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 1 #Nos apunta hacia adelante de la instruccion que hicimos
 
-# <INSERT INTO STACK>
+# Aqui se inserta todo a sus listas
     def insertOperando_Type(self,newOperando, newType):
         self.types.append(newType)
         self.operandos.append(newOperando)
@@ -45,11 +46,11 @@ class listQuads :
 
     def popParen(self):
         try:
-            self.operator.pop(self.operator.index(10))
+            self.operator.pop(self.operator.index(Conversion['(']))
         except ValueError:
             print("Not Found")
 
-    # <GET FROM STACK OR GET POINTER>
+    # Aparramos con la posision anterior
     def getOperator(self):
         return self.operator[-1]
 
@@ -65,7 +66,7 @@ class listQuads :
     def getPointer(self):
         return self.pointer
 
-    # <TYPE CHECKING>
+    # Se Valida tipos
     def checkTypeMismatch(self, leftType, rightType, operator):
         try:
             if (Cubo[leftType][rightType][operator]):

@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 import queue
 from cuboSemantico import Conversion
+from quadruplos import listQuads
 from lex import tokens
 from lex import literals
 from cuboSemantico import cuboSemantico
@@ -16,7 +17,7 @@ tempVars = tablaVar()
 tempTipoFunc = 0
 tempFuncion = tablaFunc(0,0)
 dictFunciones = dictFunc()
-
+quads = listQuads()
 
 
 # Empieza el programa
@@ -202,68 +203,68 @@ def p_VARIABLE_2(p):
 	
 def p_EXP(p):
 	'''
-	EXP	: T_EXP EXP_1 end_OR
+	EXP	: T_EXP EXP_1 solve_EXP
 	'''	
 def p_EXP_1(p):
 	'''
-	EXP_1	: OR seen_OR EXP
+	EXP_1	: OR push_Op EXP
         | empty
 	'''	
 
 def p_T_EXP(p):
 	'''
-	T_EXP	: G_EXP T_EXP_1 end_And
+	T_EXP	: G_EXP T_EXP_1 solve_T_EXP
 	'''
 def p_T_EXP_1(p):
 	'''
-	T_EXP_1	: '&' G_EXP
+	T_EXP_1	: '&' push_Op G_EXP
         | empty
 	'''	
 
 def p_G_EXP(p):
 	'''
-	G_EXP	: M_EXP G_EXP_1
+	G_EXP	: M_EXP G_EXP_1 solve_G_EXP
 	'''	
 
 def p_G_EXP_1(p):
 	'''
-	G_EXP_1	: '<' M_EXP
-        	| '>' M_EXP
-		| EQ M_EXP
-		| NE M_EXP
-		| LTEQ M_EXP
-		| GTEQ M_EXP
+	G_EXP_1	: '<' push_Op M_EXP
+        	| '>' push_Op M_EXP
+		| EQ push_Op M_EXP
+		| NE push_Op M_EXP
+		| LTEQ push_Op M_EXP
+		| GTEQ push_Op M_EXP
 		| empty 
 	'''		
 
 def p_M_EXP(p):
 	'''
-	M_EXP	: T M_EXP_1
+	M_EXP	: T M_EXP_1 solve_M_EXP
 	'''	
 def p_M_EXP_1(p):
 	'''
-	M_EXP_1	: '+' M_EXP
-		| '-' M_EXP
+	M_EXP_1	: '+' push_Op M_EXP
+		| '-' push_Op M_EXP
         	| empty
 	'''
 
 def p_T(p):
 	'''
-	T	: F T_1
+	T	: F T_1 solve_T
 	'''			
 def p_T_1(p):
 	'''
-	T_1	: '*' T
-        	| '/' T
+	T_1	: '*' push_Op T
+        	| '/' push_Op T
 		| empty
 	'''
 
 def p_F(p):
 	'''
-	F	: '(' EXP ')'
-        	| CTEFLOAT
-		| CTEINT
-		| VARIABLE
+	F	: '(' insert_Paren EXP pop_Paren ')'
+        	| CTEFLOAT push_operando_F
+		| CTEINT push_operando_I
+		| VARIABLE 
 		| LLAMADA
 	'''
 
@@ -321,7 +322,7 @@ def p_empty(p):
 
 
 #Puntos Semanticos
-
+#DECVAR
 def p_quitar_Global(p):
 	'''
 	quitar_Global	: 
@@ -408,6 +409,58 @@ def p_seen_yAxis(p):
 	global tempYAxis
 	tempYAxis = p[-1]
 
+#Expresions
+def p_push_Op(p):
+	'''
+	push_Op	: 
+	'''	
+	global quads
+	quads.pushOperator(Conversion(p[-1]))
+	
+def p_push_operando_I(p):
+	'''
+	push_operando_I	: 
+	'''	
+	global quads
+	quads.pushOperando_Type(p[-1],1)
+
+def p_push_operando_F(p):
+	'''
+	push_operando_F	: 
+	'''	
+	global quads
+	quads.pushOperando_Type(p[-1],2)
+
+def p_solve_EXP(p):
+	'''
+	solve_EXP	: 
+	'''	
+	global quads
+	
+
+def p_solve_T_EXP(p):
+	'''
+	solve_T_EXP	: 
+	'''	
+	global quads
+	
+def p_solve_G_EXP(p):
+	'''
+	solve_G_EXP	: 
+	'''	
+	global quads
+
+def p_solve_M_EXP(p):
+	'''
+	solve_M_EXP	: 
+	'''	
+	global quads
+
+def p_solve_T(p):
+	'''
+	solve_T	: 
+	'''	
+	global quads
 
 
 errorFlag = False
