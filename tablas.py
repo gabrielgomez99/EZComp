@@ -1,10 +1,25 @@
 import json
+from cuboSemantico import Conversion
+
 class tablaVar :
     def __init__(self):
+        self.id = 0
+        self.CounterInt = 0
+        self.CounterFloat = 0
+        self.CounterChar = 0
         self.variables = {}#Se crea un diccionario vacio que se ira actualizando con las varibales
 
     #Aqui se anaden las variables a la tabla
-    def addVar(self,id,scope,type,xAxis,yAxis,value,dirV):
+    def addVar(self,id,scope,type,xAxis,yAxis,value):
+        if type == 1:
+            dirV = 1000 + self.CounterInt
+            self.CounterInt += 1
+        elif type == 2:
+            dirV = 2000 + self.CounterFloat
+            self.CounterFloat += 1
+        else :
+            dirV = 3000 + self.CounterChar
+            self.CounterChar += 1
         self.variables.update({
                 id : {
                 'scope' : scope,
@@ -44,6 +59,14 @@ class dictFunc :
 
     def agregaFunc(self,func):
         self.list.append({'func' : func})
+    
+    def getVarType(self, varId):
+        id = str(varId)
+        try:
+            return self.list[len(self.list)-1]['func'].tablaDeVariables[id]['type']
+        except KeyError:
+            print("ERROR: Variable does not exist")
+            exit()
           
         
 """ d = dictFunc()
@@ -51,7 +74,6 @@ t = tablaFunc('int','ejemplo')
 v = tablaVar()
 v.addVar('x','global','int',1,1,12,1001)
 t.addVars(v)
-d.addParam('cont','int',4,2501)
-d.agregaFunc(t.tablaDeVariables,'cont','int',4,2501)
+d.agregaFunc(t.tablaDeVariables)
 
-print(d.dict) """
+d.list[0]['func'].imprimirFunc() """

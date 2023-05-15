@@ -12,10 +12,8 @@ class quadruplo :
         print('(',self.operator,',',self.op1,',',self.op2,',',self.res,')')
 
 class listQuads :
-    #Se inicializa una lista para poder guardar un objeto quadruplo en cada indice
-    lista = []
-    def __init__(self,operator,op1,op2,res):
-        self.lista.append(quadruplo(operator,op1,op2,res))
+    def __init__(self):
+        self.lista = [] #Se inicializa una lista para poder guardar un objeto quadruplo en cada indice
         self.types = [] #Stack que guarda el tipo
         self.operandos = [] #Stack que guarda los operandos
         self.operator = [] #Stack que guarda los operadores
@@ -24,19 +22,25 @@ class listQuads :
         self.pointer = 1 #Nos apunta hacia adelante de la instruccion que hicimos
 
 # Aqui se inserta todo a sus listas
-    def insertOperando_Type(self,newOperando, newType):
-        self.types.append(newType)
+    def pushOperando_Type(self,newOperando, newType):
+        print("push operando", newOperando,"push type",newType)
         self.operandos.append(newOperando)
+        self.types.append(newType)
 
-    def insertOperator(self, newOperator):
+    def pushOperator(self, newOperator):
+        print("push operator", newOperator)
         self.operator.append(newOperator)
 
-    # <POP POPS>
+    # Pop de Stacks
     def popOperator(self):
-        return self.operator.pop()
+        operator = self.operator.pop()
+        print("pop Operator",operator)
+        return operator
 
     def popOperando(self):
-        return self.operandos.pop()
+        operando = self.operandos.pop()
+        print("pop operando",operando)
+        return operando
 
     def popType(self):
         return self.types.pop()
@@ -72,10 +76,34 @@ class listQuads :
             if (Cubo[leftType][rightType][operator]):
                 return Cubo[leftType][rightType][operator]
         except:
+            print(leftType,rightType,operator)
             print("ERROR: TypeMismatch")
             exit()
 
-q1 = []
-q1.append(quadruplo(1,2,3,4))
-q1.append(quadruplo(5,6,7,8))
-q1[1].Imprimir()
+    def dumpQuad(self):
+        operator = self.popOperator()
+        rightType = self.popType()
+        leftType = self.popType()
+        typeFinal = self.checkTypeMismatch(leftType, rightType, operator)
+        
+        if not operator == Conversion['=']:
+            self.resTemp += 1
+            self.lista.append(quadruplo(operator,self.operandos.pop(),self.operandos.pop(),self.resTemp))
+            self.pushOperando_Type(self.resTemp,typeFinal)
+        else:
+            self.resTemp += 1
+            self.lista.append(quadruplo(operator,self.operandos.pop(),None,self.operandos.pop()))
+            self.pushOperando_Type(self.resTemp,typeFinal)
+
+    def imprimirQuadruplos(self):
+        for i in range(len(self.lista)):
+            self.lista[i].Imprimir()
+
+    def imprimirQuadStacks(self):
+        print(self.lista)
+        print(self.operandos)
+        print(self.operator)
+        print(self.jumps)
+        print(self.resTemp)
+        print(self.pointer)
+

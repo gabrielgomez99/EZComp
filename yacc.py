@@ -44,13 +44,13 @@ def p_FUNCION_1(p):
 
 def p_PARAM(p):
 	'''
-	PARAM	: TIPO_SIMPLE ID seen_Id seen_Param PARAM_1
+	PARAM	: TIPO_SIMPLE ID seen_IdParam seen_Param PARAM_1
 		| empty
 	'''
 
 def p_PARAM_1(p):
 	'''
-	PARAM_1	: ',' TIPO_SIMPLE ID seen_Id seen_Param PARAM_1 
+	PARAM_1	: ',' TIPO_SIMPLE ID seen_IdParam seen_Param PARAM_1 
 		| empty
 	'''
 	
@@ -75,7 +75,7 @@ def p_ESTATUTO(p):
 
 def p_ASIGNACION(p):
 	'''
-	ASIGNACION	: VARIABLE '=' EXP ';'
+	ASIGNACION	: VARIABLE '=' push_Op EXP solve_Asig ';'
 	'''	
 
 def p_CONDICION(p):
@@ -188,8 +188,9 @@ def p_TIPO_COMPUESTO(p):
 
 def p_VARIABLE(p):
 	'''
-	VARIABLE	: ID seen_Id VARIABLE_1
+	VARIABLE	: ID VARIABLE_1
 	'''
+	quads.pushOperando_Type(p[1],dictFunciones.getVarType(p[1]))
 def p_VARIABLE_1(p):
 	'''
 	VARIABLE_1	: '[' EXP ']' VARIABLE_2
@@ -239,7 +240,7 @@ def p_G_EXP_1(p):
 
 def p_M_EXP(p):
 	'''
-	M_EXP	: T M_EXP_1 solve_M_EXP
+	M_EXP	: T solve_M_EXP M_EXP_1 
 	'''	
 def p_M_EXP_1(p):
 	'''
@@ -250,7 +251,7 @@ def p_M_EXP_1(p):
 
 def p_T(p):
 	'''
-	T	: F T_1 solve_T
+	T	: F solve_T T_1 
 	'''			
 def p_T_1(p):
 	'''
@@ -358,17 +359,23 @@ def p_seen_Param(p):
 	seen_Param	: 
 	'''
 	global tempFuncion
-	tempFuncion.addParam(tempTipo,tempId,10,9000)
+	tempFuncion.addParam(tempTipo,tempId,10,0)
 
 def p_seenId(p):
 	'''
 	seen_Id	: 
 	'''
-	global tempQDecVar, tempId
+	global tempQDecVar
+	tempQDecVar.put(p[-1]) #Mete el Id
+	tempQDecVar.put(tempScope) #Mete si es global o no
+	tempQDecVar.put(tempTipo) #Mete el tipo
+
+def p_seenIdParam(p):
+	'''
+	seen_IdParam	: 
+	'''
+	global tempId
 	tempId = p[-1] #Sirve para guardar id de param
-	tempQDecVar.put(p[-1])
-	tempQDecVar.put(tempScope)
-	tempQDecVar.put(tempTipo)
 
 def p_dec_axis(p):
 	'''
@@ -383,9 +390,8 @@ def p_meter_Dec_Var(p):
 	meter_Dec_Var	: 
 	'''
 	global tempQDecVar
-	tempQDecVar.put(0)
-	tempQDecVar.put(0)
-	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
+	tempQDecVar.put(0) #Temporalmente valor 0
+	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
 
 def p_seen_xAxis(p):
 	'''
@@ -414,22 +420,25 @@ def p_push_Op(p):
 	'''
 	push_Op	: 
 	'''	
-	global quads
-	quads.pushOperator(Conversion(p[-1]))
+	quads.pushOperator(Conversion[p[-1]])
 	
 def p_push_operando_I(p):
 	'''
 	push_operando_I	: 
 	'''	
-	global quads
 	quads.pushOperando_Type(p[-1],1)
 
 def p_push_operando_F(p):
 	'''
 	push_operando_F	: 
 	'''	
-	global quads
 	quads.pushOperando_Type(p[-1],2)
+
+def p_solve_Asig(p):
+	'''
+	solve_Asig	: 
+	'''	
+	quads.dumpQuad()
 
 def p_solve_EXP(p):
 	'''
@@ -454,7 +463,8 @@ def p_solve_M_EXP(p):
 	'''
 	solve_M_EXP	: 
 	'''	
-	global quads
+	if (quads.getOperator() == Conversion['+'] or quads.getOperator() == Conversion['-']):
+		quads.dumpQuad()
 
 def p_solve_T(p):
 	'''
@@ -462,6 +472,17 @@ def p_solve_T(p):
 	'''	
 	global quads
 
+def p_insert_Paren(p):
+	'''
+	insert_Paren	: 
+	'''	
+	global quads
+
+def p_pop_Paren(p):
+	'''
+	pop_Paren	: 
+	'''	
+	global quads
 
 errorFlag = False
 
@@ -489,8 +510,9 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    for i in range(len(dictFunciones.list)):
-    	dictFunciones.list[i]['func'].imprimirFunc()
+    quads.imprimirQuadruplos()
+    """ for i in range(len(dictFunciones.list)):
+    	dictFunciones.list[i]['func'].imprimirFunc() """
 else:
 	print("No se compilo correctamente")
 
