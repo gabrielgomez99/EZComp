@@ -85,10 +85,11 @@ class listQuads :
         rightType = self.popType()
         leftType = self.popType()
         typeFinal = self.checkTypeMismatch(leftType, rightType, operator)
-        
         if not operator == Conversion['=']:
             self.resTemp += 1
-            self.lista.append(quadruplo(operator,self.operandos.pop(),self.operandos.pop(),self.resTemp))
+            rightOp = self.operandos.pop()
+            leftOp = self.operandos.pop()
+            self.lista.append(quadruplo(operator,leftOp,rightOp,self.resTemp))
             self.pushOperando_Type(self.resTemp,typeFinal)
         else:
             self.resTemp += 1

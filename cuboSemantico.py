@@ -15,11 +15,14 @@ Conversion = {
 'LTEQ' : 13,
 'EQ' : 14,
 'NE' : 15,
-'GoTo' : 16,
-'GoToV' : 17,
-'GotoF' : 18,
-'void'	: 19,
-'(' : 20
+'OR' : 16,
+'&' : 17,
+'(' : 18,
+'GoTo' : 19,
+'GoToV' : 20,
+'GotoF' : 21,
+'void'	: 22,
+'(' : 23
 }
 
 cuboSemantico = {

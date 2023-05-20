@@ -23,7 +23,7 @@ quads = listQuads()
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	PROGRAMA_START	: DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN '{' DEC_VAR BLOQUE '}'
+	PROGRAMA_START	: DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN '{' DEC_VAR meter_DecVar_a_func BLOQUE '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
@@ -338,6 +338,7 @@ def p_meter_DecVar_a_func(p):
 	global dictFunciones, tempFuncion, tempVars
 	tempFuncion.addVars(tempVars)
 	dictFunciones.agregaFunc(tempFuncion)
+	tempFuncion = tablaFunc(0,0)
 	tempVars = tablaVar()
 
 def p_seen_void(p):
@@ -445,19 +446,25 @@ def p_solve_EXP(p):
 	solve_EXP	: 
 	'''	
 	global quads
-	
+	if (quads.getOperator() == Conversion['OR']):
+		quads.dumpQuad()
 
 def p_solve_T_EXP(p):
 	'''
 	solve_T_EXP	: 
 	'''	
 	global quads
+	if (quads.getOperator() == Conversion['&']):
+		quads.dumpQuad()
+
 	
 def p_solve_G_EXP(p):
 	'''
 	solve_G_EXP	: 
 	'''	
 	global quads
+	if (quads.getOperator() == Conversion['<'] or quads.getOperator() == Conversion['>'] or quads.getOperator() == Conversion['EQ'] or quads.getOperator() == Conversion['NE'] or quads.getOperator() == Conversion['LTEQ'] or quads.getOperator() == Conversion['GTEQ']):
+		quads.dumpQuad()
 
 def p_solve_M_EXP(p):
 	'''
@@ -471,18 +478,22 @@ def p_solve_T(p):
 	solve_T	: 
 	'''	
 	global quads
+	if (quads.getOperator() == Conversion['*'] or quads.getOperator() == Conversion['/']):
+		quads.dumpQuad()
 
 def p_insert_Paren(p):
 	'''
 	insert_Paren	: 
 	'''	
 	global quads
+	quads.pushOperator(Conversion['('])
 
 def p_pop_Paren(p):
 	'''
 	pop_Paren	: 
 	'''	
 	global quads
+	quads.popParen()
 
 errorFlag = False
 
