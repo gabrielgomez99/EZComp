@@ -94,8 +94,8 @@ def p_ESCRITURA(p):
 	'''	
 def p_ESCRITURA_1(p):
 	'''
-	ESCRITURA_1	: EXP ESCRITURA_2
-        | CHAR ESCRITURA_2
+	ESCRITURA_1	: EXP solve_Print ESCRITURA_2
+        | CHAR solve_Print_Char ESCRITURA_2
 	'''	
 def p_ESCRITURA_2(p):
 	'''
@@ -448,12 +448,24 @@ def p_solve_GoTo(p):
 	'''	
 	quads.solveGoTo()
 
+def p_solve_Print(p):
+	'''
+	solve_Print	: 
+	'''	
+	quads.solvePrint()
+
+def p_solve_Print_Char(p):
+	'''
+	solve_Print_Char	: 
+	'''	
+	quads.pushOperando_Type(p[-1],Conversion['char'])
+	quads.solvePrint_Char()
+
 #Expresions
 def p_push_Op(p):
 	'''
 	push_Op	: 
 	'''	
-	print(Conversion[p[-1]])
 	quads.pushOperator(Conversion[p[-1]])
 	
 def p_push_operando_I(p):

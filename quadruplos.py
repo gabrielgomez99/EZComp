@@ -117,6 +117,14 @@ class listQuads :
     def solveGoTo(self):
         self.lista[self.popJump()].res = self.pointer
 
+    def solvePrint(self):
+        self.lista.append(quadruplo('Print',None,None,self.lista[len(self.lista)-1].res))
+        self.pointer += 1
+
+    def solvePrint_Char(self):
+        self.lista.append(quadruplo('Print',None,None,self.operandos.pop()))
+        self.pointer += 1
+
     def imprimirQuadruplos(self):
         for i in range(len(self.lista)):
             self.lista[i].Imprimir()
