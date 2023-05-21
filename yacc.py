@@ -80,11 +80,11 @@ def p_ASIGNACION(p):
 
 def p_CONDICION(p):
 	'''
-	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE meter_GoTo '}' solve_GoTo CONDICION_1
+	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE '}' solve_GoTo CONDICION_1
 	'''	
 def p_CONDICION_1(p):
 	'''
-	CONDICION_1	: ELSE '{' BLOQUE '}' solve_GoTo
+	CONDICION_1	: ELSE '{' meter_jump meter_GoTo BLOQUE '}' solve_GoTo
     	| empty
 	'''	
 
@@ -453,6 +453,7 @@ def p_push_Op(p):
 	'''
 	push_Op	: 
 	'''	
+	print(Conversion[p[-1]])
 	quads.pushOperator(Conversion[p[-1]])
 	
 def p_push_operando_I(p):
@@ -472,7 +473,7 @@ def p_solve_EXP(p):
 	solve_EXP	: 
 	'''	
 	global quads
-	if (quads.getOperator() == Conversion['OR']):
+	if (quads.getOperator() == Conversion['||']):
 		quads.dumpQuad()
 
 def p_solve_T_EXP(p):
@@ -489,7 +490,7 @@ def p_solve_G_EXP(p):
 	solve_G_EXP	: 
 	'''	
 	global quads
-	if (quads.getOperator() == Conversion['<'] or quads.getOperator() == Conversion['>'] or quads.getOperator() == Conversion['EQ'] or quads.getOperator() == Conversion['NE'] or quads.getOperator() == Conversion['LTEQ'] or quads.getOperator() == Conversion['GTEQ']):
+	if (quads.getOperator() == Conversion['<'] or quads.getOperator() == Conversion['>'] or quads.getOperator() == Conversion['=='] or quads.getOperator() == Conversion['!='] or quads.getOperator() == Conversion['<='] or quads.getOperator() == Conversion['>=']):
 		quads.dumpQuad()
 
 def p_solve_M_EXP(p):
@@ -547,7 +548,7 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    """ quads.imprimirQuadruplos() """
+    quads.imprimirQuadruplos()
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:

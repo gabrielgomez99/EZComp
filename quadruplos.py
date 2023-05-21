@@ -60,7 +60,10 @@ class listQuads :
 
     # Aparramos con la posision anterior
     def getOperator(self):
-        return self.operator[-1]
+        try:
+            return self.operator[-1]
+        except IndexError:
+            pass
 
     def getOperando(self):
         return self.operandos[-1]
@@ -99,14 +102,17 @@ class listQuads :
             self.resTemp += 1
             self.lista.append(quadruplo(operator,self.operandos.pop(),None,self.operandos.pop()))
             self.pushOperando_Type(self.resTemp,typeFinal)
-        self.lista[self.pointer - 1].Imprimir()
+        """ self.lista[self.pointer - 1].Imprimir()
+        print(self.pointer) """
         self.pointer += 1
 
     def pushGoToF(self):
-        self.lista.append('GoToF',self.lista[len(self.lista)-2].res,None,None)
+        self.lista.append(quadruplo('GoToF',self.lista[len(self.lista)-1].res,None,None))
+        self.pointer += 1
 
     def pushGoTo(self):
-        self.lista.append('GoTo',self.lista[len(self.lista)-2].res,None,None)
+        self.lista.append(quadruplo('GoTo',self.lista[len(self.lista)-1].res,None,None))
+        self.pointer += 1
 
     def solveGoTo(self):
         self.lista[self.popJump()].res = self.pointer
