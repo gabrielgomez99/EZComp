@@ -80,11 +80,11 @@ def p_ASIGNACION(p):
 
 def p_CONDICION(p):
 	'''
-	CONDICION	: IF '(' EXP ')' '{' BLOQUE '}' CONDICION_1
+	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE meter_GoTo '}' solve_GoTo CONDICION_1
 	'''	
 def p_CONDICION_1(p):
 	'''
-	CONDICION_1	: ELSE '{' BLOQUE '}'
+	CONDICION_1	: ELSE '{' BLOQUE '}' solve_GoTo
     	| empty
 	'''	
 
@@ -383,6 +383,7 @@ def p_dec_axis(p):
 	dec_axis	: 
 	'''
 	global tempQDecVar
+	#Como no es un tipo arr (no es arreglo) se llena las dimensiones con nada
 	tempQDecVar.put(None)
 	tempQDecVar.put(None)
 
@@ -416,6 +417,37 @@ def p_seen_yAxis(p):
 	global tempYAxis
 	tempYAxis = p[-1]
 
+#Estatutos
+def p_solve_Asig(p):
+	'''
+	solve_Asig	: 
+	'''	
+	quads.dumpQuad()
+
+def p_meter_jump(p):
+	'''
+	meter_jump	: 
+	'''	
+	quads.pushJump()
+
+def p_meter_GoToF(p):
+	'''
+	meter_GoToF	: 
+	'''	
+	quads.pushGoToF()
+
+def p_meter_GoTo(p):
+	'''
+	meter_GoTo	: 
+	'''	
+	quads.pushGoTo()
+
+def p_solve_GoTo(p):
+	'''
+	solve_GoTo	: 
+	'''	
+	quads.solveGoTo()
+
 #Expresions
 def p_push_Op(p):
 	'''
@@ -427,19 +459,13 @@ def p_push_operando_I(p):
 	'''
 	push_operando_I	: 
 	'''	
-	quads.pushOperando_Type(p[-1],1)
+	quads.pushOperando_Type(p[-1],Conversion['int'])
 
 def p_push_operando_F(p):
 	'''
 	push_operando_F	: 
 	'''	
-	quads.pushOperando_Type(p[-1],2)
-
-def p_solve_Asig(p):
-	'''
-	solve_Asig	: 
-	'''	
-	quads.dumpQuad()
+	quads.pushOperando_Type(p[-1],Conversion['float'])
 
 def p_solve_EXP(p):
 	'''
@@ -521,7 +547,7 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    quads.imprimirQuadruplos()
+    """ quads.imprimirQuadruplos() """
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:

@@ -31,6 +31,10 @@ class listQuads :
         print("push operator", newOperator)
         self.operator.append(newOperator)
 
+    def pushJump(self):
+        print("push jump", (self.pointer - 1))
+        self.jumps.append((self.pointer - 1))
+
     # Pop de Stacks
     def popOperator(self):
         operator = self.operator.pop()
@@ -95,6 +99,17 @@ class listQuads :
             self.resTemp += 1
             self.lista.append(quadruplo(operator,self.operandos.pop(),None,self.operandos.pop()))
             self.pushOperando_Type(self.resTemp,typeFinal)
+        self.lista[self.pointer - 1].Imprimir()
+        self.pointer += 1
+
+    def pushGoToF(self):
+        self.lista.append('GoToF',self.lista[len(self.lista)-2].res,None,None)
+
+    def pushGoTo(self):
+        self.lista.append('GoTo',self.lista[len(self.lista)-2].res,None,None)
+
+    def solveGoTo(self):
+        self.lista[self.popJump()].res = self.pointer
 
     def imprimirQuadruplos(self):
         for i in range(len(self.lista)):
