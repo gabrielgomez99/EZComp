@@ -8,3 +8,5 @@ En este avance se hizo el cubo semantico y tambien se hizo las tablas para varia
 En este avance ya se puede guardar funciones con sus variables para meterse en cuadruplos pero todavia no se puede hacer expresiones
 ## Avance 5:
 En este avance ya se generan cuadruplos para algunas expresiones
+## Avance 6:
+En este avance ya se generan los cuadruplos de todas las expresiones y de funciones yh algunos estatutos
