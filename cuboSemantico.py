@@ -20,9 +20,11 @@ Conversion = {
 '(' : 18,
 'GoTo' : 19,
 'GoToV' : 20,
-'GotoF' : 21,
-'void'	: 22,
-'(' : 23
+'GoToF' : 21,
+'GoSub' : 22,
+'Print' : 23,
+'void'	: 24,
+'(' : 25
 }
 
 cuboSemantico = {

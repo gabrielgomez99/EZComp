@@ -39,6 +39,7 @@ class tablaFunc :
     def __init__(self,type,id):
         self.type = type
         self.id = id
+        self.dir = None
         self.param = {}
         self.tablaDeVariables = {}
 

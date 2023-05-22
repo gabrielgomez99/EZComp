@@ -23,7 +23,7 @@ quads = listQuads()
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	PROGRAMA_START	: DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN '{' DEC_VAR meter_DecVar_a_func BLOQUE '}'
+	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func BLOQUE '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
@@ -110,8 +110,8 @@ def p_LECTURA(p):
 
 def p_LLAMADA(p):
 	'''
-	LLAMADA	: ID '(' LLAMADA_1 ')' ';'
-	'''	
+	LLAMADA	: ID '(' LLAMADA_1 meter_jump meter_GoSub ')' ';'
+	'''		
 def p_LLAMADA_1(p):
 	'''
 	LLAMADA_1	:  EXP LLAMADA_2
@@ -314,14 +314,6 @@ def p_RETURN_F(p):
 	RETURN_F	: RETURN EXP ';' 
 	'''	
 
-# Empty symbol = ε
-def p_empty(p):
-	'''
-	empty	: 
-	'''
-	pass
-
-
 #Puntos Semanticos
 #DECVAR
 def p_quitar_Global(p):
@@ -354,6 +346,7 @@ def p_seen_IdFunc(p):
 	'''
 	global tempFuncion
 	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
+	tempFuncion.dir = quads.pointer #se usa para cuando se cree la funcion le asignamos la direccion donde inicia
 
 def p_seen_Param(p):
 	'''
@@ -418,6 +411,19 @@ def p_seen_yAxis(p):
 	tempYAxis = p[-1]
 
 #Estatutos
+def p_meter_GoToMain(p):
+	'''
+	meter_GoToMain	: 
+	'''	
+	quads.pushOperator(Conversion['GoToF'])
+	quads.pushGoToMain()
+
+def p_solve_GoToMain(p):
+	'''
+	solve_GoToMain	: 
+	'''	
+	quads.solveGoToMain()
+
 def p_solve_Asig(p):
 	'''
 	solve_Asig	: 
@@ -434,13 +440,13 @@ def p_meter_GoToF(p):
 	'''
 	meter_GoToF	: 
 	'''	
-	quads.pushGoToF()
+	quads.pushOperator(Conversion['GoToF'])
 
 def p_meter_GoTo(p):
 	'''
 	meter_GoTo	: 
 	'''	
-	quads.pushGoTo()
+	quads.pushOperator(Conversion['GoTo'])
 
 def p_solve_GoTo(p):
 	'''
@@ -460,6 +466,20 @@ def p_solve_Print_Char(p):
 	'''	
 	quads.pushOperando_Type(p[-1],Conversion['char'])
 	quads.solvePrint_Char()
+
+def p_meter_GoSub(p):
+	'''
+	meter_GoSub	: 
+	'''	
+	flag = False
+	for i in range(len(dictFunciones.list)-1):
+		if(dictFunciones.list[i]['func'].id == p[-4]):
+			quads.pushGoSub(dictFunciones.list[i]['func'].dir)
+			flag = True
+	if(flag):
+		pass
+	else:
+		print("Error funcion no declarada")	
 
 #Expresions
 def p_push_Op(p):
@@ -535,6 +555,13 @@ def p_pop_Paren(p):
 	quads.popParen()
 
 errorFlag = False
+
+# Empty symbol = ε
+def p_empty(p):
+	'''
+	empty	: 
+	'''
+	pass
 
 def p_error(p):
     if p:
