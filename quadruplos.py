@@ -8,9 +8,8 @@ class quadruplo :
         self.op2 = op2
         self.res = res
 
-    def Imprimir(self):
-
-        print('(',(list(Conversion.keys())[list(Conversion.values()).index(self.operator)]),',',self.op1,',',self.op2,',',self.res,')')
+    def Imprimir(self,i):
+        print(i,'(',(list(Conversion.keys())[list(Conversion.values()).index(self.operator)]),',',self.op1,',',self.op2,',',self.res,')')
 
 class listQuads :
     def __init__(self):
@@ -112,18 +111,17 @@ class listQuads :
         self.pointer += 1
     
     def solveGoToMain(self):
-        self.lista[0].res = self.pointer
+        self.lista[0].res = self.pointer - 1
 
-    def pushGoToF(self):
+    def push_GoTo(self,):
         self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,None))
         self.pointer += 1
 
-    def pushGoTo(self,):
-        self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,None))
-        self.pointer += 1
+    def solveGoToF(self):
+        self.lista[self.popJump()].res = self.pointer
 
     def solveGoTo(self):
-        self.lista[self.popJump()].res = self.pointer
+        self.lista[self.popJump()].res = self.pointer - 1
 
     def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))
@@ -139,7 +137,7 @@ class listQuads :
 
     def imprimirQuadruplos(self):
         for i in range(len(self.lista)):
-            self.lista[i].Imprimir()
+            self.lista[i].Imprimir(i)
 
     def imprimirQuadStacks(self):
         print(self.lista)

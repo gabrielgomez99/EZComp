@@ -80,7 +80,7 @@ def p_ASIGNACION(p):
 
 def p_CONDICION(p):
 	'''
-	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE '}' solve_GoTo CONDICION_1
+	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE '}' solve_GoToF CONDICION_1
 	'''	
 def p_CONDICION_1(p):
 	'''
@@ -415,7 +415,7 @@ def p_meter_GoToMain(p):
 	'''
 	meter_GoToMain	: 
 	'''	
-	quads.pushOperator(Conversion['GoToF'])
+	quads.pushOperator(Conversion['GoTo'])
 	quads.pushGoToMain()
 
 def p_solve_GoToMain(p):
@@ -441,12 +441,20 @@ def p_meter_GoToF(p):
 	meter_GoToF	: 
 	'''	
 	quads.pushOperator(Conversion['GoToF'])
+	quads.push_GoTo()
 
 def p_meter_GoTo(p):
 	'''
 	meter_GoTo	: 
 	'''	
 	quads.pushOperator(Conversion['GoTo'])
+	quads.push_GoTo()
+
+def p_solve_GoToF(p):
+	'''
+	solve_GoToF	: 
+	'''	
+	quads.solveGoToF()
 
 def p_solve_GoTo(p):
 	'''
