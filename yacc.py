@@ -18,6 +18,7 @@ tempTipoFunc = 0
 tempFuncion = tablaFunc(0,0)
 dictFunciones = dictFunc()
 quads = listQuads()
+elseFlag = True
 
 
 # Empieza el programa
@@ -33,7 +34,7 @@ def p_PROGRAMA_START_1(p):
 
 def p_FUNCION(p):
 	'''
-	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM ')' '{' DEC_VAR meter_DecVar_a_func BLOQUE '}'
+	FUNCION	: FUNC FUNCION_1 ID seen_IdFunc '(' PARAM ')' '{' DEC_VAR meter_DecVar_a_func BLOQUE meter_endfunc '}'
 	'''
 	
 def p_FUNCION_1(p):
@@ -80,11 +81,11 @@ def p_ASIGNACION(p):
 
 def p_CONDICION(p):
 	'''
-	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE '}' solve_GoToF CONDICION_1
+	CONDICION	: IF '(' EXP meter_jump meter_GoToF ')' '{' BLOQUE '}' CONDICION_1 solve_GoToF
 	'''	
 def p_CONDICION_1(p):
 	'''
-	CONDICION_1	: ELSE '{' meter_jump meter_GoTo BLOQUE '}' solve_GoTo
+	CONDICION_1	: ELSE '{' solve_GoToFElse meter_jump meter_GoTo BLOQUE '}' solve_GoTo
     	| empty
 	'''	
 
@@ -110,7 +111,7 @@ def p_LECTURA(p):
 
 def p_LLAMADA(p):
 	'''
-	LLAMADA	: ID '(' LLAMADA_1 meter_jump meter_GoSub ')' ';'
+	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub meter_jump ')' ';'
 	'''		
 def p_LLAMADA_1(p):
 	'''
@@ -450,17 +451,37 @@ def p_meter_GoTo(p):
 	quads.pushOperator(Conversion['GoTo'])
 	quads.push_GoTo()
 
-def p_solve_GoToF(p):
-	'''
-	solve_GoToF	: 
-	'''	
-	quads.solveGoToF()
-
 def p_solve_GoTo(p):
 	'''
 	solve_GoTo	: 
 	'''	
 	quads.solveGoTo()
+
+def p_solve_GoToF(p):
+	'''
+	solve_GoToF : 
+	'''
+	#Se hace cuando no hay else en el estatuto Condicion
+	global elseFlag
+	#Se revisa si ya se visito el else y alfinal se cambia la flag para el siguiente gotoF
+	if(elseFlag):
+		quads.solveGoTo()
+		elseFlag = False
+	else:
+		elseFlag = True
+
+def p_solve_GoToFElse(p):
+	'''
+	solve_GoToFElse	: 
+	'''	
+	#Se hace si hay else en el estatuto Condicion para meter el pointer + 1 para saltar el Goto de else
+	global elseFlag
+	#Se revisa si ya se visito el else y alfinal se cambia la flag para el siguiente gotoF
+	if(elseFlag):
+		quads.solveGoToF()
+		elseFlag = False
+	else:
+		elseFlag = True
 
 def p_solve_Print(p):
 	'''
@@ -474,6 +495,20 @@ def p_solve_Print_Char(p):
 	'''	
 	quads.pushOperando_Type(p[-1],Conversion['char'])
 	quads.solvePrint_Char()
+
+def p_meter_endfunc(p):
+	'''
+	meter_endfunc	: 
+	'''	
+	quads.pushOperator(Conversion['EndFunc'])
+	quads.solveEndFunc()
+
+def p_meter_ERA(p):
+	'''
+	meter_ERA	: 
+	'''	
+	quads.pushOperator(Conversion['ERA'])
+	quads.pushERA(p[-1])
 
 def p_meter_GoSub(p):
 	'''

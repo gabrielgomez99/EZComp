@@ -9,7 +9,7 @@ class quadruplo :
         self.res = res
 
     def Imprimir(self,i):
-        print(i,'(',(list(Conversion.keys())[list(Conversion.values()).index(self.operator)]),',',self.op1,',',self.op2,',',self.res,')')
+        print(i+1,'(',(list(Conversion.keys())[list(Conversion.values()).index(self.operator)]),',',self.op1,',',self.op2,',',self.res,')')
 
 class listQuads :
     def __init__(self):
@@ -111,17 +111,17 @@ class listQuads :
         self.pointer += 1
     
     def solveGoToMain(self):
-        self.lista[0].res = self.pointer - 1
+        self.lista[0].res = self.pointer
 
     def push_GoTo(self,):
         self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,None))
         self.pointer += 1
 
-    def solveGoToF(self):
+    def solveGoTo(self):
         self.lista[self.popJump()].res = self.pointer
 
-    def solveGoTo(self):
-        self.lista[self.popJump()].res = self.pointer - 1
+    def solveGoToF(self):
+        self.lista[self.popJump()].res = self.pointer + 1
 
     def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))
@@ -129,6 +129,14 @@ class listQuads :
 
     def solvePrint_Char(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.operandos.pop()))
+        self.pointer += 1
+
+    def solveEndFunc(self):
+        self.lista.append(quadruplo(self.popOperator(),None,None,None))
+        self.pointer += 1
+
+    def pushERA(self, id):
+        self.lista.append(quadruplo(self.popOperator(),None,None,id))
         self.pointer += 1
 
     def pushGoSub(self, id):

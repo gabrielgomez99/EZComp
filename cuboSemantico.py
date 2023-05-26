@@ -24,7 +24,9 @@ Conversion = {
 'GoSub' : 22,
 'Print' : 23,
 'void'	: 24,
-'(' : 25
+'EndFunc' : 25,
+'ERA' : 26,
+'(' : 27
 }
 
 cuboSemantico = {
