@@ -9,7 +9,7 @@ class quadruplo :
         self.res = res
 
     def Imprimir(self,i):
-        print(i+1,'(',(list(Conversion.keys())[list(Conversion.values()).index(self.operator)]),',',self.op1,',',self.op2,',',self.res,')')
+        print(i,'(',(list(Conversion.keys())[list(Conversion.values()).index(self.operator)]),',',self.op1,',',self.op2,',',self.res,')')
 
 class listQuads :
     def __init__(self):
@@ -19,7 +19,7 @@ class listQuads :
         self.operator = [] #Stack que guarda los operadores
         self.jumps = [] #Stack que guarda los saltos
         self.resTemp = 0 #Stack que guarda los resultados
-        self.pointer = 1 #Nos apunta hacia adelante de la instruccion que hicimos
+        self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -32,8 +32,8 @@ class listQuads :
         self.operator.append(newOperator)
 
     def pushJump(self):
-        print("push jump", (self.pointer - 1))
-        self.jumps.append((self.pointer - 1))
+        print("push jump", (self.pointer))
+        self.jumps.append((self.pointer))
 
     # Pop de Stacks
     def popOperator(self):
@@ -102,8 +102,6 @@ class listQuads :
             self.resTemp += 1
             self.lista.append(quadruplo(operator,self.operandos.pop(),None,self.operandos.pop()))
             self.pushOperando_Type(self.resTemp,typeFinal)
-        """ self.lista[self.pointer - 1].Imprimir()
-        print(self.pointer) """
         self.pointer += 1
 
     def pushGoToMain(self):
@@ -120,8 +118,26 @@ class listQuads :
     def solveGoTo(self):
         self.lista[self.popJump()].res = self.pointer
 
+    def push_GoToF(self):
+        resType = self.popType()
+        if (resType == Conversion['bool']):
+            operator = self.popOperator()
+            prevRes = self.popOperando()
+            self.lista.append(quadruplo(operator, prevRes, None, None))
+            self.pointer += 1
+        else:
+            print(f"ERROR: Expression type must be of type bool, not {(list(Conversion.keys())[list(Conversion.values()).index(resType)])}.")
+            exit()
+
     def solveGoToF(self):
         self.lista[self.popJump()].res = self.pointer + 1
+
+    def solveWhile(self):
+        end = self.popJump()
+        ret = self.popJump()
+        self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,ret))
+        self.pointer += 1
+        self.lista[end-1].res = self.pointer
 
     def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))

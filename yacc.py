@@ -126,7 +126,7 @@ def p_LLAMADA_2(p):
 
 def p_WHILE_C(p):
 	'''
-	WHILE_C	: WHILE '(' EXP ')' '{' BLOQUE '}'
+	WHILE_C	: WHILE '(' meter_jump EXP meter_GoToF  meter_jump ')' '{' BLOQUE solve_While '}'
 	'''
 
 def p_FOR_C(p):
@@ -347,7 +347,7 @@ def p_seen_IdFunc(p):
 	'''
 	global tempFuncion
 	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
-	tempFuncion.dir = quads.pointer #se usa para cuando se cree la funcion le asignamos la direccion donde inicia
+	tempFuncion.dir = quads.pointer - 1 #se usa para cuando se cree la funcion le asignamos la direccion donde inicia
 
 def p_seen_Param(p):
 	'''
@@ -442,7 +442,7 @@ def p_meter_GoToF(p):
 	meter_GoToF	: 
 	'''	
 	quads.pushOperator(Conversion['GoToF'])
-	quads.push_GoTo()
+	quads.push_GoToF()
 
 def p_meter_GoTo(p):
 	'''
@@ -482,6 +482,13 @@ def p_solve_GoToFElse(p):
 		elseFlag = False
 	else:
 		elseFlag = True
+
+def p_solve_While(p):
+	'''
+	solve_While	: 
+	'''	
+	quads.pushOperator(Conversion['GoTo'])
+	quads.solveWhile()
 
 def p_solve_Print(p):
 	'''
@@ -631,6 +638,7 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
+    print(len(quads.lista))
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:
