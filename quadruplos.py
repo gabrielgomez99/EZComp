@@ -160,8 +160,8 @@ class listQuads :
         self.pointer += 1
 
     def pushReturn(self,type):
-        if(type=='void'):
-            print(f"ERROR: Function is void type return is not allowed")
+        if(type==Conversion['void']):
+            print(f"ERROR: Function is void type, return is not allowed")
             exit()
         else:
             print(self.getType())
