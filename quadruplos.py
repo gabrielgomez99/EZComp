@@ -69,10 +69,10 @@ class listQuads :
         return self.operandos[-1]
 
     def getType(self):
-        return self.operandos[-1]
+        return self.types[-1]
 
     def getJump(self):
-        return self.operandos[-1]
+        return self.jumps[-1]
 
     def getPointer(self):
         return self.pointer
@@ -158,6 +158,16 @@ class listQuads :
     def pushGoSub(self, id):
         self.lista.append(quadruplo(Conversion['GoSub'],None,None,id))
         self.pointer += 1
+
+    def pushReturn(self,type):
+        if(type=='void'):
+            print(f"ERROR: Function is void type return is not allowed")
+            exit()
+        else:
+            print(self.getType())
+            self.checkTypeMismatch(type,self.getType(),Conversion['='])
+            self.lista.append(quadruplo(self.popOperator(),None,None,self.getOperando()))
+            self.pointer += 1
 
     def imprimirQuadruplos(self):
         for i in range(len(self.lista)):

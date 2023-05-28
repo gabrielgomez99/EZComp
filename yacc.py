@@ -15,6 +15,7 @@ tempYAxis = 0
 tempScope = 0
 tempVars = tablaVar()
 tempTipoFunc = 0
+tempIdFunc = 'Global'
 tempFuncion = tablaFunc(0,0)
 dictFunciones = dictFunc()
 quads = listQuads()
@@ -312,7 +313,7 @@ def p_HISTOGRAMA(p):
 
 def p_RETURN_F(p):
 	'''
-	RETURN_F	: RETURN EXP ';' 
+	RETURN_F	: RETURN EXP meter_Return ';' 
 	'''	
 
 #Puntos Semanticos
@@ -345,8 +346,9 @@ def p_seen_IdFunc(p):
 	'''
 	seen_IdFunc	:
 	'''
-	global tempFuncion
-	tempFuncion = tablaFunc(tempTipoFunc,p[-1])
+	global tempFuncion, tempIdFunc
+	tempIdFunc = p[-1]
+	tempFuncion = tablaFunc(tempTipoFunc,tempIdFunc)
 	tempFuncion.dir = quads.pointer - 1 #se usa para cuando se cree la funcion le asignamos la direccion donde inicia
 
 def p_seen_Param(p):
@@ -530,6 +532,13 @@ def p_meter_GoSub(p):
 		pass
 	else:
 		print("Error funcion no declarada")	
+
+def p_meter_Return(p):
+	'''
+	meter_Return	: 
+	'''
+	quads.pushOperator(Conversion['Return'])
+	quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1]['func'].type)
 
 #Expresions
 def p_push_Op(p):
