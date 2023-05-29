@@ -157,6 +157,15 @@ class listQuads :
             print(f"ERROR: Expression type must be of type bool, not {(list(Conversion.keys())[list(Conversion.values()).index(self.getType())])}.")
             exit() 
 
+    def moveExpFor(self):
+        gotoFjump = self.popJump() #se guarda para meter el jump otra vez y usar en moveGoToF
+        returnCondicion = self.popJump()
+        moverExpFor = self.popJump()
+        temp = self.lista[moverExpFor-1]
+        self.lista[moverExpFor-1] = self.lista[returnCondicion-1]
+        self.lista[returnCondicion-1] = temp
+        self.jumps.append(gotoFjump)
+
     def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))
         self.pointer += 1
