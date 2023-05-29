@@ -66,9 +66,28 @@ class dictFunc :
         try:
             return self.list[len(self.list)-1]['func'].tablaDeVariables[id]['type']
         except KeyError:
-            print("ERROR: Variable does not exist")
-            exit()
-          
+            try:
+                return self.list[len(self.list)-1]['func'].param[id]['type']
+            except KeyError:
+                try:
+                    return self.list[0]['func'].tablaDeVariables[id]['type']
+                except KeyError:
+                    print("ERROR: Variable does not exist")
+                    exit()
+    
+    def getVariD(self, varId):
+        id = str(varId)
+        try:
+             return self.list[len(self.list)-1]['func'].tablaDeVariables[id]['id']
+        except KeyError:
+            try:
+                return self.list[len(self.list)-1]['func'].param[id]['id']
+            except KeyError:
+                try:
+                    return self.list[0]['func'].tablaDeVariables[id]['id']
+                except KeyError:
+                    print("ERROR: Variable does not exist")
+                    exit()
         
 """ d = dictFunc()
 t = tablaFunc('int','ejemplo')

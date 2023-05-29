@@ -132,7 +132,7 @@ def p_WHILE_C(p):
 
 def p_FOR_C(p):
 	'''
-	FOR_C	: FOR '(' ID '=' EXP ';' EXP ';' ASIGNACION ')' '{' BLOQUE '}'
+	FOR_C	: FOR '(' ID seen_idFor '=' push_Op EXP meter_expFor ';' EXP meter_condicionFor ';' EXP ')' '{' BLOQUE '}'
 	'''
 
 def p_DEC_VAR(p):
@@ -492,6 +492,28 @@ def p_solve_While(p):
 	quads.pushOperator(Conversion['GoTo'])
 	quads.solveWhile()
 
+def p_seen_idFor(p):
+	'''
+	seen_idFor	: 
+	'''	
+	global tempId
+	quads.pushOperando_Type(p[-1],dictFunciones.getVarType(p[-1]))
+
+def p_meter_expFor(p):
+	'''
+	meter_expFor	: 
+	'''	
+	global tempId
+	quads.solveExpFor()
+
+def p_meter_condicionFor(p):
+	'''
+	meter_condicionFor	: 
+	'''	
+	quads.pushJump()
+	quads.solveCondicionFor()
+
+
 def p_solve_Print(p):
 	'''
 	solve_Print	: 
@@ -647,7 +669,6 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
-    print(len(quads.lista))
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:

@@ -139,6 +139,24 @@ class listQuads :
         self.pointer += 1
         self.lista[end-1].res = self.pointer
 
+    def solveExpFor(self):
+        operator = self.popOperator()
+        rightType = self.popType()
+        leftType = self.popType()
+        typeFinal = self.checkTypeMismatch(leftType, rightType, operator)
+        self.resTemp += 1
+        rightOp = self.operandos.pop()
+        leftOp = self.operandos.pop()
+        self.lista.append(quadruplo(operator,leftOp,rightOp,self.resTemp))
+        self.pushOperando_Type(self.resTemp,typeFinal)
+        self.pointer += 1
+        
+
+    def solveCondicionFor(self):
+        if not self.getType() == Conversion['bool']:
+            print(f"ERROR: Expression type must be of type bool, not {(list(Conversion.keys())[list(Conversion.values()).index(self.getType())])}.")
+            exit() 
+
     def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))
         self.pointer += 1
@@ -164,7 +182,6 @@ class listQuads :
             print(f"ERROR: Function is void type, return is not allowed")
             exit()
         else:
-            print(self.getType())
             self.checkTypeMismatch(type,self.getType(),Conversion['='])
             self.lista.append(quadruplo(self.popOperator(),None,None,self.getOperando()))
             self.pointer += 1
