@@ -43,16 +43,21 @@ class tablaFunc :
         self.chars = 0
 
     def addParam(self,type,id,value,dirV):
+        if type == Conversion['int']:
+            self.ints += 1
+        elif type == Conversion['float']:
+            self.floats += 1
+        else:
+            self.chars += 1
         self.param.update({id : {'type' : type, 'value' : value, 'dirV' : dirV}})
 
     def addVars(self,tablaVars):
-        self.ints = tablaVars.counterInt
-        self.floats = tablaVars.counterFloat
-        self.chars = tablaVars.counterChar
+        self.ints += tablaVars.counterInt
+        self.floats += tablaVars.counterFloat
+        self.chars += tablaVars.counterChar
         self.tablaDeVariables.update(tablaVars)
 
     def imprimirFunc(self):
-        #print({'Params' : self.param, 'Tabla de Variables' : self.tablaDeVariables})
         print(json.dumps("Ints: " + str(self.ints),indent=4,sort_keys=False))
         print(json.dumps("Floats: " + str(self.floats),indent=4,sort_keys=False))
         print(json.dumps("Chars: " + str(self.chars),indent=4,sort_keys=False))
