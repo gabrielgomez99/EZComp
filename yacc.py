@@ -5,6 +5,7 @@ from quadruplos import listQuads
 from lex import tokens
 from lex import literals
 from cuboSemantico import cuboSemantico
+from memoriaVirtual import memoria
 from tablas import tablaVar
 from tablas import tablaFunc
 from tablas import dictFunc
@@ -20,6 +21,8 @@ tempFuncion = tablaFunc(0,0)
 dictFunciones = dictFunc()
 quads = listQuads()
 elseFlag = True
+mem = memoria()
+stackMemoria = []
 
 
 # Empieza el programa
@@ -685,9 +688,9 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    quads.imprimirQuadruplos()
-    """ for i in range(len(dictFunciones.list)):
-    	dictFunciones.list[i]['func'].imprimirFunc() """
+    #quads.imprimirQuadruplos()
+    for i in range(len(dictFunciones.list)):
+    	dictFunciones.list[i]['func'].imprimirFunc()
 else:
 	print("No se compilo correctamente")
 

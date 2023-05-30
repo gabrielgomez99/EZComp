@@ -17,6 +17,8 @@ constants		: (6000 - 9999)		# are global
 	char		: (8000 - 8999)
 	bool 		: (9000 - 9999)
 '''
+from cuboSemantico import Conversion
+
 class memoria:
     def __init__(self):
         self.localVars = {}
@@ -32,21 +34,21 @@ class memoria:
         self.counterBoolGlobal = 0
 
     def addVar(self,scope,type):
-        if type == 1:#Int
+        if type == Conversion['int']:#Int
             if scope == 0:#Globales
                 self.globalVars.update({self.counterIntGlobal:0})
                 self.counterIntGlobal += 1
             else:#Locales
                 self.localVars.update({2000+self.counterInt:0})
                 self.counterInt += 1
-        elif type == 2:#Float
+        elif type == Conversion['float']:#Float
             if scope == 0:#Globales
                 self.globalVars.update({500+self.counterFloatGlobal:0})
                 self.counterFloatGlobal += 1
             else:#Locales
                 self.localVars.update({3000+self.counterFloat:0})
                 self.counterFloat += 1
-        elif type == 3 :#Char
+        elif type == Conversion['char'] :#Char
             if scope == 0:#Globales
                 self.globalVars.update({1000+self.counterCharGlobal:0})
                 self.counterCharGlobal += 1
@@ -60,11 +62,3 @@ class memoria:
             else:#Locales
                 self.localVars.update({5000+self.counterBool:0})
                 self.counterBool += 1
-
-mem = memoria()
-mem.addVar(1,2)
-mem.addVar(0,1)
-mem.addVar(0,1)
-mem.addVar(0,1)
-mem.addVar(0,3)
-print(mem.globalVars,mem.localVars)
