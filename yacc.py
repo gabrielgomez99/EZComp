@@ -112,7 +112,7 @@ def p_LECTURA(p):
 
 def p_LLAMADA(p):
 	'''
-	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub meter_jump ')' ';'
+	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub ')' ';'
 	'''		
 def p_LLAMADA_1(p):
 	'''
