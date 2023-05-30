@@ -107,7 +107,7 @@ def p_ESCRITURA_2(p):
 
 def p_LECTURA(p):
 	'''
-	LECTURA	: READ '(' VARIABLE ')' ';'
+	LECTURA	: READ '(' VARIABLE solve_read ')' ';'
 	'''	
 
 def p_LLAMADA(p):
@@ -517,6 +517,13 @@ def p_final_for(p):
 	'''	
 	quads.finalFor()
 
+def p_solve_read(p):
+	'''
+	solve_read	: 
+	'''	
+	dictFunciones.getVariD(quads.getOperando())
+	quads.solveRead()
+
 def p_solve_Print(p):
 	'''
 	solve_Print	: 
@@ -528,7 +535,7 @@ def p_solve_Print_Char(p):
 	solve_Print_Char	: 
 	'''	
 	quads.pushOperando_Type(p[-1],Conversion['char'])
-	quads.solvePrint_Char()
+	quads.solvePrint()
 
 def p_meter_endfunc(p):
 	'''
@@ -680,7 +687,7 @@ if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
     """ for i in range(len(dictFunciones.list)):
-    	print(dictFunciones.list[i]['func'].dir) """
+    	dictFunciones.list[i]['func'].imprimirFunc() """
 else:
 	print("No se compilo correctamente")
 

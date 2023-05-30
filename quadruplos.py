@@ -195,11 +195,11 @@ class listQuads :
         self.popOperando()
         self.popType()
 
-    def solvePrint(self):
-        self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))
+    def solveRead(self):
+        self.lista.append(quadruplo(Conversion['Read'],None,None,self.operandos.pop()))
         self.pointer += 1
 
-    def solvePrint_Char(self):
+    def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.operandos.pop()))
         self.pointer += 1
 

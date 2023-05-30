@@ -23,12 +23,13 @@ Conversion = {
 'GoToF' : 21,
 'GoSub' : 22,
 'Print' : 23,
-'void'	: 24,
-'Return' : 25,
-'EndFunc' : 26,
-'Param' : 27,
-'ERA' : 28,
-'(' : 29
+'Read' : 24,
+'void'	: 25,
+'Return' : 26,
+'EndFunc' : 27,
+'Param' : 28,
+'ERA' : 29,
+'(' : 30
 }
 
 cuboSemantico = {
