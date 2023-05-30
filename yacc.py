@@ -132,7 +132,7 @@ def p_WHILE_C(p):
 
 def p_FOR_C(p):
 	'''
-	FOR_C	: FOR '(' ID seen_idFor '=' push_Op EXP meter_expFor ';' EXP meter_jump meter_condicionFor ';' EXP meter_jump meter_jump solve_expFor ')' '{' BLOQUE solve_GoToF '}'
+	FOR_C	: FOR '(' ID seen_idFor '=' push_Op EXP meter_expFor ';' EXP checar_condicionFor ')' '{' BLOQUE final_for '}'
 	'''
 
 def p_DEC_VAR(p):
@@ -496,7 +496,8 @@ def p_seen_idFor(p):
 	'''
 	seen_idFor	: 
 	'''	
-	quads.pushOperando_Type(p[-1],dictFunciones.getVarType(p[-1]))
+	if(dictFunciones.getVarType(p[-1]) == Conversion['int'] or dictFunciones.getVarType(p[-1]) == Conversion['float']):
+		quads.pushOperando_Type(p[-1],dictFunciones.getVarType(p[-1]))
 
 def p_meter_expFor(p):
 	'''
@@ -504,19 +505,17 @@ def p_meter_expFor(p):
 	'''	
 	quads.solveExpFor()
 
-def p_meter_condicionFor(p):
+def p_checar_condicionFor(p):
 	'''
-	meter_condicionFor	: 
+	checar_condicionFor	: 
 	'''	
 	quads.solveCondicionFor()
 
-def p_solve_expFor(p):
+def p_final_for(p):
 	'''
-	solve_expFor	: 
+	final_for	: 
 	'''	
-	quads.pushOperator(Conversion['GoToF'])
-	quads.moveExpFor()
-	quads.push_GoTo()
+	quads.finalFor()
 
 def p_solve_Print(p):
 	'''

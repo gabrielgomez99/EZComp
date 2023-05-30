@@ -20,6 +20,7 @@ class listQuads :
         self.jumps = [] #Stack que guarda los saltos
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
+        self.tempVControl = []
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -50,6 +51,7 @@ class listQuads :
         return self.types.pop()
 
     def popJump(self):
+        print("pop jump",self.getJump())
         return self.jumps.pop()
 
     def popParen(self):
@@ -142,29 +144,56 @@ class listQuads :
     def solveExpFor(self):
         operator = self.popOperator()
         rightType = self.popType()
-        leftType = self.popType()
-        typeFinal = self.checkTypeMismatch(leftType, rightType, operator)
-        self.resTemp += 1
-        rightOp = self.operandos.pop()
-        leftOp = self.operandos.pop()
-        self.lista.append(quadruplo(operator,leftOp,rightOp,self.resTemp))
-        self.pushOperando_Type(self.resTemp,typeFinal)
-        self.pointer += 1
-        
-
-    def solveCondicionFor(self):
-        if not self.getType() == Conversion['bool']:
-            print(f"ERROR: Expression type must be of type bool, not {(list(Conversion.keys())[list(Conversion.values()).index(self.getType())])}.")
+        vControl = self.getOperando()
+        if(rightType == Conversion['int'] or rightType == Conversion['float']):
+            exp = self.popOperando()
+            controlType = self.getType()
+            self.resTemp += 1
+            typeFinal = self.checkTypeMismatch(controlType,rightType,operator)
+            self.tempVControl.append(vControl)
+            self.lista.append(quadruplo(operator,exp,None,self.resTemp))
+            self.pushOperando_Type(self.resTemp,typeFinal)
+            self.pointer += 1
+        else:
+            print(f"ERROR: Expression type must be numeric, not {(list(Conversion.keys())[list(Conversion.values()).index(rightType)])}.")
             exit() 
 
-    def moveExpFor(self):
-        gotoFjump = self.popJump() #se guarda para meter el jump otra vez y usar en moveGoToF
-        returnCondicion = self.popJump()
-        moverExpFor = self.popJump()
-        temp = self.lista[moverExpFor-1]
-        self.lista[moverExpFor-1] = self.lista[returnCondicion-1]
-        self.lista[returnCondicion-1] = temp
-        self.jumps.append(gotoFjump)
+    def solveCondicionFor(self):
+        rightType = self.popType()
+        if(rightType == Conversion['int'] or rightType == Conversion['float']):
+            exp = self.popOperando()
+            self.resTemp +=1
+            vFinal = self.resTemp
+            self.lista.append(quadruplo(Conversion['='],exp,None,vFinal))
+            self.pointer += 1
+            self.resTemp +=1
+            self.lista.append(quadruplo(Conversion['<'],self.tempVControl[len(self.tempVControl)-1],vFinal,self.resTemp))
+            self.pushJump()
+            self.pointer += 1
+            self.lista.append(quadruplo(Conversion['GoToF'],self.lista[self.pointer-1].res,None,None))
+            self.pushJump()
+            self.pointer += 1
+        else:
+            print(f"ERROR: Expression type must be numeric, not {(list(Conversion.keys())[list(Conversion.values()).index(rightType)])}.")
+            exit() 
+
+    def finalFor(self):
+        self.resTemp += 1
+        ty = self.resTemp
+        self.lista.append(quadruplo(Conversion['+'],self.tempVControl[len(self.tempVControl)-1],1,ty))
+        self.pointer += 1
+        self.resTemp += 1
+        self.lista.append(quadruplo(Conversion['='],ty,None,self.tempVControl[len(self.tempVControl)-1]))
+        self.pointer += 1
+        self.lista.append(quadruplo(Conversion['='],ty,None,self.getOperando()))
+        self.pointer += 1
+        fin = self.popJump()
+        ret = self.popJump()
+        self.lista.append(quadruplo(Conversion['GoTo'],None,None,ret))
+        self.pointer += 1
+        self.lista[fin].res = self.pointer
+        self.popOperando()
+        self.popType()
 
     def solvePrint(self):
         self.lista.append(quadruplo(Conversion['Print'],None,None,self.lista[len(self.lista)-1].res))
