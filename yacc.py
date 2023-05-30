@@ -116,12 +116,12 @@ def p_LLAMADA(p):
 	'''		
 def p_LLAMADA_1(p):
 	'''
-	LLAMADA_1	:  EXP LLAMADA_2
+	LLAMADA_1	:  EXP meter_param LLAMADA_2
 		| empty
 	'''
 def p_LLAMADA_2(p):
 	'''
-	LLAMADA_2	: ',' EXP LLAMADA_2
+	LLAMADA_2	: ',' EXP meter_param LLAMADA_2
 		| empty
 	'''
 
@@ -543,6 +543,13 @@ def p_meter_ERA(p):
 	'''	
 	quads.pushOperator(Conversion['ERA'])
 	quads.pushERA(p[-1])
+
+def p_meter_param(p):
+	'''
+	meter_param	: 
+	'''	
+	quads.pushOperator(Conversion['Param'])
+	quads.solveParam()
 
 def p_meter_GoSub(p):
 	'''

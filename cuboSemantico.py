@@ -26,8 +26,9 @@ Conversion = {
 'void'	: 24,
 'Return' : 25,
 'EndFunc' : 26,
-'ERA' : 27,
-'(' : 28
+'Param' : 27,
+'ERA' : 28,
+'(' : 29
 }
 
 cuboSemantico = {

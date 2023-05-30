@@ -211,6 +211,10 @@ class listQuads :
         self.lista.append(quadruplo(self.popOperator(),None,None,id))
         self.pointer += 1
 
+    def solveParam(self):
+        self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
+        self.pointer += 1
+
     def pushGoSub(self, id):
         self.lista.append(quadruplo(Conversion['GoSub'],None,None,id))
         self.pointer += 1
