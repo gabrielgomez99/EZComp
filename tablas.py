@@ -11,15 +11,6 @@ class tablaVar :
 
     #Aqui se anaden las variables a la tabla
     def addVar(self,id,scope,type,xAxis,yAxis,value):
-        if type == 1:
-            dirV = 1000 + self.CounterInt
-            self.CounterInt += 1
-        elif type == 2:
-            dirV = 2000 + self.CounterFloat
-            self.CounterFloat += 1
-        else :
-            dirV = 3000 + self.CounterChar
-            self.CounterChar += 1
         self.variables.update({
                 id : {
                 'scope' : scope,
@@ -27,7 +18,6 @@ class tablaVar :
                 'xAxis' : xAxis,
                 'yAxis' : yAxis,
                 'value' : value,
-                'dirV' : dirV
             }
         })
 
