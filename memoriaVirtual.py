@@ -136,14 +136,28 @@ class memoria:
                 exit()
         self.constants.update({tempDir : value})
 
-    def searchDir(self,dir):
+    def searchDirGlobal(self,id):
         try:
             if dir < 1999:
-                self.globalVars[dir]
-            elif dir < 5999:
-                self.localVars[dir]
-            else:
-                self.constants[dir]
+                for value in self.globalVars.values():
+                    if self.globalVars[value] == id:
+                        return self.globalVars[value]
         except:
             print(f"ERROR: there is no variable in virtual memory at {dir}.")
             exit()
+
+    def searchDirGlobal(self,id):
+        try:
+            if dir < 1999:
+                for value in self.globalVars.values():
+                    if self.globalVars[value] == id:
+                        return self.globalVars[value]
+        except:
+            print(f"ERROR: there is no variable in virtual memory at {dir}.")
+            exit()
+
+    def searchDirConstantes(self,id):
+        for key, val in self.constants.items():
+            if val == id:
+                return key
+        return 0

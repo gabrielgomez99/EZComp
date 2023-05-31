@@ -559,8 +559,16 @@ def p_meter_ERA(p):
 	'''
 	meter_ERA	: 
 	'''	
+	flag = False
 	quads.pushOperator(Conversion['ERA'])
-	quads.pushERA(p[-1])
+	for i in range(len(dictFunciones.list)-1):
+		if(dictFunciones.list[i]['func'].id == p[-1]):
+			quads.pushERA(dictFunciones.list[i]['func'].dir)
+			flag = True
+	if(flag):
+		pass
+	else:
+		print("Error funcion no declarada")	
 
 def p_meter_param(p):
 	'''
@@ -608,7 +616,7 @@ def p_push_operando_I(p):
 	if constFlag:
 		print("entre")
 		mem.addConst(Conversion['int'],p[-1])
-	quads.pushOperando_Type(p[-1],Conversion['int'])
+	quads.pushOperando_Type(mem.searchDirConstantes(p[-1]),Conversion['int'])
 
 def p_push_operando_F(p):
 	'''
@@ -621,7 +629,7 @@ def p_push_operando_F(p):
 	if constFlag:
 		print("entre")
 		mem.addConst(Conversion['float'],p[-1])
-	quads.pushOperando_Type(p[-1],Conversion['float'])
+	quads.pushOperando_Type(mem.searchDirConstantes(p[-1]),Conversion['float'])
 
 def p_solve_EXP(p):
 	'''
@@ -731,7 +739,6 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
-    print(mem.constants)
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:

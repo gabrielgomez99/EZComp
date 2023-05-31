@@ -109,14 +109,14 @@ class listQuads :
         self.pointer += 1
     
     def solveGoToMain(self):
-        self.lista[0].res = self.pointer
+        self.lista[0].res = f'${self.pointer}'
 
     def push_GoTo(self,):
         self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,None))
         self.pointer += 1
 
     def solveGoTo(self):
-        self.lista[self.popJump()].res = self.pointer
+        self.lista[self.popJump()].res = f'${self.pointer}'
 
     def push_GoToF(self):
         resType = self.popType()
@@ -130,7 +130,7 @@ class listQuads :
             exit()
 
     def solveGoToF(self):
-        self.lista[self.popJump()].res = self.pointer + 1
+        self.lista[self.popJump()].res = f'${self.pointer + 1}'
 
     def solveWhile(self):
         end = self.popJump()
@@ -162,9 +162,11 @@ class listQuads :
             exp = self.popOperando()
             self.resTemp +=1
             vFinal = self.resTemp
+            #aqui se asigna la expresiona vFinal para seguir checando que se cumpla
             self.lista.append(quadruplo(Conversion['='],exp,None,vFinal))
             self.pointer += 1
             self.resTemp +=1
+            #Aqui se revisa se se paso de la variable final
             self.lista.append(quadruplo(Conversion['<'],self.tempVControl[len(self.tempVControl)-1],vFinal,self.resTemp))
             self.pushJump()
             self.pointer += 1
@@ -178,18 +180,21 @@ class listQuads :
     def finalFor(self):
         self.resTemp += 1
         ty = self.resTemp
+        #Aqui se incrementa la var de control en ty
         self.lista.append(quadruplo(Conversion['+'],self.tempVControl[len(self.tempVControl)-1],1,ty))
         self.pointer += 1
         self.resTemp += 1
+        #aqui se pone el valor de ty en vControl
         self.lista.append(quadruplo(Conversion['='],ty,None,self.tempVControl[len(self.tempVControl)-1]))
         self.pointer += 1
+        #aqui se deja el ty con el id original
         self.lista.append(quadruplo(Conversion['='],ty,None,self.getOperando()))
         self.pointer += 1
         fin = self.popJump()
         ret = self.popJump()
-        self.lista.append(quadruplo(Conversion['GoTo'],None,None,ret))
+        self.lista.append(quadruplo(Conversion['GoTo'],None,None,f'${ret}'))
         self.pointer += 1
-        self.lista[fin].res = self.pointer
+        self.lista[fin].res = f'${self.pointer}'
         self.popOperando()
         self.popType()
 
@@ -205,16 +210,16 @@ class listQuads :
         self.lista.append(quadruplo(self.popOperator(),None,None,None))
         self.pointer += 1
 
-    def pushERA(self, id):
-        self.lista.append(quadruplo(self.popOperator(),None,None,id))
+    def pushERA(self, dir):
+        self.lista.append(quadruplo(self.popOperator(),None,None,f'${dir}'))
         self.pointer += 1
 
     def solveParam(self):
         self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
         self.pointer += 1
 
-    def pushGoSub(self, id):
-        self.lista.append(quadruplo(Conversion['GoSub'],None,None,id))
+    def pushGoSub(self, dir):
+        self.lista.append(quadruplo(Conversion['GoSub'],None,None,f'${dir}'))
         self.pointer += 1
 
     def pushReturn(self,type):
