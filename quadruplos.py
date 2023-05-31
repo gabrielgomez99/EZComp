@@ -20,7 +20,7 @@ class listQuads :
         self.jumps = [] #Stack que guarda los saltos
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
-        self.tempVControl = []
+        self.tempVControl = [] #Sirve para poder controlar la variable de control de los For loops
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -80,30 +80,28 @@ class listQuads :
         return self.pointer
 
     # Se Valida tipos
-    def checkTypeMismatch(self, leftType, rightType, operator):
+    def checkTypeMismatch(self):
+        operator = self.getOperator()
+        rightType = self.popType()
+        leftType = self.popType()
         try:
             if (Cubo[leftType][rightType][operator]):
-                return Cubo[leftType][rightType][operator]
+                self.types.append(Cubo[leftType][rightType][operator])
         except:
             print(leftType,rightType,operator)
             print("ERROR: TypeMismatch")
             exit()
 
-    def dumpQuad(self):
+    def dumpQuad(self,dirTemp):
         operator = self.popOperator()
-        rightType = self.popType()
-        leftType = self.popType()
-        typeFinal = self.checkTypeMismatch(leftType, rightType, operator)
         if not operator == Conversion['=']:
-            self.resTemp += 1
             rightOp = self.operandos.pop()
             leftOp = self.operandos.pop()
-            self.lista.append(quadruplo(operator,leftOp,rightOp,self.resTemp))
-            self.pushOperando_Type(self.resTemp,typeFinal)
+            self.lista.append(quadruplo(operator,leftOp,rightOp,dirTemp))
+            self.pushOperando_Type(self.resTemp,self.popType())
         else:
-            self.resTemp += 1
-            self.lista.append(quadruplo(operator,self.operandos.pop(),None,self.operandos.pop()))
-            self.pushOperando_Type(self.resTemp,typeFinal)
+            self.lista.append(quadruplo(operator,self.operandos.pop(),None,dirTemp))
+            self.pushOperando_Type(self.operandos.pop(),self.popType())
         self.pointer += 1
 
     def pushGoToMain(self):

@@ -41,6 +41,27 @@ class tablaFunc :
         self.ints = 0
         self.floats = 0
         self.chars = 0
+        self.bools = 0
+
+    def addToCounterType(self,type):
+        temp = 0
+        print(type)
+        if type == Conversion['int']:
+            temp = self.ints + 2000
+            self.ints += 1
+            return temp
+        elif type == Conversion['float']:
+            temp = self.floats + 3000
+            self.floats += 1
+            return temp
+        elif type == Conversion['char']:
+            temp = self.chars + 4000
+            self.chars += 1
+            return temp
+        else:
+            temp = self.bools + 5000
+            self.chars += 1
+            return temp
 
     def addParam(self,type,id,value,dirV):
         if type == Conversion['int']:

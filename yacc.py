@@ -434,7 +434,10 @@ def p_solve_Asig(p):
 	'''
 	solve_Asig	: 
 	'''	
-	quads.dumpQuad()
+	quads.checkTypeMismatch()
+	#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+	dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+	quads.dumpQuad(quads.getOperando())
 
 def p_meter_jump(p):
 	'''
@@ -607,7 +610,10 @@ def p_solve_EXP(p):
 	'''	
 	global quads
 	if (quads.getOperator() == Conversion['||']):
-		quads.dumpQuad()
+		quads.checkTypeMismatch()
+		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		quads.dumpQuad(dirTemp)
 
 def p_solve_T_EXP(p):
 	'''
@@ -615,7 +621,10 @@ def p_solve_T_EXP(p):
 	'''	
 	global quads
 	if (quads.getOperator() == Conversion['&']):
-		quads.dumpQuad()
+		quads.checkTypeMismatch()
+		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		quads.dumpQuad(dirTemp)
 
 	
 def p_solve_G_EXP(p):
@@ -624,14 +633,20 @@ def p_solve_G_EXP(p):
 	'''	
 	global quads
 	if (quads.getOperator() == Conversion['<'] or quads.getOperator() == Conversion['>'] or quads.getOperator() == Conversion['=='] or quads.getOperator() == Conversion['!='] or quads.getOperator() == Conversion['<='] or quads.getOperator() == Conversion['>=']):
-		quads.dumpQuad()
+		quads.checkTypeMismatch()
+		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		quads.dumpQuad(dirTemp)
 
 def p_solve_M_EXP(p):
 	'''
 	solve_M_EXP	: 
 	'''	
 	if (quads.getOperator() == Conversion['+'] or quads.getOperator() == Conversion['-']):
-		quads.dumpQuad()
+		quads.checkTypeMismatch()
+		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		quads.dumpQuad(dirTemp)
 
 def p_solve_T(p):
 	'''
@@ -639,7 +654,10 @@ def p_solve_T(p):
 	'''	
 	global quads
 	if (quads.getOperator() == Conversion['*'] or quads.getOperator() == Conversion['/']):
-		quads.dumpQuad()
+		quads.checkTypeMismatch()
+		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		quads.dumpQuad(dirTemp)
 
 def p_insert_Paren(p):
 	'''
@@ -688,9 +706,9 @@ result = parser.parse(input_data)
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
-    #quads.imprimirQuadruplos()
-    for i in range(len(dictFunciones.list)):
-    	dictFunciones.list[i]['func'].imprimirFunc()
+    quads.imprimirQuadruplos()
+    """ for i in range(len(dictFunciones.list)):
+    	dictFunciones.list[i]['func'].imprimirFunc() """
 else:
 	print("No se compilo correctamente")
 
