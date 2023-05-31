@@ -28,7 +28,7 @@ stackMemoria = []
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func meter_a_MemV BLOQUE '}'
+	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func meter_a_MemGlobal quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func meter_a_MemV BLOQUE '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
@@ -424,6 +424,13 @@ def p_meter_a_MemV(p):
 		mem.addVar(dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables[key]['dir'])
 	mem.addToMemory()
 
+def p_meter_a_MemGlobal(p):
+	'''
+	meter_a_MemGlobal	: 
+	'''	
+	for key in (dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables.keys()):
+		mem.addVarGlobal(dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables[key]['dir'])
+	
 def p_update_memVmain(p):
 	'''
 	update_memVmain	: 
@@ -576,7 +583,6 @@ def p_meter_ERA(p):
 			for key in ((dictFunciones.list[i]['func'].tablaDeVariables.keys())):
 				mem.addVar(dictFunciones.list[i]['func'].tablaDeVariables[key]['dir'])
 			for key in ((dictFunciones.list[i]['func'].param.keys())):
-				print(dictFunciones.list[i]['func'].param[key]['dirV'])
 				mem.addVar(dictFunciones.list[i]['func'].param[key]['dirV'])
 			flag = True
 			break

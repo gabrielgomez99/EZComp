@@ -51,18 +51,20 @@ class memoria:
         self.counterCharGlobal = 0
         self.counterBoolGlobal = 0
 
+    def printMem(self):
+        print('Globales',self.globalVars)
+        print('Locales',self.memory[len(self.localVars)-2])
+        print('constants',self.constants)
+
     def addToMemory(self):
-        print(self.localVars)
         self.memory.append(self.localVars)
         self.localVars = {}
 
     def updateMainMemV(self):
-        print(self.localVars)
         self.memory[0] = {**self.memory[0],**self.localVars}
         self.localVars = {}
 
-
-    def addVar(self,dir):
+    def addVarGlobal(self,dir):
         if dir < 1999:
             if (dir > 0 and dir < 500): 
                 if self.counterIntGlobal < CONSTMAXGLOBALINTS:
@@ -89,7 +91,9 @@ class memoria:
                     print(f"ERROR: ran out of memory for global Bools.")
                     exit()
             self.globalVars.update({dir : 0})
-        elif dir < 5999:
+
+    def addVar(self,dir):
+        if dir < 5999:
             if (dir > 1999 and dir < 3000): 
                 if self.counterIntGlobal < CONSTMAXINTS:
                     self.counterIntGlobal +=1
@@ -173,3 +177,20 @@ class memoria:
             if val == id:
                 return key
         return 0
+    
+    def eraseAll(self):
+        self.memory = []
+        self.globalVars = {}
+        self.constants = {}
+        self.counterCteI = 0
+        self.counterCteF = 0
+        self.counterCteC = 0
+        self.counterCteB = 0
+        self.counterInt = 0
+        self.counterFloat = 0
+        self.counterChar = 0
+        self.counterBool = 0
+        self.counterIntGlobal = 0
+        self.counterFloatGlobal = 0
+        self.counterCharGlobal = 0
+        self.counterBoolGlobal = 0
