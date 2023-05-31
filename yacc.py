@@ -195,7 +195,8 @@ def p_VARIABLE(p):
 	'''
 	VARIABLE	: ID VARIABLE_1
 	'''
-	quads.pushOperando_Type(p[1],dictFunciones.getVarType(p[1]))
+	temp = dictFunciones.getVarDir(p[1])
+	quads.pushOperando_Type(temp,dictFunciones.getVarType(p[1]))
 def p_VARIABLE_1(p):
 	'''
 	VARIABLE_1	: '[' EXP ']' VARIABLE_2
@@ -436,8 +437,7 @@ def p_solve_Asig(p):
 	'''	
 	quads.checkTypeMismatch()
 	#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-	dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
-	quads.dumpQuad(quads.getOperando())
+	quads.dumpQuad(quads.popOperando())
 
 def p_meter_jump(p):
 	'''
@@ -707,6 +707,7 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
+    print(quads.operandos)
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:

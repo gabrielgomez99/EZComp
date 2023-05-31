@@ -98,10 +98,10 @@ class listQuads :
             rightOp = self.operandos.pop()
             leftOp = self.operandos.pop()
             self.lista.append(quadruplo(operator,leftOp,rightOp,dirTemp))
-            self.pushOperando_Type(self.resTemp,self.popType())
+            self.pushOperando_Type(dirTemp,self.popType())
         else:
-            self.lista.append(quadruplo(operator,self.operandos.pop(),None,dirTemp))
-            self.pushOperando_Type(self.operandos.pop(),self.popType())
+            self.lista.append(quadruplo(operator,dirTemp,None,self.getOperando()))
+            self.pushOperando_Type(self.popOperando(),self.popType())
         self.pointer += 1
 
     def pushGoToMain(self):

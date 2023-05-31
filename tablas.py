@@ -11,11 +11,24 @@ class tablaVar :
 
     #Aqui se anaden las variables a la tabla
     def addVar(self,id,scope,type,xAxis,yAxis,value):
+        temp = 0
         if type == Conversion['int']:
+            if scope == 0:
+                temp = self.counterInt
+            else:
+                temp = self.counterInt + 2000
             self.counterInt += 1
         elif type == Conversion['float']:
+            if scope == 0:
+                temp = self.counterFloat
+            else:
+                temp = self.counterFloat + 3000
             self.counterFloat += 1
         else:
+            if scope == 0:
+                temp = self.counterChar
+            else:
+                temp = self.counterChar + 4000
             self.counterChar += 1
         self.variables.update({
                 id : {
@@ -24,6 +37,7 @@ class tablaVar :
                 'xAxis' : xAxis,
                 'yAxis' : yAxis,
                 'value' : value,
+                'dir' : temp,
             }
         })
 
@@ -45,7 +59,6 @@ class tablaFunc :
 
     def addToCounterType(self,type):
         temp = 0
-        print(type)
         if type == Conversion['int']:
             temp = self.ints + 2000
             self.ints += 1
@@ -106,16 +119,16 @@ class dictFunc :
                     print(f"ERROR: Variable does not exist, {varId}")
                     exit()
     
-    def getVariD(self, varId):
+    def getVarDir(self, varId):
         id = str(varId)
         try:
-             return self.list[len(self.list)-1]['func'].tablaDeVariables[id]
+             return self.list[len(self.list)-1]['func'].tablaDeVariables[id]['dir']
         except KeyError:
             try:
-                return self.list[len(self.list)-1]['func'].param[id]
+                return self.list[len(self.list)-1]['func'].param[id]['dir']
             except KeyError:
                 try:
-                    return self.list[0]['func'].tablaDeVariables[id]
+                    return self.list[0]['func'].tablaDeVariables[id]['dir']
                 except KeyError:
                     print(f"ERROR: Variable does not exist, {varId}")
                     exit()
