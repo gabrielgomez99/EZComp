@@ -10,24 +10,42 @@ class tablaVar :
         self.variables = {}#Se crea un diccionario vacio que se ira actualizando con las varibales
 
     #Aqui se anaden las variables a la tabla
-    def addVar(self,id,scope,type,xAxis,yAxis,value):
+    def addVar(self,id,scope,type,xAxis,yAxis):
         temp = 0
         if type == Conversion['int']:
             if scope == 0:
+                if self.counterInt >= 500:
+                    print(f"ERROR: ran out of memory for global Ints.")
+                    exit()
                 temp = self.counterInt
             else:
+                if self.counterInt >= 1000:
+                    print(f"ERROR: ran out of memory for Local Ints.")
+                    exit()
                 temp = self.counterInt + 2000
             self.counterInt += 1
         elif type == Conversion['float']:
             if scope == 0:
+                if self.counterFloat >= 500:
+                    print(f"ERROR: ran out of memory for global Floats.")
+                    exit()
                 temp = self.counterFloat
             else:
+                if self.counterFloat >= 1000:
+                    print(f"ERROR: ran out of memory for Local Floats.")
+                    exit()
                 temp = self.counterFloat + 3000
             self.counterFloat += 1
         else:
             if scope == 0:
+                if self.counterChar >= 500:
+                    print(f"ERROR: ran out of memory for global Chars.")
+                    exit()
                 temp = self.counterChar
             else:
+                if self.counterChar >= 1000:
+                    print(f"ERROR: ran out of memory for Local Chars.")
+                    exit()
                 temp = self.counterChar + 4000
             self.counterChar += 1
         self.variables.update({
@@ -36,7 +54,6 @@ class tablaVar :
                 'type' : type,
                 'xAxis' : xAxis,
                 'yAxis' : yAxis,
-                'value' : value,
                 'dir' : temp,
             }
         })
@@ -132,7 +149,7 @@ class dictFunc :
                 except KeyError:
                     print(f"ERROR: Variable does not exist, {varId}")
                     exit()
-        
+       
 """ d = dictFunc()
 t = tablaFunc('int','ejemplo')
 v = tablaVar()

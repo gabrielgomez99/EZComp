@@ -19,11 +19,28 @@ constants		: (6000 - 9999)		# are global
 '''
 from cuboSemantico import Conversion
 
+CONSTMAXGLOBALINTS = 500
+CONSTMAXGLOBALFLOATS = 500
+CONSTMAXGLOBALCHARS = 500
+CONSTMAXGLOBALBOOLS = 500
+CONSTMAXINTS = 1000
+CONSTMAXFLOATS = 1000
+CONSTMAXCHARS = 1000
+CONSTMAXBOOLS = 1000
+CONSTMAXCTEI = 1000
+CONSTMAXCTEF = 1000
+CONSTMAXCTEC = 1000
+CONSTMAXCTEB = 1000
+
 class memoria:
     def __init__(self):
         self.localVars = {}
         self.globalVars = {}
-        self.constatnts = {}
+        self.constants = {}
+        self.counterCteI = 0
+        self.counterCteF = 0
+        self.counterCteC = 0
+        self.counterCteB = 0
         self.counterInt = 0
         self.counterFloat = 0
         self.counterChar = 0
@@ -33,32 +50,100 @@ class memoria:
         self.counterCharGlobal = 0
         self.counterBoolGlobal = 0
 
-    def addVar(self,scope,type):
-        if type == Conversion['int']:#Int
-            if scope == 0:#Globales
-                self.globalVars.update({self.counterIntGlobal:0})
-                self.counterIntGlobal += 1
-            else:#Locales
-                self.localVars.update({2000+self.counterInt:0})
-                self.counterInt += 1
-        elif type == Conversion['float']:#Float
-            if scope == 0:#Globales
-                self.globalVars.update({500+self.counterFloatGlobal:0})
-                self.counterFloatGlobal += 1
-            else:#Locales
-                self.localVars.update({3000+self.counterFloat:0})
-                self.counterFloat += 1
-        elif type == Conversion['char'] :#Char
-            if scope == 0:#Globales
-                self.globalVars.update({1000+self.counterCharGlobal:0})
-                self.counterCharGlobal += 1
-            else:#Locales
-                self.localVars.update({4000+self.counterChar:0})
-                self.counterChar += 1
-        else:#Bool
-            if scope == 0:#Globales
-                self.globalVars.update({1500+self.counterBoolGlobal:0})
-                self.counterBoolGlobal += 1
-            else:#Locales
-                self.localVars.update({5000+self.counterBool:0})
-                self.counterBool += 1
+    def addVar(self,dir):
+        if dir < 1999:
+            if (dir > 0 and dir < 500): 
+                if self.counterIntGlobal < CONSTMAXGLOBALINTS:
+                    self.counterIntGlobal +=1
+                else:
+                    print(f"ERROR: ran out of memory for global Ints.")
+                    exit()
+            elif (dir > 499 and dir < 1000): 
+                if self.counterFloatGlobal < CONSTMAXGLOBALFLOATS:
+                    self.counterFloatGlobal +=1
+                else:
+                    print(f"ERROR: ran out of memory for global Floats.")
+                    exit()
+            elif (dir > 999 and dir < 1500):
+                if self.counterCharGlobal < CONSTMAXGLOBALCHARS:
+                    self.counterCharGlobal +=1
+                else:
+                    print(f"ERROR: ran out of memory for global Chars.")
+                    exit()
+            else:
+                if self.counterBoolGlobal < CONSTMAXGLOBALBOOLS:
+                    self.counterBoolGlobal += 1
+                else:
+                    print(f"ERROR: ran out of memory for global Bools.")
+                    exit()
+            self.globalVars.update({dir : 0})
+        elif dir < 5999:
+            if (dir > 1999 and dir < 3000): 
+                if self.counterIntGlobal < CONSTMAXINTS:
+                    self.counterIntGlobal +=1
+                else:
+                    print(f"ERROR: ran out of memory for Local Ints.")
+                    exit()
+            elif (dir > 2999 and dir < 4000): 
+                if self.counterFloatGlobal < CONSTMAXFLOATS:
+                    self.counterFloatGlobal +=1
+                else:
+                    print(f"ERROR: ran out of memory for Local Floats.")
+                    exit()
+            elif (dir > 3999 and dir < 5000):
+                if self.counterCharGlobal < CONSTMAXCHARS:
+                    self.counterCharGlobal +=1
+                else:
+                    print(f"ERROR: ran out of memory for Local Chars.")
+                    exit()
+            else:
+                if self.counterBoolGlobal < CONSTMAXBOOLS:
+                    self.counterBoolGlobal += 1
+                else:
+                    print(f"ERROR: ran out of memory for Local Bools.")
+                    exit()
+            self.localVars.update({dir : 0})
+            
+    def addConst(self,type,value):
+        tempDir = 0
+        if (Conversion['int'] == type): 
+            if self.counterCteI < CONSTMAXCTEI:
+                tempDir = self.counterCteI + 6000
+                self.counterCteI +=1
+            else:
+                print(f"ERROR: ran out of memory for Constant Ints.")
+                exit()
+        elif (Conversion['float'] == type): 
+            if self.counterCteF < CONSTMAXCTEF:
+                tempDir = self.counterCteF + 7000
+                self.counterCteF +=1
+            else:
+                print(f"ERROR: ran out of memory for Constant Floats.")
+                exit()
+        elif (Conversion['char'] == type):
+            if self.counterCteC < CONSTMAXCTEC:
+                tempDir = self.counterCteC + 8000
+                self.counterCteC +=1
+            else:
+                print(f"ERROR: ran out of memory for Constant Chars.")
+                exit()
+        else:
+            if self.counterCteB < CONSTMAXCTEB:
+                tempDir = self.counterCteB + 9000
+                self.counterCteB += 1
+            else:
+                print(f"ERROR: ran out of memory for Constant Bools.")
+                exit()
+        self.constants.update({tempDir : value})
+
+    def searchDir(self,dir):
+        try:
+            if dir < 1999:
+                self.globalVars[dir]
+            elif dir < 5999:
+                self.localVars[dir]
+            else:
+                self.constants[dir]
+        except:
+            print(f"ERROR: there is no variable in virtual memory at {dir}.")
+            exit()

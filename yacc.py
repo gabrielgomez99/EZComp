@@ -28,7 +28,7 @@ stackMemoria = []
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func BLOQUE '}'
+	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func meter_a_MemV BLOQUE '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
@@ -384,16 +384,15 @@ def p_dec_axis(p):
 	'''
 	global tempQDecVar
 	#Como no es un tipo arr (no es arreglo) se llena las dimensiones con nada
-	tempQDecVar.put(None)
-	tempQDecVar.put(None)
+	tempQDecVar.put(1)
+	tempQDecVar.put(1)
 
 def p_meter_Dec_Var(p):
 	'''
 	meter_Dec_Var	: 
 	'''
 	global tempQDecVar
-	tempQDecVar.put(0) #Temporalmente valor 0
-	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
+	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
 
 def p_seen_xAxis(p):
 	'''
@@ -417,6 +416,13 @@ def p_seen_yAxis(p):
 	global tempYAxis
 	tempYAxis = p[-1]
 
+def p_meter_a_MemV(p):
+	'''
+	meter_a_MemV	: 
+	'''	
+	for key in (dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables.keys()):
+		mem.addVar(dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables[key]['dir'])
+
 #Estatutos
 def p_meter_GoToMain(p):
 	'''
@@ -435,8 +441,7 @@ def p_solve_Asig(p):
 	'''
 	solve_Asig	: 
 	'''	
-	quads.checkTypeMismatch()
-	#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
+	mem.addVar(quads.getOperando())
 	quads.dumpQuad(quads.popOperando())
 
 def p_meter_jump(p):
@@ -527,7 +532,7 @@ def p_solve_read(p):
 	'''
 	solve_read	: 
 	'''	
-	dictFunciones.getVariD(quads.getOperando())
+	mem.searchDir(quads.getOperando())
 	quads.solveRead()
 
 def p_solve_Print(p):
@@ -596,12 +601,26 @@ def p_push_operando_I(p):
 	'''
 	push_operando_I	: 
 	'''	
+	constFlag = True
+	for value in mem.constants.values():
+		if value == p[-1]:
+			constFlag = False
+	if constFlag:
+		print("entre")
+		mem.addConst(Conversion['int'],p[-1])
 	quads.pushOperando_Type(p[-1],Conversion['int'])
 
 def p_push_operando_F(p):
 	'''
 	push_operando_F	: 
 	'''	
+	constFlag = True
+	for value in mem.constants.values():
+		if value == p[-1]:
+			constFlag = False
+	if constFlag:
+		print("entre")
+		mem.addConst(Conversion['float'],p[-1])
 	quads.pushOperando_Type(p[-1],Conversion['float'])
 
 def p_solve_EXP(p):
@@ -613,6 +632,7 @@ def p_solve_EXP(p):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
 		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
 def p_solve_T_EXP(p):
@@ -624,6 +644,7 @@ def p_solve_T_EXP(p):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
 		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
 	
@@ -636,6 +657,7 @@ def p_solve_G_EXP(p):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
 		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
 def p_solve_M_EXP(p):
@@ -646,6 +668,7 @@ def p_solve_M_EXP(p):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
 		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
 def p_solve_T(p):
@@ -657,6 +680,7 @@ def p_solve_T(p):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
 		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
 def p_insert_Paren(p):
@@ -707,7 +731,7 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
-    print(quads.operandos)
+    print(mem.constants)
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:
