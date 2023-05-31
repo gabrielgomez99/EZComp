@@ -34,6 +34,7 @@ CONSTMAXCTEB = 1000
 
 class memoria:
     def __init__(self):
+        self.memory = []
         self.localVars = {}
         self.globalVars = {}
         self.constants = {}
@@ -49,6 +50,17 @@ class memoria:
         self.counterFloatGlobal = 0
         self.counterCharGlobal = 0
         self.counterBoolGlobal = 0
+
+    def addToMemory(self):
+        print(self.localVars)
+        self.memory.append(self.localVars)
+        self.localVars = {}
+
+    def updateMainMemV(self):
+        print(self.localVars)
+        self.memory[0] = {**self.memory[0],**self.localVars}
+        self.localVars = {}
+
 
     def addVar(self,dir):
         if dir < 1999:

@@ -210,8 +210,8 @@ class listQuads :
         self.lista.append(quadruplo(self.popOperator(),None,None,None))
         self.pointer += 1
 
-    def pushERA(self, dir):
-        self.lista.append(quadruplo(self.popOperator(),None,None,f'${dir}'))
+    def pushERA(self, id):
+        self.lista.append(quadruplo(self.popOperator(),None,None,id))
         self.pointer += 1
 
     def solveParam(self):

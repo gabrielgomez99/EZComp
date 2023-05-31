@@ -93,14 +93,17 @@ class tablaFunc :
             self.chars += 1
             return temp
 
-    def addParam(self,type,id,value,dirV):
+    def addParam(self,type,id,dirV):
         if type == Conversion['int']:
+            dirV = self.ints + 2000
             self.ints += 1
         elif type == Conversion['float']:
+            dirV = self.floats + 3000
             self.floats += 1
         else:
+            dirV = self.chars + 4000
             self.chars += 1
-        self.param.update({id : {'type' : type, 'value' : value, 'dirV' : dirV}})
+        self.param.update({id : {'type' : type, 'dirV' : dirV}})
 
     def addVars(self,tablaVars):
         self.ints += tablaVars.counterInt

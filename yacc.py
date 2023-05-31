@@ -360,7 +360,7 @@ def p_seen_Param(p):
 	seen_Param	: 
 	'''
 	global tempFuncion
-	tempFuncion.addParam(tempTipo,tempId,10,0)
+	tempFuncion.addParam(tempTipo,tempId,0)
 
 def p_seenId(p):
 	'''
@@ -422,6 +422,13 @@ def p_meter_a_MemV(p):
 	'''	
 	for key in (dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables.keys()):
 		mem.addVar(dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables[key]['dir'])
+	mem.addToMemory()
+
+def p_update_memVmain(p):
+	'''
+	update_memVmain	: 
+	'''	
+	mem.updateMainMemV()
 
 #Estatutos
 def p_meter_GoToMain(p):
@@ -557,15 +564,24 @@ def p_meter_endfunc(p):
 
 def p_meter_ERA(p):
 	'''
-	meter_ERA	: 
+	meter_ERA	: update_memVmain
 	'''	
 	flag = False
+	idTemp = 0
 	quads.pushOperator(Conversion['ERA'])
 	for i in range(len(dictFunciones.list)-1):
 		if(dictFunciones.list[i]['func'].id == p[-1]):
-			quads.pushERA(dictFunciones.list[i]['func'].dir)
+			idTemp = dictFunciones.list[i]['func'].id
+			quads.pushERA(idTemp)
+			for key in ((dictFunciones.list[i]['func'].tablaDeVariables.keys())):
+				mem.addVar(dictFunciones.list[i]['func'].tablaDeVariables[key]['dir'])
+			for key in ((dictFunciones.list[i]['func'].param.keys())):
+				print(dictFunciones.list[i]['func'].param[key]['dirV'])
+				mem.addVar(dictFunciones.list[i]['func'].param[key]['dirV'])
 			flag = True
+			break
 	if(flag):
+		mem.addToMemory()
 		pass
 	else:
 		print("Error funcion no declarada")	
@@ -614,7 +630,6 @@ def p_push_operando_I(p):
 		if value == p[-1]:
 			constFlag = False
 	if constFlag:
-		print("entre")
 		mem.addConst(Conversion['int'],p[-1])
 	quads.pushOperando_Type(mem.searchDirConstantes(p[-1]),Conversion['int'])
 
@@ -627,7 +642,6 @@ def p_push_operando_F(p):
 		if value == p[-1]:
 			constFlag = False
 	if constFlag:
-		print("entre")
 		mem.addConst(Conversion['float'],p[-1])
 	quads.pushOperando_Type(mem.searchDirConstantes(p[-1]),Conversion['float'])
 
@@ -739,6 +753,8 @@ result = parser.parse(input_data)
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
+    """ print(mem.memory)
+    print(mem.constants) """
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i]['func'].imprimirFunc() """
 else:
