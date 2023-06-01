@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 import queue
+import pickle
 from cuboSemantico import Conversion
 from quadruplos import listQuads
 from lex import tokens
@@ -9,6 +10,7 @@ from memoriaVirtual import memoria
 from tablas import tablaVar
 from tablas import tablaFunc
 from tablas import dictFunc
+from maquinaVirtual import maquinaVirtual
 
 tempQDecVar = queue.Queue()
 tempTipo = ''
@@ -420,16 +422,16 @@ def p_meter_a_MemV(p):
 	'''
 	meter_a_MemV	: 
 	'''	
-	for key in (dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables.keys()):
-		mem.addVar(dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables[key]['dir'])
+	for key in (dictFunciones.list[len(dictFunciones.list)-1].tablaDeVariables.keys()):
+		mem.addVar(dictFunciones.list[len(dictFunciones.list)-1].tablaDeVariables[key]['dir'])
 	mem.addToMemory()
 
 def p_meter_a_MemGlobal(p):
 	'''
 	meter_a_MemGlobal	: 
 	'''	
-	for key in (dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables.keys()):
-		mem.addVarGlobal(dictFunciones.list[len(dictFunciones.list)-1]['func'].tablaDeVariables[key]['dir'])
+	for key in (dictFunciones.list[len(dictFunciones.list)-1].tablaDeVariables.keys()):
+		mem.addVarGlobal(dictFunciones.list[len(dictFunciones.list)-1].tablaDeVariables[key]['dir'])
 	
 def p_update_memVmain(p):
 	'''
@@ -567,6 +569,7 @@ def p_meter_endfunc(p):
 	meter_endfunc	: 
 	'''	
 	quads.pushOperator(Conversion['EndFunc'])
+	
 	quads.solveEndFunc()
 
 def p_meter_ERA(p):
@@ -577,13 +580,13 @@ def p_meter_ERA(p):
 	idTemp = 0
 	quads.pushOperator(Conversion['ERA'])
 	for i in range(len(dictFunciones.list)-1):
-		if(dictFunciones.list[i]['func'].id == p[-1]):
-			idTemp = dictFunciones.list[i]['func'].id
+		if(dictFunciones.list[i].id == p[-1]):
+			idTemp = dictFunciones.list[i].id
 			quads.pushERA(idTemp)
-			for key in ((dictFunciones.list[i]['func'].tablaDeVariables.keys())):
-				mem.addVar(dictFunciones.list[i]['func'].tablaDeVariables[key]['dir'])
-			for key in ((dictFunciones.list[i]['func'].param.keys())):
-				mem.addVar(dictFunciones.list[i]['func'].param[key]['dirV'])
+			for key in ((dictFunciones.list[i].tablaDeVariables.keys())):
+				mem.addVar(dictFunciones.list[i].tablaDeVariables[key]['dir'])
+			for key in ((dictFunciones.list[i].param.keys())):
+				mem.addVar(dictFunciones.list[i].param[key]['dirV'])
 			flag = True
 			break
 	if(flag):
@@ -605,8 +608,8 @@ def p_meter_GoSub(p):
 	'''	
 	flag = False
 	for i in range(len(dictFunciones.list)-1):
-		if(dictFunciones.list[i]['func'].id == p[-4]):
-			quads.pushGoSub(dictFunciones.list[i]['func'].dir)
+		if(dictFunciones.list[i].id == p[-4]):
+			quads.pushGoSub(dictFunciones.list[i].dir)
 			flag = True
 	if(flag):
 		pass
@@ -618,7 +621,7 @@ def p_meter_Return(p):
 	meter_Return	: 
 	'''
 	quads.pushOperator(Conversion['Return'])
-	quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1]['func'].type)
+	quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
 
 #Expresions
 def p_push_Op(p):
@@ -659,7 +662,7 @@ def p_solve_EXP(p):
 	if (quads.getOperator() == Conversion['||']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -671,7 +674,7 @@ def p_solve_T_EXP(p):
 	if (quads.getOperator() == Conversion['&']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -684,7 +687,7 @@ def p_solve_G_EXP(p):
 	if (quads.getOperator() == Conversion['<'] or quads.getOperator() == Conversion['>'] or quads.getOperator() == Conversion['=='] or quads.getOperator() == Conversion['!='] or quads.getOperator() == Conversion['<='] or quads.getOperator() == Conversion['>=']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -695,7 +698,7 @@ def p_solve_M_EXP(p):
 	if (quads.getOperator() == Conversion['+'] or quads.getOperator() == Conversion['-']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -707,7 +710,7 @@ def p_solve_T(p):
 	if (quads.getOperator() == Conversion['*'] or quads.getOperator() == Conversion['/']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1]['func'].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -755,6 +758,10 @@ with open('texto copy.txt', 'r') as f:
 # Parsea el input
 result = parser.parse(input_data)
 
+with open('data.obj','wb') as file:
+	pickle.dump({'quadruplos': quads.lista,'funcDir':dictFunciones.list,'memory':mem},file)
+maquina = maquinaVirtual()
+
 # Imprime el resultado de parseo
 if errorFlag == False:
     print("Se compilo correctamente")
@@ -762,7 +769,8 @@ if errorFlag == False:
     """ print(mem.memory)
     print(mem.constants) """
     """ for i in range(len(dictFunciones.list)):
-    	dictFunciones.list[i]['func'].imprimirFunc() """
+    	dictFunciones.list[i].imprimirFunc() """
+    maquina.startMaquinaVirtual()
 else:
 	print("No se compilo correctamente")
 

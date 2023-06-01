@@ -123,18 +123,18 @@ class dictFunc :
         self.list = []
 
     def agregaFunc(self,func):
-        self.list.append({'func' : func})
+        self.list.append(func)
     
     def getVarType(self, varId):
         id = str(varId)
         try:
-            return self.list[len(self.list)-1]['func'].tablaDeVariables[id]['type']
+            return self.list[len(self.list)-1].tablaDeVariables[id]['type']
         except KeyError:
             try:
-                return self.list[len(self.list)-1]['func'].param[id]['type']
+                return self.list[len(self.list)-1].param[id]['type']
             except KeyError:
                 try:
-                    return self.list[0]['func'].tablaDeVariables[id]['type']
+                    return self.list[0].tablaDeVariables[id]['type']
                 except KeyError:
                     print(f"ERROR: Variable does not exist, {varId}")
                     exit()
@@ -142,13 +142,13 @@ class dictFunc :
     def getVarDir(self, varId):
         id = str(varId)
         try:
-             return self.list[len(self.list)-1]['func'].tablaDeVariables[id]['dir']
+             return self.list[len(self.list)-1].tablaDeVariables[id]['dir']
         except KeyError:
             try:
-                return self.list[len(self.list)-1]['func'].param[id]['dir']
+                return self.list[len(self.list)-1].param[id]['dir']
             except KeyError:
                 try:
-                    return self.list[0]['func'].tablaDeVariables[id]['dir']
+                    return self.list[0].tablaDeVariables[id]['dir']
                 except KeyError:
                     print(f"ERROR: Variable does not exist, {varId}")
                     exit()
@@ -160,4 +160,4 @@ v.addVar('x','global','int',1,1,12,1001)
 t.addVars(v)
 d.agregaFunc(t.tablaDeVariables)
 
-d.list[0]['func'].imprimirFunc() """
+d.list[0].imprimirFunc() """
