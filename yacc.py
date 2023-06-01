@@ -212,7 +212,7 @@ def p_VARIABLE_2(p):
 	
 def p_EXP(p):
 	'''
-	EXP	: T_EXP EXP_1 solve_EXP
+	EXP	: T_EXP EXP_1 solve_EXP update_memVmain
 	'''	
 def p_EXP_1(p):
 	'''
@@ -574,7 +574,7 @@ def p_meter_endfunc(p):
 
 def p_meter_ERA(p):
 	'''
-	meter_ERA	: update_memVmain
+	meter_ERA	:
 	'''	
 	flag = False
 	idTemp = 0
@@ -590,7 +590,6 @@ def p_meter_ERA(p):
 			flag = True
 			break
 	if(flag):
-		mem.addToMemory()
 		pass
 	else:
 		print("Error funcion no declarada")	

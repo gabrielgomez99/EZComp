@@ -5,13 +5,13 @@ global variables: (0 - 1999)
 	char		: (1000 - 1499)
 	bool 		: (1500 - 1999)
 
-local variables	: (2000 - 5999)		# includes temporary variables
+local variables	: (2000 - 5999)		# incluye variables temporales
 	int			: (2000 - 2999)
 	float		: (3000 - 3999)
 	char		: (4000 - 4999)
 	bool 		: (5000 - 5999)
 
-constants		: (6000 - 9999)		# are global
+constants		: (6000 - 9999)		# las constantes
 	int			: (6000 - 6999)
 	float		: (7000 - 7999)
 	char		: (8000 - 8999)
@@ -164,10 +164,10 @@ class memoria:
 
     def searchDirGlobal(self,id):
         try:
-            if dir < 1999:
-                for value in self.globalVars.values():
-                    if self.globalVars[value] == id:
-                        return self.globalVars[value]
+            for key, val in self.constants.items():
+                if val == id:
+                    return key
+            return 0
         except:
             print(f"ERROR: there is no variable in virtual memory at {dir}.")
             exit()
