@@ -30,7 +30,7 @@ stackMemoria = []
 # Empieza el programa
 def p_PROGRAMA_START(p):
 	'''
-	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func meter_a_MemGlobal quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func meter_a_MemV BLOQUE '}'
+	PROGRAMA_START	: meter_GoToMain DEC_VAR meter_DecVar_a_func meter_a_MemGlobal quitar_Global PROGRAMA_START_1 MAIN solve_GoToMain '{' DEC_VAR meter_DecVar_a_func meter_a_MemV BLOQUE endProg '}'
 	'''
 def p_PROGRAMA_START_1(p):
 	'''
@@ -137,7 +137,7 @@ def p_WHILE_C(p):
 
 def p_FOR_C(p):
 	'''
-	FOR_C	: FOR '(' ID seen_idFor '=' push_Op EXP meter_expFor ';' EXP checar_condicionFor ')' '{' BLOQUE final_for '}'
+	FOR_C	: FOR '(' ID push_Id '=' push_Op EXP meter_expFor ';' EXP checar_condicionFor ')' '{' BLOQUE final_for '}'
 	'''
 
 def p_DEC_VAR(p):
@@ -519,36 +519,54 @@ def p_solve_While(p):
 	quads.pushOperator(Conversion['GoTo'])
 	quads.solveWhile()
 
-def p_seen_idFor(p):
+def p_push_Id(p):
 	'''
-	seen_idFor	: 
+	push_Id	: 
 	'''	
+	temp = dictFunciones.getVarDir(p[-1])
 	if(dictFunciones.getVarType(p[-1]) == Conversion['int'] or dictFunciones.getVarType(p[-1]) == Conversion['float']):
-		quads.pushOperando_Type(p[-1],dictFunciones.getVarType(p[-1]))
+		quads.pushOperando_Type(temp,dictFunciones.getVarType(p[-1]))
 
 def p_meter_expFor(p):
 	'''
 	meter_expFor	: 
 	'''	
+	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['int'])#se crea una variable entera para variable de control para el GoToF
+	mem.addVar(dirTemp)
+	quads.operandos.append(dirTemp)
 	quads.solveExpFor()
 
 def p_checar_condicionFor(p):
 	'''
 	checar_condicionFor	: 
 	'''	
+	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['int'])#se crea una variable entera para variable de tx para el GoToF
+	mem.addVar(dirTemp)
+	quads.operandos.append(dirTemp)
+	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['bool'])#se crea una variable booleana para el GoToF
+	mem.addVar(dirTemp)
+	quads.operandos.append(dirTemp)
+	mem.updateMainMemV()
 	quads.solveCondicionFor()
 
 def p_final_for(p):
 	'''
 	final_for	: 
 	'''	
+	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['int'])
+	if(not mem.searchDirConstantes(1)):
+		mem.addConst(1,Conversion['int'])
+	mem.addVar(dirTemp)
+	mem.updateMainMemV()
+	quads.operandos.append(mem.searchDirConstantes(1))
+	quads.operandos.append(dirTemp)
 	quads.finalFor()
 
 def p_solve_read(p):
 	'''
 	solve_read	: 
 	'''	
-	mem.searchDir(quads.getOperando())
+	#mem.searchDir(quads.getOperando())
 	quads.solveRead()
 
 def p_solve_Print(p):
@@ -727,6 +745,12 @@ def p_pop_Paren(p):
 	global quads
 	quads.popParen()
 
+def p_endProg(p):
+	'''
+	endProg	: 
+	'''	
+	quads.genEnd()
+
 errorFlag = False
 
 # Empty symbol = ε
@@ -765,8 +789,8 @@ maquina = maquinaVirtual()
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
-    """ print(mem.memory)
-    print(mem.constants) """
+    quads.imprimirQuadStacks()
+    mem.printMem()
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i].imprimirFunc() """
     maquina.startMaquinaVirtual()

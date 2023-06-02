@@ -90,7 +90,7 @@ class tablaFunc :
             return temp
         else:
             temp = self.bools + 5000
-            self.chars += 1
+            self.bools += 1
             return temp
 
     def addParam(self,type,id,dirV):

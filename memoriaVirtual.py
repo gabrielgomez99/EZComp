@@ -53,7 +53,7 @@ class memoria:
 
     def printMem(self):
         print('Globales',self.globalVars)
-        print('Locales',self.memory[len(self.localVars)-2])
+        print('Locales',self.memory[len(self.localVars)-1])
         print('constants',self.constants)
 
     def addToMemory(self):

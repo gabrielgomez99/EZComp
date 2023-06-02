@@ -20,7 +20,7 @@ class listQuads :
         self.jumps = [] #Stack que guarda los saltos
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
-        self.tempVControl = [] #Sirve para poder controlar la variable de control de los For loops
+        self.tempVControl = 0 #Sirve para poder controlar la variable de control de los For loops
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -92,6 +92,15 @@ class listQuads :
             print("ERROR: TypeMismatch")
             exit()
 
+    def checkTypeMismatchP(self,leftType,rightType,operator):
+        try:
+            if (Cubo[leftType][rightType][operator]):
+                self.types.append(Cubo[leftType][rightType][operator])
+        except:
+            print(leftType,rightType,operator)
+            print("ERROR: TypeMismatch")
+            exit()
+
     def dumpQuad(self,dirTemp):
         operator = self.popOperator()
         if not operator == Conversion['=']:
@@ -100,8 +109,8 @@ class listQuads :
             self.lista.append(quadruplo(operator,leftOp,rightOp,dirTemp))
             self.pushOperando_Type(dirTemp,self.popType())
         else:
-            self.lista.append(quadruplo(operator,dirTemp,None,self.getOperando()))
-            self.pushOperando_Type(self.popOperando(),self.popType())
+            self.lista.append(quadruplo(operator,dirTemp,None,self.popOperando()))
+            #self.pushOperando_Type(self.popOperando(),self.popType())
         self.pointer += 1
 
     def pushGoToMain(self):
@@ -135,39 +144,39 @@ class listQuads :
     def solveWhile(self):
         end = self.popJump()
         ret = self.popJump()
-        self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,ret))
+        self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,f'${ret}'))
         self.pointer += 1
-        self.lista[end-1].res = self.pointer
+        self.lista[end-1].res = f'${self.pointer}'
 
     def solveExpFor(self):
         operator = self.popOperator()
         rightType = self.popType()
-        vControl = self.getOperando()
+        vControl = self.popOperando()
         if(rightType == Conversion['int'] or rightType == Conversion['float']):
             exp = self.popOperando()
             controlType = self.getType()
             self.resTemp += 1
-            typeFinal = self.checkTypeMismatch(controlType,rightType,operator)
-            self.tempVControl.append(vControl)
-            self.lista.append(quadruplo(operator,exp,None,self.resTemp))
-            self.pushOperando_Type(self.resTemp,typeFinal)
+            typeFinal = self.checkTypeMismatchP(controlType,rightType,operator)
+            self.tempVControl = vControl
+            self.lista.append(quadruplo(operator,exp,None,vControl))
+            self.pushOperando_Type(vControl,typeFinal)
             self.pointer += 1
         else:
             print(f"ERROR: Expression type must be numeric, not {(list(Conversion.keys())[list(Conversion.values()).index(rightType)])}.")
             exit() 
 
     def solveCondicionFor(self):
+        tx = self.popOperando()
         rightType = self.popType()
         if(rightType == Conversion['int'] or rightType == Conversion['float']):
-            exp = self.popOperando()
+            vFinal = self.popOperando()
             self.resTemp +=1
-            vFinal = self.resTemp
             #aqui se asigna la expresiona vFinal para seguir checando que se cumpla
-            self.lista.append(quadruplo(Conversion['='],exp,None,vFinal))
+            self.lista.append(quadruplo(Conversion['='],self.popOperando(),None,vFinal))
             self.pointer += 1
             self.resTemp +=1
             #Aqui se revisa se se paso de la variable final
-            self.lista.append(quadruplo(Conversion['<'],self.tempVControl[len(self.tempVControl)-1],vFinal,self.resTemp))
+            self.lista.append(quadruplo(Conversion['<'],self.popOperando(),vFinal,tx))
             self.pushJump()
             self.pointer += 1
             self.lista.append(quadruplo(Conversion['GoToF'],self.lista[self.pointer-1].res,None,None))
@@ -179,27 +188,26 @@ class listQuads :
 
     def finalFor(self):
         self.resTemp += 1
-        ty = self.resTemp
+        ty = self.popOperando()
         #Aqui se incrementa la var de control en ty
-        self.lista.append(quadruplo(Conversion['+'],self.tempVControl[len(self.tempVControl)-1],1,ty))
+        self.lista.append(quadruplo(Conversion['+'],self.tempVControl,self.popOperando(),ty))
         self.pointer += 1
         self.resTemp += 1
         #aqui se pone el valor de ty en vControl
-        self.lista.append(quadruplo(Conversion['='],ty,None,self.tempVControl[len(self.tempVControl)-1]))
+        self.lista.append(quadruplo(Conversion['='],ty,None,self.tempVControl))
         self.pointer += 1
         #aqui se deja el ty con el id original
-        self.lista.append(quadruplo(Conversion['='],ty,None,self.getOperando()))
+        self.lista.append(quadruplo(Conversion['='],ty,None,self.popOperando()))
         self.pointer += 1
         fin = self.popJump()
         ret = self.popJump()
         self.lista.append(quadruplo(Conversion['GoTo'],None,None,f'${ret}'))
         self.pointer += 1
         self.lista[fin].res = f'${self.pointer}'
-        self.popOperando()
         self.popType()
 
     def solveRead(self):
-        self.lista.append(quadruplo(Conversion['Read'],None,None,self.operandos.pop()))
+        self.lista.append(quadruplo(Conversion['Read'],None,None,self.tempVControl))
         self.pointer += 1
 
     def solvePrint(self):
@@ -227,9 +235,14 @@ class listQuads :
             print(f"ERROR: Function is void type, return is not allowed")
             exit()
         else:
-            self.checkTypeMismatch(type,self.getType(),Conversion['='])
+            self.checkTypeMismatchP(type,self.getType(),Conversion['='])
             self.lista.append(quadruplo(self.popOperator(),None,None,self.getOperando()))
             self.pointer += 1
+
+    def genEnd(self):
+        self.lista.append(quadruplo(Conversion['END'],None,None,None))
+        self.pointer += 1
+
 
     def imprimirQuadruplos(self):
         for i in range(len(self.lista)):

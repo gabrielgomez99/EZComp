@@ -25,16 +25,19 @@ class maquinaVirtual:
             return self.memory.constants[op]
         
     def setValue(self,dir,value):
-        print(dir,value)
+        #print(dir,value)
         if(dir < 2000):
             self.memory.globalVars[dir] = value
         elif(dir < 6000):
+            #print(value)
             self.memory.memory[-1][dir] = value
         else:
             self.memory.constants = value
 
     def startMaquinaVirtual(self):
-        for i in range (len(self.quads)-1):
+        i = 0
+        self.memory.printMem()
+        while(True):
             operator = self.quads[i].operator
             opLeft = self.getValue(self.quads[i].op1)
             opRight = self.getValue(self.quads[i].op2)
@@ -49,10 +52,12 @@ class maquinaVirtual:
             #Arithmetics
             if(operator == Conversion['=']):
                 try:
+                    print(opLeft,'=',self.quads[i].res)
                     self.memory.memory[-1][self.quads[i].res] = opLeft
                 except:
                     self.memory.globalVars[self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
+                print(opLeft,'+',opRight,self.quads[i].res)
                 value = opLeft + opRight
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['-']):
@@ -68,6 +73,7 @@ class maquinaVirtual:
             #Relational
             if(operator == Conversion['<']):
                 if(opLeft < opRight):
+                    print(opLeft,'<',opRight)
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
@@ -88,16 +94,31 @@ class maquinaVirtual:
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['!=']):
                 if(not(opLeft == opRight)):
-                    print('True')
                     self.setValue(self.quads[i].res,1)
                 else:
-                    print('False')
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['==']):
                 if(opLeft == opRight):
-                    print('True')
                     self.setValue(self.quads[i].res,1)
                 else:
-                    print('False')
                     self.setValue(self.quads[i].res,0)
+
+            #GoTo
+            if(operator == Conversion['GoTo']):
+                #print('regreso',result)
+                i = int(result) - 1
+            elif(operator == Conversion['GoToF']):
+                if(opLeft == 0):
+                    #print('sali',result)
+                    i = int(result) - 1
+
+            #Print
+            """ if(operator == Conversion['Print']):
+                print('hola',self.getValue(self.quads[i].res)) """
             
+            if(operator == Conversion['END']):
+                print('Se acabo ejecucion')
+                self.memory.printMem()
+                exit()
+
+            i += 1

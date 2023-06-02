@@ -29,7 +29,8 @@ Conversion = {
 'EndFunc' : 27,
 'Param' : 28,
 'ERA' : 29,
-'(' : 30
+'(' : 30,
+'END' : 31
 }
 
 cuboSemantico = {
