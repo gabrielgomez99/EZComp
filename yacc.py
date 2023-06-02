@@ -535,6 +535,7 @@ def p_meter_expFor(p):
 	mem.addVar(dirTemp)
 	quads.operandos.append(dirTemp)
 	quads.solveExpFor()
+	mem.updateMainMemV()
 
 def p_checar_condicionFor(p):
 	'''
@@ -557,10 +558,10 @@ def p_final_for(p):
 	if(not mem.searchDirConstantes(1)):
 		mem.addConst(1,Conversion['int'])
 	mem.addVar(dirTemp)
-	mem.updateMainMemV()
 	quads.operandos.append(mem.searchDirConstantes(1))
 	quads.operandos.append(dirTemp)
 	quads.finalFor()
+	mem.updateMainMemV()
 
 def p_solve_read(p):
 	'''

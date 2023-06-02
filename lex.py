@@ -117,7 +117,7 @@ def t_EQ(t):
     # identifica ==
 
 def t_CHAR(t):
-    r'\"[a-zA-Z_0-9_ ]*?\"'
+    r'\"[a-zA-Z_0-9_!@#$%^&*()\-+=~`[\]{}|:;"\',.<>/?\\ ]*?\"'
     t.value = t.value[1:-1]
     return t
     # identifica si es un string

@@ -20,7 +20,7 @@ class listQuads :
         self.jumps = [] #Stack que guarda los saltos
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
-        self.tempVControl = 0 #Sirve para poder controlar la variable de control de los For loops
+        self.tempVControl = [] #Sirve para poder controlar la variable de control de los For loops
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -157,7 +157,7 @@ class listQuads :
             controlType = self.getType()
             self.resTemp += 1
             typeFinal = self.checkTypeMismatchP(controlType,rightType,operator)
-            self.tempVControl = vControl
+            self.tempVControl.append(vControl)
             self.lista.append(quadruplo(operator,exp,None,vControl))
             self.pushOperando_Type(vControl,typeFinal)
             self.pointer += 1
@@ -190,11 +190,11 @@ class listQuads :
         self.resTemp += 1
         ty = self.popOperando()
         #Aqui se incrementa la var de control en ty
-        self.lista.append(quadruplo(Conversion['+'],self.tempVControl,self.popOperando(),ty))
+        self.lista.append(quadruplo(Conversion['+'],self.tempVControl[-1],self.popOperando(),ty))
         self.pointer += 1
         self.resTemp += 1
         #aqui se pone el valor de ty en vControl
-        self.lista.append(quadruplo(Conversion['='],ty,None,self.tempVControl))
+        self.lista.append(quadruplo(Conversion['='],ty,None,self.tempVControl[-1]))
         self.pointer += 1
         #aqui se deja el ty con el id original
         self.lista.append(quadruplo(Conversion['='],ty,None,self.popOperando()))
@@ -205,6 +205,7 @@ class listQuads :
         self.pointer += 1
         self.lista[fin].res = f'${self.pointer}'
         self.popType()
+        self.tempVControl.pop()
 
     def solveRead(self):
         self.lista.append(quadruplo(Conversion['Read'],None,None,self.tempVControl))

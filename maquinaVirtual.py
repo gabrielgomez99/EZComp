@@ -52,12 +52,12 @@ class maquinaVirtual:
             #Arithmetics
             if(operator == Conversion['=']):
                 try:
-                    print(opLeft,'=',self.quads[i].res)
+                    #print(opLeft,'=',self.quads[i].res)
                     self.memory.memory[-1][self.quads[i].res] = opLeft
                 except:
                     self.memory.globalVars[self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
-                print(opLeft,'+',opRight,self.quads[i].res)
+                #print(opLeft,'+',opRight,self.quads[i].res)
                 value = opLeft + opRight
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['-']):
@@ -73,7 +73,7 @@ class maquinaVirtual:
             #Relational
             if(operator == Conversion['<']):
                 if(opLeft < opRight):
-                    print(opLeft,'<',opRight)
+                    #print(opLeft,'<',opRight)
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
@@ -105,16 +105,17 @@ class maquinaVirtual:
 
             #GoTo
             if(operator == Conversion['GoTo']):
-                #print('regreso',result)
                 i = int(result) - 1
             elif(operator == Conversion['GoToF']):
                 if(opLeft == 0):
-                    #print('sali',result)
                     i = int(result) - 1
 
             #Print
-            """ if(operator == Conversion['Print']):
-                print('hola',self.getValue(self.quads[i].res)) """
+            if(operator == Conversion['Print']):
+                if(type(self.quads[i].res) == str):
+                    print(self.quads[i].res)
+                else:
+                    print(self.getValue(self.quads[i].res))
             
             if(operator == Conversion['END']):
                 print('Se acabo ejecucion')
