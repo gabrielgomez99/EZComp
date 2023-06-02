@@ -231,13 +231,17 @@ class listQuads :
         self.lista.append(quadruplo(Conversion['GoSub'],None,None,f'${dir}'))
         self.pointer += 1
 
+    def pushParcheGuadalupano(self,dir):
+        self.lista.append(quadruplo(Conversion['='],None,None,dir))
+        self.pointer += 1
+
     def pushReturn(self,type):
         if(type==Conversion['void']):
             print(f"ERROR: Function is void type, return is not allowed")
             exit()
         else:
             self.checkTypeMismatchP(type,self.getType(),Conversion['='])
-            self.lista.append(quadruplo(self.popOperator(),None,None,self.getOperando()))
+            self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
             self.pointer += 1
 
     def genEnd(self):

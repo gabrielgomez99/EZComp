@@ -600,9 +600,7 @@ def p_meter_ERA(p):
 	idTemp = 0
 	quads.pushOperator(Conversion['ERA'])
 	for i in range(len(dictFunciones.list)):
-		print(p[-1])
 		if(dictFunciones.list[i].id == p[-1]):
-			print('entre')
 			idTemp = dictFunciones.list[i].id
 			quads.pushERA(idTemp)
 			flag = True
@@ -627,6 +625,11 @@ def p_meter_GoSub(p):
 	for i in range(len(dictFunciones.list)-1):
 		if(dictFunciones.list[i].id == p[-4]):
 			quads.pushGoSub(dictFunciones.list[i].dir)
+			print('El tipo: ',dictFunciones.list[i].type)
+			if(not dictFunciones.list[i].type == Conversion['void']):
+				mem.addVar(dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type))
+				dirtemp = list(mem.localVars.keys())[-1]
+				quads.pushParcheGuadalupano(dirtemp)
 			flag = True
 	if(flag):
 		pass
@@ -638,6 +641,8 @@ def p_meter_Return(p):
 	meter_Return	: 
 	'''
 	quads.pushOperator(Conversion['Return'])
+	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(dictFunciones.list[len(dictFunciones.list)-1].type)
+	mem.addVarGlobal(dirTemp)
 	quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
 
 #Expresions
