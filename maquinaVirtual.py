@@ -35,7 +35,11 @@ class maquinaVirtual:
             self.memory.constants = value
 
     def startMaquinaVirtual(self):
-        i = 0
+        i = 0 #pointer de los quadruplos
+        contParam = 0 #Se cuenta los parametros
+        funcionIdTemp = '' #Sirve para luego buscar en tablaDeVariables y Param de funcDir
+        jumpEndProc = []
+        print(self.memory.memory)
         self.memory.printMem()
         while(True):
             operator = self.quads[i].operator
@@ -116,10 +120,44 @@ class maquinaVirtual:
                     print(self.quads[i].res)
                 else:
                     print(self.getValue(self.quads[i].res))
+
+            #ERA
+            if(operator == Conversion['ERA']):
+                size = len(self.funcDir)-1
+                for j in range(size):
+                    if(self.funcDir[j].id == result):
+                        for key in ((self.funcDir[j].tablaDeVariables.keys())):
+                            self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir'])
+                        funcionIdTemp = result
+
+            #Param
+            if(operator == Conversion['Param']):
+                size = len(self.funcDir)-1
+                for j in range(size):
+                    if(self.funcDir[j].id == funcionIdTemp):
+                        print(contParam)
+                        key = list(self.funcDir[j].param.keys())[contParam]
+                        self.memory.addVar(self.funcDir[j].param[key]['dirV'])
+                        self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.memory.memory[-1][self.quads[i].res]
+                        contParam += 1
+            
+            #GoSub
+            if(operator == Conversion['GoSub']):
+                #self.memory.eraseParams(contParam)
+                self.memory.addToMemory()
+                contParam = 0
+                jumpEndProc.append(i)
+                i = int(result) -1
+            
+            #EndFunc
+            if(operator == Conversion['EndFunc']):
+                self.memory.memory.pop()
+                i = int(jumpEndProc.pop())
+                        
             
             if(operator == Conversion['END']):
                 print('Se acabo ejecucion')
+                #self.memory.eraseAll()
                 self.memory.printMem()
                 exit()
-
             i += 1

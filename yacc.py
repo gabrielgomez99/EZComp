@@ -437,7 +437,8 @@ def p_update_memVmain(p):
 	'''
 	update_memVmain	: 
 	'''	
-	mem.updateMainMemV()
+	if(len(mem.memory)>0):
+		mem.updateMemory()
 
 #Estatutos
 def p_meter_GoToMain(p):
@@ -535,7 +536,7 @@ def p_meter_expFor(p):
 	mem.addVar(dirTemp)
 	quads.operandos.append(dirTemp)
 	quads.solveExpFor()
-	mem.updateMainMemV()
+	mem.updateMemory()
 
 def p_checar_condicionFor(p):
 	'''
@@ -547,7 +548,7 @@ def p_checar_condicionFor(p):
 	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['bool'])#se crea una variable booleana para el GoToF
 	mem.addVar(dirTemp)
 	quads.operandos.append(dirTemp)
-	mem.updateMainMemV()
+	mem.updateMemory()
 	quads.solveCondicionFor()
 
 def p_final_for(p):
@@ -561,7 +562,7 @@ def p_final_for(p):
 	quads.operandos.append(mem.searchDirConstantes(1))
 	quads.operandos.append(dirTemp)
 	quads.finalFor()
-	mem.updateMainMemV()
+	mem.updateMemory()
 
 def p_solve_read(p):
 	'''
@@ -598,14 +599,12 @@ def p_meter_ERA(p):
 	flag = False
 	idTemp = 0
 	quads.pushOperator(Conversion['ERA'])
-	for i in range(len(dictFunciones.list)-1):
+	for i in range(len(dictFunciones.list)):
+		print(p[-1])
 		if(dictFunciones.list[i].id == p[-1]):
+			print('entre')
 			idTemp = dictFunciones.list[i].id
 			quads.pushERA(idTemp)
-			for key in ((dictFunciones.list[i].tablaDeVariables.keys())):
-				mem.addVar(dictFunciones.list[i].tablaDeVariables[key]['dir'])
-			for key in ((dictFunciones.list[i].param.keys())):
-				mem.addVar(dictFunciones.list[i].param[key]['dirV'])
 			flag = True
 			break
 	if(flag):

@@ -144,7 +144,7 @@ class listQuads :
     def solveWhile(self):
         end = self.popJump()
         ret = self.popJump()
-        self.lista.append(quadruplo(self.operator.pop(),self.lista[len(self.lista)-1].res,None,f'${ret}'))
+        self.lista.append(quadruplo(self.operator.pop(),None,None,f'${ret}'))
         self.pointer += 1
         self.lista[end-1].res = f'${self.pointer}'
 

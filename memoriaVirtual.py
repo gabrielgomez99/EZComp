@@ -53,15 +53,16 @@ class memoria:
 
     def printMem(self):
         print('Globales',self.globalVars)
-        print('Locales',self.memory[len(self.localVars)-1])
+        print('Locales',self.memory)
         print('constants',self.constants)
 
     def addToMemory(self):
         self.memory.append(self.localVars)
         self.localVars = {}
 
-    def updateMainMemV(self):
-        self.memory[0] = {**self.memory[0],**self.localVars}
+    def updateMemory(self):
+        print(self.memory)
+        self.memory[-1].update(self.localVars)
         self.localVars = {}
 
     def addVarGlobal(self,dir):
@@ -178,10 +179,19 @@ class memoria:
                 return key
         return 0
     
+    #Se usa en la maquina para borrar los parametros calculados de la memoria local
+    def eraseParams(self,size):
+        # El tamano de los parametros a borrar
+        keys_to_remove = list(self.memory[-1].keys())[-size:]
+        # Borrar esa cantidad de parametros
+        for key in keys_to_remove:
+            self.memory[-1].pop(key)
+
     def eraseAll(self):
         self.memory = []
         self.globalVars = {}
         self.constants = {}
+        self.localVars = {}
         self.counterCteI = 0
         self.counterCteF = 0
         self.counterCteC = 0
