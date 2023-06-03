@@ -629,7 +629,10 @@ def p_meter_GoSub(p):
 			if(not dictFunciones.list[i].type == Conversion['void']):
 				mem.addVar(dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type))
 				dirtemp = list(mem.localVars.keys())[-1]
-				quads.pushParcheGuadalupano(dirtemp)
+				mem.addVarGlobalType(dictFunciones.list[i].type)
+				dirtemp2 = list(mem.globalVars.keys())[-1]
+				print(dirtemp2)
+				quads.pushParcheGuadalupano(dirtemp,dirtemp2)
 			flag = True
 	if(flag):
 		pass

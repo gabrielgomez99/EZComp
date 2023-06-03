@@ -138,20 +138,26 @@ class maquinaVirtual:
                         print(contParam)
                         key = list(self.funcDir[j].param.keys())[contParam]
                         self.memory.addVar(self.funcDir[j].param[key]['dirV'])
-                        self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.memory.memory[-1][self.quads[i].res]
+                        self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.getValue(self.quads[i].res)
                         contParam += 1
             
             #GoSub
             if(operator == Conversion['GoSub']):
-                #self.memory.eraseParams(contParam)
+                self.memory.eraseParams(contParam)
                 self.memory.addToMemory()
                 contParam = 0
                 jumpEndProc.append(i)
                 i = int(result) -1
+
+            #Return
+            if(operator == Conversion['Return']):
+                #self.memory.memory[-1][result] = self.memory.popGlobal()
+                #self.memory.memory.pop()
+                i = int(jumpEndProc.pop())
             
             #EndFunc
             if(operator == Conversion['EndFunc']):
-                self.memory.memory.pop()
+                #self.memory.memory.pop()
                 i = int(jumpEndProc.pop())
                         
             

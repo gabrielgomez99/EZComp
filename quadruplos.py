@@ -231,8 +231,8 @@ class listQuads :
         self.lista.append(quadruplo(Conversion['GoSub'],None,None,f'${dir}'))
         self.pointer += 1
 
-    def pushParcheGuadalupano(self,dir):
-        self.lista.append(quadruplo(Conversion['='],None,None,dir))
+    def pushParcheGuadalupano(self,dir,dir2):
+        self.lista.append(quadruplo(Conversion['='],dir2,None,dir))
         self.pointer += 1
 
     def pushReturn(self,type):
