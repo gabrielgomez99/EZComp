@@ -145,7 +145,7 @@ class dictFunc :
              return self.list[len(self.list)-1].tablaDeVariables[id]['dir']
         except KeyError:
             try:
-                return self.list[len(self.list)-1].param[id]['dir']
+                return self.list[len(self.list)-1].param[id]['dirV']
             except KeyError:
                 try:
                     return self.list[0].tablaDeVariables[id]['dir']

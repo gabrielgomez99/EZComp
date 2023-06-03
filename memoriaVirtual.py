@@ -36,6 +36,10 @@ class memoria:
     def __init__(self):
         self.memory = []
         self.localVars = {}
+        self.TcounterInt = 0
+        self.TcounterFloat = 0
+        self.TcounterChar = 0
+        self.TcounterBool = 0
         self.globalVars = {}
         self.constants = {}
         self.counterCteI = 0
@@ -58,6 +62,10 @@ class memoria:
 
     def addToMemory(self):
         print(self.localVars)
+        self.TcounterInt = 0
+        self.TcounterFloat = 0
+        self.TcounterChar = 0
+        self.TcounterBool = 0
         self.memory.append(self.localVars)
         self.localVars = {}
 
@@ -78,7 +86,7 @@ class memoria:
                 self.counterCharGlobal -= 1
             else:
                 self.counterBoolGlobal -= 1
-            return dir
+            return dir , value
 
 
     def addVarGlobal(self,dir):
@@ -113,29 +121,29 @@ class memoria:
         dirTemp = 0
         if (type == Conversion['int']): 
             if self.counterIntGlobal < CONSTMAXGLOBALINTS:
-                dirTemp = self.counterIntGlobal
                 self.counterIntGlobal +=1
+                dirTemp = self.counterIntGlobal
             else:
                 print(f"ERROR: ran out of memory for global Ints.")
                 exit()
         elif (type == Conversion['float']): 
             if self.counterFloatGlobal < CONSTMAXGLOBALFLOATS:
-                dirTemp = self.counterFloatGlobal
                 self.counterFloatGlobal +=1
+                dirTemp = self.counterFloatGlobal
             else:
                 print(f"ERROR: ran out of memory for global Floats.")
                 exit()
         elif (type == Conversion['char']):
             if self.counterCharGlobal < CONSTMAXGLOBALCHARS:
-                dirTemp = self.counterCharGlobal
                 self.counterCharGlobal +=1
+                dirTemp = self.counterCharGlobal
             else:
                 print(f"ERROR: ran out of memory for global Chars.")
                 exit()
         else:
             if self.counterBoolGlobal < CONSTMAXGLOBALBOOLS:
-                dirTemp = self.counterBoolGlobal
                 self.counterBoolGlobal += 1
+                dirTemp = self.counterBoolGlobal
             else:
                 print(f"ERROR: ran out of memory for global Bools.")
                 exit()
@@ -146,24 +154,28 @@ class memoria:
             if (dir > 1999 and dir < 3000): 
                 if self.counterInt < CONSTMAXINTS:
                     self.counterInt +=1
+                    self.TcounterInt +=1
                 else:
                     print(f"ERROR: ran out of memory for Local Ints.")
                     exit()
             elif (dir > 2999 and dir < 4000): 
                 if self.counterFloat < CONSTMAXFLOATS:
                     self.counterFloat +=1
+                    self.TcounterFloat +=1
                 else:
                     print(f"ERROR: ran out of memory for Local Floats.")
                     exit()
             elif (dir > 3999 and dir < 5000):
                 if self.counterChar < CONSTMAXCHARS:
                     self.counterChar +=1
+                    self.TcounterChar +=1
                 else:
                     print(f"ERROR: ran out of memory for Local Chars.")
                     exit()
             else:
                 if self.counterBool < CONSTMAXBOOLS:
                     self.counterBool += 1
+                    self.TcounterBool += 1
                 else:
                     print(f"ERROR: ran out of memory for Local Bools.")
                     exit()
@@ -226,14 +238,6 @@ class memoria:
             if val == id:
                 return key
         return 0
-    
-    #Se usa en la maquina para borrar los parametros calculados de la memoria local
-    def eraseParams(self,size):
-        # El tamano de los parametros a borrar
-        keys_to_remove = list(self.memory[-1].keys())[-size:]
-        # Borrar esa cantidad de parametros
-        for key in keys_to_remove:
-            self.memory[-1].pop(key)
 
     def eraseAll(self):
         self.memory = []

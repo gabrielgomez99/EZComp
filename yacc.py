@@ -430,7 +430,7 @@ def p_meter_a_MemGlobal(p):
 	'''
 	meter_a_MemGlobal	: 
 	'''	
-	for key in (dictFunciones.list[len(dictFunciones.list)-1].tablaDeVariables.keys()):
+	for key in (dictFunciones.list[0].tablaDeVariables.keys()):
 		mem.addVarGlobal(dictFunciones.list[len(dictFunciones.list)-1].tablaDeVariables[key]['dir'])
 	
 def p_update_memVmain(p):
@@ -629,10 +629,9 @@ def p_meter_GoSub(p):
 			if(not dictFunciones.list[i].type == Conversion['void']):
 				mem.addVar(dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type))
 				dirtemp = list(mem.localVars.keys())[-1]
-				mem.addVarGlobalType(dictFunciones.list[i].type)
-				dirtemp2 = list(mem.globalVars.keys())[-1]
-				print(dirtemp2)
-				quads.pushParcheGuadalupano(dirtemp,dirtemp2)
+				id = dictFunciones.list[i].id
+				quads.pushParcheGuadalupano(dirtemp,id)
+				mem.updateMemory()
 			flag = True
 	if(flag):
 		pass

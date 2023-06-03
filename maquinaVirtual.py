@@ -39,11 +39,14 @@ class maquinaVirtual:
         contParam = 0 #Se cuenta los parametros
         funcionIdTemp = '' #Sirve para luego buscar en tablaDeVariables y Param de funcDir
         jumpEndProc = []
-        print(self.memory.memory)
         self.memory.printMem()
         while(True):
             operator = self.quads[i].operator
-            opLeft = self.getValue(self.quads[i].op1)
+            #print(self.quads[i].operator,self.quads[i].op1,self.quads[i].op2,self.quads[i].res)
+            if(type(self.quads[i].op1) == str):
+                opLeft = self.quads[i].op1
+            else:
+                opLeft = self.getValue(self.quads[i].op1)
             opRight = self.getValue(self.quads[i].op2)
             if(self.quads[i].res == None):
                 pass
@@ -52,12 +55,18 @@ class maquinaVirtual:
                     result = self.quads[i].res[1:]
                 else:
                     result = self.quads[i].res
-
             #Arithmetics
             if(operator == Conversion['=']):
                 try:
-                    #print(opLeft,'=',self.quads[i].res)
-                    self.memory.memory[-1][self.quads[i].res] = opLeft
+                    if(type(opLeft) == str):
+                        for j in range(len(self.funcDir)):
+                            print(self.quads[j].res,opLeft)
+                            if(self.funcDir[j].id == opLeft):
+                                temp = list(self.memory.memory[-1])[-1]
+                                self.memory.memory[-1][temp] = self.memory.popGlobal()[1]
+                    else:
+                        #print(opLeft,'=',self.quads[i].res)
+                        self.memory.memory[-1][self.quads[i].res] = opLeft
                 except:
                     self.memory.globalVars[self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
@@ -135,7 +144,6 @@ class maquinaVirtual:
                 size = len(self.funcDir)-1
                 for j in range(size):
                     if(self.funcDir[j].id == funcionIdTemp):
-                        print(contParam)
                         key = list(self.funcDir[j].param.keys())[contParam]
                         self.memory.addVar(self.funcDir[j].param[key]['dirV'])
                         self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.getValue(self.quads[i].res)
@@ -143,7 +151,7 @@ class maquinaVirtual:
             
             #GoSub
             if(operator == Conversion['GoSub']):
-                self.memory.eraseParams(contParam)
+                #print(self.memory.localVars,self.memory.TcounterInt)
                 self.memory.addToMemory()
                 contParam = 0
                 jumpEndProc.append(i)
@@ -151,8 +159,10 @@ class maquinaVirtual:
 
             #Return
             if(operator == Conversion['Return']):
-                #self.memory.memory[-1][result] = self.memory.popGlobal()
-                #self.memory.memory.pop()
+                self.memory.memory.pop()
+                self.memory.addVarGlobalType(self.funcDir[i].type)
+                key = list(self.memory.globalVars)[-1]
+                self.memory.globalVars[key] = self.getValue(self.quads[i].res)
                 i = int(jumpEndProc.pop())
             
             #EndFunc
