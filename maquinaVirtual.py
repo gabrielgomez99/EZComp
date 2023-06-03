@@ -18,10 +18,13 @@ class maquinaVirtual:
         if(op == None):
             return
         if(op < 2000):
+            #print('value',self.memory.globalVars[op])
             return self.memory.globalVars[op]
         elif(op < 6000):
+            #print('value',self.memory.memory)
             return self.memory.memory[-1][op]
         else:
+            #print('value',self.memory.constants[op])
             return self.memory.constants[op]
         
     def setValue(self,dir,value):
@@ -46,6 +49,7 @@ class maquinaVirtual:
             if(type(self.quads[i].op1) == str):
                 opLeft = self.quads[i].op1
             else:
+                #print(self.memory.memory[-1])
                 opLeft = self.getValue(self.quads[i].op1)
             opRight = self.getValue(self.quads[i].op2)
             if(self.quads[i].res == None):
@@ -60,18 +64,20 @@ class maquinaVirtual:
                 try:
                     if(type(opLeft) == str):
                         for j in range(len(self.funcDir)):
-                            print(self.quads[j].res,opLeft)
                             if(self.funcDir[j].id == opLeft):
+                                #print(self.memory.popGlobal()[1])
                                 temp = list(self.memory.memory[-1])[-1]
                                 self.memory.memory[-1][temp] = self.memory.popGlobal()[1]
+                                self.memory.pop()
                     else:
                         #print(opLeft,'=',self.quads[i].res)
                         self.memory.memory[-1][self.quads[i].res] = opLeft
                 except:
                     self.memory.globalVars[self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
-                #print(opLeft,'+',opRight,self.quads[i].res)
-                value = opLeft + opRight
+                #print(self.getValue(self.quads[i].op1),'+',opRight,self.quads[i].res)
+                value = self.getValue(self.quads[i].op1) + self.getValue(self.quads[i].op2)
+                #print(value)
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['-']):
                 value = opLeft - opRight
@@ -138,36 +144,39 @@ class maquinaVirtual:
                         for key in ((self.funcDir[j].tablaDeVariables.keys())):
                             self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir'])
                         funcionIdTemp = result
+                        #rint(self.memory.localVars)
+                        #self.memory.addToMemoryEra()
 
             #Param
             if(operator == Conversion['Param']):
                 size = len(self.funcDir)-1
+                #print(self.memory.memory)
                 for j in range(size):
                     if(self.funcDir[j].id == funcionIdTemp):
                         key = list(self.funcDir[j].param.keys())[contParam]
                         self.memory.addVar(self.funcDir[j].param[key]['dirV'])
                         self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.getValue(self.quads[i].res)
                         contParam += 1
-            
+                        self.memory.updateParams()
+                                 
             #GoSub
             if(operator == Conversion['GoSub']):
                 #print(self.memory.localVars,self.memory.TcounterInt)
-                self.memory.addToMemory()
+                #print(self.memory.memory)
+                #print(self.memory.localVars)
                 contParam = 0
                 jumpEndProc.append(i)
                 i = int(result) -1
 
             #Return
             if(operator == Conversion['Return']):
-                self.memory.memory.pop()
-                self.memory.addVarGlobalType(self.funcDir[i].type)
+                self.memory.addVarGlobalType(self.funcDir[len(self.funcDir)-1].type)
                 key = list(self.memory.globalVars)[-1]
                 self.memory.globalVars[key] = self.getValue(self.quads[i].res)
                 i = int(jumpEndProc.pop())
             
             #EndFunc
             if(operator == Conversion['EndFunc']):
-                #self.memory.memory.pop()
                 i = int(jumpEndProc.pop())
                         
             

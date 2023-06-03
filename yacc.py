@@ -25,6 +25,7 @@ quads = listQuads()
 elseFlag = True
 mem = memoria()
 stackMemoria = []
+esLlamada = False
 
 
 # Empieza el programa
@@ -82,7 +83,11 @@ def p_ESTATUTO(p):
 
 def p_ASIGNACION(p):
 	'''
-	ASIGNACION	: VARIABLE '=' push_Op EXP solve_Asig ';'
+	ASIGNACION	: VARIABLE '=' push_Op ASIGNACION_1 solve_Asig ';'
+	'''	
+def p_ASIGNACION_1(p):
+	'''
+	ASIGNACION_1	: EXP 
 	'''	
 
 def p_CONDICION(p):
@@ -117,7 +122,7 @@ def p_LECTURA(p):
 
 def p_LLAMADA(p):
 	'''
-	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub ')' ';'
+	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub ')'
 	'''		
 def p_LLAMADA_1(p):
 	'''
@@ -274,7 +279,7 @@ def p_F(p):
         	| CTEFLOAT push_operando_F
 		| CTEINT push_operando_I
 		| VARIABLE 
-		| LLAMADA
+		| LLAMADA es_llamada
 	'''
 
 def p_FUNC_ESPECIALES(p):
@@ -438,7 +443,7 @@ def p_update_memVmain(p):
 	update_memVmain	: 
 	'''	
 	if(len(mem.memory)>0):
-		mem.updateMemory()
+		mem.updateMain()
 
 #Estatutos
 def p_meter_GoToMain(p):
@@ -458,8 +463,20 @@ def p_solve_Asig(p):
 	'''
 	solve_Asig	: 
 	'''	
-	mem.addVar(quads.getOperando())
-	quads.dumpQuad(quads.popOperando())
+	global esLlamada
+	if(esLlamada):
+		mem.addVar(quads.getOperando())
+		quads.dumpQuad(quads.popOperando())
+	else:
+		mem.addVar(quads.getOperando())
+		quads.dumpQuad(quads.popOperando())
+	esLlamada = False
+
+def p_solve_funcAsig(p):
+	'''
+	solve_funcAsig	: 
+	'''	
+	
 
 def p_meter_jump(p):
 	'''
@@ -622,16 +639,16 @@ def p_meter_GoSub(p):
 	meter_GoSub	: 
 	'''	
 	flag = False
-	for i in range(len(dictFunciones.list)-1):
+	for i in range(len(dictFunciones.list)):
 		if(dictFunciones.list[i].id == p[-4]):
 			quads.pushGoSub(dictFunciones.list[i].dir)
-			print('El tipo: ',dictFunciones.list[i].type)
 			if(not dictFunciones.list[i].type == Conversion['void']):
 				mem.addVar(dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type))
 				dirtemp = list(mem.localVars.keys())[-1]
 				id = dictFunciones.list[i].id
 				quads.pushParcheGuadalupano(dirtemp,id)
-				mem.updateMemory()
+				quads.operandos.append(dirtemp)
+				mem.localVars = {}
 			flag = True
 	if(flag):
 		pass
@@ -677,6 +694,13 @@ def p_push_operando_F(p):
 	if constFlag:
 		mem.addConst(Conversion['float'],p[-1])
 	quads.pushOperando_Type(mem.searchDirConstantes(p[-1]),Conversion['float'])
+
+def p_es_llamada(p):
+	'''
+	es_llamada	: 
+	'''	
+	global esLlamada 
+	esLlamada = True
 
 def p_solve_EXP(p):
 	'''

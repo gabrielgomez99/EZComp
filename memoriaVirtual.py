@@ -61,22 +61,46 @@ class memoria:
         print('constants',self.constants)
 
     def addToMemory(self):
-        print(self.localVars)
         self.TcounterInt = 0
         self.TcounterFloat = 0
         self.TcounterChar = 0
         self.TcounterBool = 0
-        self.memory.append(self.localVars)
+        self.memory.insert(0,self.localVars)
+        self.localVars = {}
+
+    def addToMemoryEra(self):
+        self.TcounterInt = 0
+        self.TcounterFloat = 0
+        self.TcounterChar = 0
+        self.TcounterBool = 0
+        self.memory.update(self.localVars)
+        self.localVars = {}
+
+    def updateMain(self):
+        self.TcounterInt = 0
+        self.TcounterFloat = 0
+        self.TcounterChar = 0
+        self.TcounterBool = 0
+        self.memory[0].update(self.localVars)
         self.localVars = {}
 
     def updateMemory(self):
-        print(self.memory)
+        #print(self.memory, 'aaaaa')
+        #print(self.memory[-1])
         self.memory[-1].update(self.localVars)
         self.localVars = {}
+
+    def updateParams(self):
+        #print(self.localVars)
+        for key in (self.localVars.keys()):
+            #print('esta llave: ',key,'valor: ',self.memory[-1][key],'asigna: ',self.localVars[key])
+            self.memory[-1][key] = self.localVars[key]
+            #print(self.memory[-1][key])
     
     def popGlobal(self):
+        print(self.localVars,self.memory)
         dir , value = self.globalVars.popitem()
-        print('gl',self.globalVars)
+        print(self.localVars,self.memory)
         if dir < 1999:
             if (dir > 0 and dir < 500): 
                 self.counterIntGlobal -= 1
