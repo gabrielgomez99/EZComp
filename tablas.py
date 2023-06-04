@@ -58,6 +58,94 @@ class tablaVar :
             }
         })
 
+    def addMat(self,id,scope,type,xAxis,yAxis):
+        temp = 0
+        if(yAxis == 1):
+            if type == Conversion['int']:
+                if scope == 0:
+                    if self.counterInt >= 500:
+                        print(f"ERROR: ran out of memory for global Ints.")
+                        exit()
+                    temp = self.counterInt
+                    self.counterInt
+                else:
+                    if self.counterInt >= 1000:
+                        print(f"ERROR: ran out of memory for Local Ints.")
+                        exit()
+                    temp = self.counterInt + 2000
+                self.counterInt += 1 + xAxis
+            elif type == Conversion['float']:
+                if scope == 0:
+                    if self.counterFloat >= 500:
+                        print(f"ERROR: ran out of memory for global Floats.")
+                        exit()
+                    temp = self.counterFloat
+                else:
+                    if self.counterFloat >= 1000:
+                        print(f"ERROR: ran out of memory for Local Floats.")
+                        exit()
+                    temp = self.counterFloat + 3000
+                self.counterFloat += 1 + xAxis
+            else:
+                if scope == 0:
+                    if self.counterChar >= 500:
+                        print(f"ERROR: ran out of memory for global Chars.")
+                        exit()
+                    temp = self.counterChar
+                else:
+                    if self.counterChar >= 1000:
+                        print(f"ERROR: ran out of memory for Local Chars.")
+                        exit()
+                    temp = self.counterChar + 4000
+                self.counterChar += 1 + xAxis
+        else:
+            if type == Conversion['int']:
+                if scope == 0:
+                    if self.counterInt >= 500:
+                        print(f"ERROR: ran out of memory for global Ints.")
+                        exit()
+                    temp = self.counterInt
+                    self.counterInt
+                else:
+                    if self.counterInt >= 1000:
+                        print(f"ERROR: ran out of memory for Local Ints.")
+                        exit()
+                    temp = self.counterInt + 2000
+                self.counterInt += 1 + xAxis + yAxis
+            elif type == Conversion['float']:
+                if scope == 0:
+                    if self.counterFloat >= 500:
+                        print(f"ERROR: ran out of memory for global Floats.")
+                        exit()
+                    temp = self.counterFloat
+                else:
+                    if self.counterFloat >= 1000:
+                        print(f"ERROR: ran out of memory for Local Floats.")
+                        exit()
+                    temp = self.counterFloat + 3000
+                self.counterFloat += 1 + xAxis + yAxis
+            else:
+                if scope == 0:
+                    if self.counterChar >= 500:
+                        print(f"ERROR: ran out of memory for global Chars.")
+                        exit()
+                    temp = self.counterChar
+                else:
+                    if self.counterChar >= 1000:
+                        print(f"ERROR: ran out of memory for Local Chars.")
+                        exit()
+                    temp = self.counterChar + 4000
+                self.counterChar += 1 + xAxis + yAxis
+        self.variables.update({
+                id : {
+                'scope' : scope,
+                'type' : type,
+                'xAxis' : xAxis,
+                'yAxis' : yAxis,
+                'dir' : temp,
+            }
+        })
+
     #Esto es para poder iterar
     def __iter__(self):
         return iter(self.variables.items())

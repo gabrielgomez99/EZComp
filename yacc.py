@@ -15,6 +15,7 @@ from maquinaVirtual import maquinaVirtual
 tempQDecVar = queue.Queue()
 tempTipo = ''
 tempYAxis = 0
+seenAxis = False
 tempScope = 0
 tempVars = tablaVar()
 tempTipoFunc = 0
@@ -172,7 +173,7 @@ def p_VARS_2(p):
 
 def p_ARREGLO(p):
 	'''
-	ARREGLO	: ARR TIPO_SIMPLE ID seen_Id '[' CTEINT seen_xAxis ']' ARREGLO_1 dec_yAxis ';'
+	ARREGLO	: ARR TIPO_SIMPLE ID seen_Id '[' CTEINT seen_xAxis ']' ARREGLO_1 dec_yAxis meter_Dec_Arr ';'
 	'''	
 
 def p_ARREGLO_1(p):
@@ -402,6 +403,13 @@ def p_meter_Dec_Var(p):
 	global tempQDecVar
 	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
 
+def p_meter_Dec_Arr(p):
+	'''
+	meter_Dec_Arr	: 
+	'''
+	global tempQDecVar
+	tempVars.addMat(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
+
 def p_seen_xAxis(p):
 	'''
 	seen_xAxis	: 
@@ -414,14 +422,18 @@ def p_dec_yAxis(p):
 	dec_yAxis	: 
 	'''	
 	global tempYAxis
-	tempQDecVar.put(tempYAxis)
-	tempYAxis = 0
+	if(seenAxis):
+		tempQDecVar.put(tempYAxis)
+	else:
+		tempYAxis = 1
+		tempQDecVar.put(tempYAxis)
 
 def p_seen_yAxis(p):
 	'''
 	seen_yAxis	: 
 	'''	
-	global tempYAxis
+	global tempYAxis, seenAxis
+	seenAxis = True
 	tempYAxis = p[-1]
 
 def p_meter_a_MemV(p):
@@ -828,10 +840,10 @@ if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
     quads.imprimirQuadStacks()
-    mem.printMem()
-    """ for i in range(len(dictFunciones.list)):
-    	dictFunciones.list[i].imprimirFunc() """
-    maquina.startMaquinaVirtual()
+    #mem.printMem()
+    for i in range(len(dictFunciones.list)):
+    	dictFunciones.list[i].imprimirFunc()
+    #maquina.startMaquinaVirtual()
 else:
 	print("No se compilo correctamente")
 
