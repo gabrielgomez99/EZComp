@@ -54,6 +54,7 @@ class memoria:
         self.counterFloatGlobal = 0
         self.counterCharGlobal = 0
         self.counterBoolGlobal = 0
+        self.lastUpdate = 0
 
     def printMem(self):
         print('Globales',self.globalVars)
@@ -108,6 +109,7 @@ class memoria:
                 self.counterCharGlobal -= 1
             else:
                 self.counterBoolGlobal -= 1
+            self.lastUpdate = [dir,value]
             return dir , value
 
 

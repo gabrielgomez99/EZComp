@@ -113,9 +113,9 @@ class listQuads :
             #self.pushOperando_Type(self.popOperando(),self.popType())
         self.pointer += 1
 
-    def dumpQuadLL(self):
+    def dumpQuadLL(self,dir):
         operator = self.popOperator()
-        self.lista.append(quadruplo(operator,'parche',None,self.popOperando()))
+        self.lista.append(quadruplo(operator,dir,None,self.popOperando()))
         #self.pushOperando_Type(self.popOperando(),self.popType())
         self.pointer += 1
 
@@ -237,8 +237,8 @@ class listQuads :
         self.lista.append(quadruplo(Conversion['GoSub'],None,None,f'${dir}'))
         self.pointer += 1
 
-    def pushParcheGuadalupano(self,id):
-        self.lista.append(quadruplo(Conversion['='],'parche',None,id))
+    def pushParcheGuadalupano(self,dir,id):
+        self.lista.append(quadruplo(Conversion['='],dir,None,id))
         self.pointer += 1
 
     def pushReturn(self,type):

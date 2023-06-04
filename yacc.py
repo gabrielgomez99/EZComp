@@ -25,7 +25,8 @@ quads = listQuads()
 elseFlag = True
 mem = memoria()
 stackMemoria = []
-esLlamada = False
+esLlamada = [False]
+stackLlamadaId = []
 
 
 # Empieza el programa
@@ -464,9 +465,13 @@ def p_solve_Asig(p):
 	solve_Asig	: 
 	'''	
 	global esLlamada
-	if(esLlamada):
-		quads.dumpQuadLL()
-		esLlamada = False
+	if(esLlamada.pop()):
+		temp = stackLlamadaId.pop()
+		for i in range (len(dictFunciones.list)):
+			if(temp == dictFunciones.list[i].id):
+				#mem.addVarGlobalType(dictFunciones.list[i].type)
+				dirTemp = dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type)
+		quads.dumpQuadLL(dirTemp)
 	else:
 		mem.addVar(quads.getOperando())
 		quads.dumpQuad(quads.popOperando())
@@ -606,12 +611,14 @@ def p_meter_ERA(p):
 	'''
 	meter_ERA	:
 	'''	
+	global stackLlamadaId
 	flag = False
 	idTemp = 0
 	quads.pushOperator(Conversion['ERA'])
 	for i in range(len(dictFunciones.list)):
 		if(dictFunciones.list[i].id == p[-1]):
 			idTemp = dictFunciones.list[i].id
+			stackLlamadaId.append(idTemp)
 			quads.pushERA(idTemp)
 			flag = True
 			break
@@ -638,7 +645,12 @@ def p_meter_GoSub(p):
 			quads.pushGoSub(dictFunciones.list[i].dir)
 			if(not dictFunciones.list[i].type == Conversion['void']):
 				id = dictFunciones.list[i].id
-				quads.pushParcheGuadalupano(id)
+				if(dictFunciones.list[i].type == Conversion['int']):
+					quads.pushParcheGuadalupano((dictFunciones.list[i].ints+2000),id)
+				if(dictFunciones.list[i].type == Conversion['float']):
+					quads.pushParcheGuadalupano((dictFunciones.list[i].ints+3000),id)
+				if(dictFunciones.list[i].type == Conversion['char']):
+					quads.pushParcheGuadalupano((dictFunciones.list[i].ints+4000),id)
 			flag = True
 	if(flag):
 		pass
@@ -651,9 +663,8 @@ def p_meter_Return(p):
 	'''
 	global esLlamada
 	quads.pushOperator(Conversion['Return'])
-	if(esLlamada):
+	if(esLlamada.pop()):
 		quads.pushReturnLL(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
-		esLlamada = False
 	else:
 		quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
 
@@ -693,7 +704,7 @@ def p_es_llamada(p):
 	es_llamada	: 
 	'''	
 	global esLlamada 
-	esLlamada = True
+	esLlamada.append(True)
 
 def p_solve_EXP(p):
 	'''
