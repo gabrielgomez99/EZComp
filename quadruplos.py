@@ -232,7 +232,7 @@ class listQuads :
         self.pointer += 1
 
     def pushParcheGuadalupano(self,dir,id):
-        self.lista.append(quadruplo(Conversion['='],id,None,dir))
+        self.lista.append(quadruplo(Conversion['='],dir,None,id))
         self.pointer += 1
 
     def pushReturn(self,type):

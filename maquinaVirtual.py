@@ -61,18 +61,23 @@ class maquinaVirtual:
                     result = self.quads[i].res
             #Arithmetics
             if(operator == Conversion['=']):
-                try:
-                    if(type(opLeft) == str):
+                try:             
+                    if(type(self.quads[i].res) == str):
                         for j in range(len(self.funcDir)):
                             if(self.funcDir[j].id == opLeft):
                                 #print(self.memory.popGlobal()[1])
-                                temp = list(self.memory.memory[-1])[-1]
+                                temp = self.quads[i].op1
+                                print('i',i,'asigna','a',temp,'aaaaaaaa')
+                                #print(self.memory.popGlobal()[0],'dddddddddd')
+                                print(self.memory.memory[-1],'afffffff') 
                                 self.memory.memory[-1][temp] = self.memory.popGlobal()[1]
-                                self.memory.pop()
+                                print(self.memory.memory,'ffaaaaaaaaa') 
+                                break  
                     else:
                         #print(opLeft,'=',self.quads[i].res)
                         self.memory.memory[-1][self.quads[i].res] = opLeft
                 except:
+                    print(self.quads[i].operator,self.quads[i].op1,self.quads[i].op2,self.quads[i].res)
                     self.memory.globalVars[self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
                 #print(self.getValue(self.quads[i].op1),'+',opRight,self.quads[i].res)
@@ -144,7 +149,9 @@ class maquinaVirtual:
                         for key in ((self.funcDir[j].tablaDeVariables.keys())):
                             self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir'])
                         funcionIdTemp = result
-                        #rint(self.memory.localVars)
+                        self.memory.memory.append(self.memory.localVars)
+                        self.memory.localVars = {}
+                        #print(self.memory.localVars)
                         #self.memory.addToMemoryEra()
 
             #Param
@@ -170,9 +177,14 @@ class maquinaVirtual:
 
             #Return
             if(operator == Conversion['Return']):
-                self.memory.addVarGlobalType(self.funcDir[len(self.funcDir)-1].type)
-                key = list(self.memory.globalVars)[-1]
-                self.memory.globalVars[key] = self.getValue(self.quads[i].res)
+                for j in range(len(self.funcDir)):
+                    if(self.funcDir[j].id == funcionIdTemp):
+                        self.memory.addVarGlobalType(self.funcDir[j].type)
+                        print('lel',self.memory.globalVars)
+                        key = list(self.memory.globalVars.keys())[-1]
+                        self.memory.globalVars[key] = self.getValue(self.quads[i].res)
+                        print('lel',self.memory.globalVars)
+                        self.memory.memory.pop()
                 i = int(jumpEndProc.pop())
             
             #EndFunc
@@ -182,6 +194,7 @@ class maquinaVirtual:
             
             if(operator == Conversion['END']):
                 print('Se acabo ejecucion')
+                
                 #self.memory.eraseAll()
                 self.memory.printMem()
                 exit()

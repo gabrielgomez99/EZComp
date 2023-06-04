@@ -465,8 +465,8 @@ def p_solve_Asig(p):
 	'''	
 	global esLlamada
 	if(esLlamada):
-		mem.addVar(quads.getOperando())
 		quads.dumpQuad(quads.popOperando())
+		mem.updateMain()
 	else:
 		mem.addVar(quads.getOperando())
 		quads.dumpQuad(quads.popOperando())
@@ -644,11 +644,11 @@ def p_meter_GoSub(p):
 			quads.pushGoSub(dictFunciones.list[i].dir)
 			if(not dictFunciones.list[i].type == Conversion['void']):
 				mem.addVar(dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type))
-				dirtemp = list(mem.localVars.keys())[-1]
 				id = dictFunciones.list[i].id
-				quads.pushParcheGuadalupano(dirtemp,id)
-				quads.operandos.append(dirtemp)
-				mem.localVars = {}
+				dirTemp = list(mem.localVars.keys())[-1]
+				quads.pushParcheGuadalupano(dirTemp,id)
+				quads.operandos.append(dirTemp)
+				mem.updateMain()
 			flag = True
 	if(flag):
 		pass
