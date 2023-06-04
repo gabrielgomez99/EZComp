@@ -67,6 +67,7 @@ class tablaFunc :
         self.type = type
         self.id = id
         self.dir = None
+        self.fin = None
         self.param = {}
         self.tablaDeVariables = {}
         self.ints = 0

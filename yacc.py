@@ -122,7 +122,7 @@ def p_LECTURA(p):
 
 def p_LLAMADA(p):
 	'''
-	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub ')'
+	LLAMADA	: ID meter_ERA '(' LLAMADA_1 meter_GoSub ')' es_llamada
 	'''		
 def p_LLAMADA_1(p):
 	'''
@@ -279,7 +279,7 @@ def p_F(p):
         	| CTEFLOAT push_operando_F
 		| CTEINT push_operando_I
 		| VARIABLE 
-		| LLAMADA es_llamada
+		| LLAMADA
 	'''
 
 def p_FUNC_ESPECIALES(p):
@@ -465,18 +465,11 @@ def p_solve_Asig(p):
 	'''	
 	global esLlamada
 	if(esLlamada):
-		quads.dumpQuad(quads.popOperando())
-		mem.updateMain()
+		quads.dumpQuadLL()
+		esLlamada = False
 	else:
 		mem.addVar(quads.getOperando())
 		quads.dumpQuad(quads.popOperando())
-	esLlamada = False
-
-def p_solve_funcAsig(p):
-	'''
-	solve_funcAsig	: 
-	'''	
-	
 
 def p_meter_jump(p):
 	'''
@@ -606,7 +599,7 @@ def p_meter_endfunc(p):
 	meter_endfunc	: 
 	'''	
 	quads.pushOperator(Conversion['EndFunc'])
-	
+	dictFunciones.list[-1].fin = quads.pointer
 	quads.solveEndFunc()
 
 def p_meter_ERA(p):
@@ -638,17 +631,14 @@ def p_meter_GoSub(p):
 	'''
 	meter_GoSub	: 
 	'''	
+	global indiceGoSub
 	flag = False
 	for i in range(len(dictFunciones.list)):
 		if(dictFunciones.list[i].id == p[-4]):
 			quads.pushGoSub(dictFunciones.list[i].dir)
 			if(not dictFunciones.list[i].type == Conversion['void']):
-				mem.addVar(dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type))
 				id = dictFunciones.list[i].id
-				dirTemp = list(mem.localVars.keys())[-1]
-				quads.pushParcheGuadalupano(dirTemp,id)
-				quads.operandos.append(dirTemp)
-				mem.updateMain()
+				quads.pushParcheGuadalupano(id)
 			flag = True
 	if(flag):
 		pass
@@ -659,10 +649,13 @@ def p_meter_Return(p):
 	'''
 	meter_Return	: 
 	'''
+	global esLlamada
 	quads.pushOperator(Conversion['Return'])
-	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(dictFunciones.list[len(dictFunciones.list)-1].type)
-	mem.addVarGlobal(dirTemp)
-	quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
+	if(esLlamada):
+		quads.pushReturnLL(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
+		esLlamada = False
+	else:
+		quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
 
 #Expresions
 def p_push_Op(p):

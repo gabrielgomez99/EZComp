@@ -98,9 +98,7 @@ class memoria:
             #print(self.memory[-1][key])
     
     def popGlobal(self):
-        print(self.localVars,self.memory)
         dir , value = self.globalVars.popitem()
-        print(self.localVars,self.memory)
         if dir < 1999:
             if (dir > 0 and dir < 500): 
                 self.counterIntGlobal -= 1
