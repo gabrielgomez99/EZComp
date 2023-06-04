@@ -25,7 +25,7 @@ quads = listQuads()
 elseFlag = True
 mem = memoria()
 stackMemoria = []
-esLlamada = [False]
+esLlamada = False
 stackLlamadaId = []
 
 
@@ -465,13 +465,14 @@ def p_solve_Asig(p):
 	solve_Asig	: 
 	'''	
 	global esLlamada
-	if(esLlamada.pop()):
+	if(esLlamada):
 		temp = stackLlamadaId.pop()
 		for i in range (len(dictFunciones.list)):
 			if(temp == dictFunciones.list[i].id):
 				#mem.addVarGlobalType(dictFunciones.list[i].type)
 				dirTemp = dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type)
 		quads.dumpQuadLL(dirTemp)
+		esLlamada = False
 	else:
 		mem.addVar(quads.getOperando())
 		quads.dumpQuad(quads.popOperando())
@@ -547,37 +548,33 @@ def p_meter_expFor(p):
 	'''
 	meter_expFor	: 
 	'''	
-	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['int'])#se crea una variable entera para variable de control para el GoToF
-	mem.addVar(dirTemp)
+	#se crea una variable entera para variable de control para el GoToF
+	dirTemp = dictFunciones.list[-1].addTemp(Conversion['int'])
+	print('dirTemp')
 	quads.operandos.append(dirTemp)
 	quads.solveExpFor()
-	mem.updateMemory()
 
 def p_checar_condicionFor(p):
 	'''
 	checar_condicionFor	: 
 	'''	
-	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['int'])#se crea una variable entera para variable de tx para el GoToF
-	mem.addVar(dirTemp)
+	#se crea una variable entera para variable de tx para el GoToF
+	dirTemp = dictFunciones.list[-1].addTemp(Conversion['int'])
 	quads.operandos.append(dirTemp)
-	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['bool'])#se crea una variable booleana para el GoToF
-	mem.addVar(dirTemp)
+	dirTemp = dictFunciones.list[-1].addTemp(Conversion['bool'])#se crea una variable booleana para el GoToF
 	quads.operandos.append(dirTemp)
-	mem.updateMemory()
 	quads.solveCondicionFor()
 
 def p_final_for(p):
 	'''
 	final_for	: 
 	'''	
-	dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(Conversion['int'])
+	dirTemp = dictFunciones.list[-1].addTemp(Conversion['int'])
 	if(not mem.searchDirConstantes(1)):
 		mem.addConst(1,Conversion['int'])
-	mem.addVar(dirTemp)
 	quads.operandos.append(mem.searchDirConstantes(1))
 	quads.operandos.append(dirTemp)
 	quads.finalFor()
-	mem.updateMemory()
 
 def p_solve_read(p):
 	'''
@@ -663,8 +660,9 @@ def p_meter_Return(p):
 	'''
 	global esLlamada
 	quads.pushOperator(Conversion['Return'])
-	if(esLlamada.pop()):
+	if(esLlamada):
 		quads.pushReturnLL(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
+		esLlamada = False
 	else:
 		quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
 
@@ -704,7 +702,7 @@ def p_es_llamada(p):
 	es_llamada	: 
 	'''	
 	global esLlamada 
-	esLlamada.append(True)
+	esLlamada = True
 
 def p_solve_EXP(p):
 	'''
@@ -784,6 +782,11 @@ def p_endProg(p):
 	'''
 	endProg	: 
 	'''	
+	for key in ((dictFunciones.list[-1].tablaDeVariables.keys())):
+		mem.addVar(dictFunciones.list[-1].tablaDeVariables[key]['dir'])
+	for key in ((dictFunciones.list[-1].temps.keys())):
+		mem.addVar(key)
+	mem.updateMain()
 	quads.genEnd()
 
 errorFlag = False

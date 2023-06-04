@@ -43,7 +43,7 @@ class maquinaVirtual:
     def startMaquinaVirtual(self):
         i = 0 #pointer de los quadruplos
         contParam = 0 #Se cuenta los parametros
-        funcionIdTemp = [] #Sirve para luego buscar en tablaDeVariables y Param de funcDir
+        funcionIdTemp = '' #Sirve para luego buscar en tablaDeVariables y Param de funcDir
         jumpEndProc = []
         self.memory.printMem()
         while(True):
@@ -58,7 +58,6 @@ class maquinaVirtual:
                     opLeft = self.getValue(self.quads[i].op1)
                 except:
                     pass
-            opRight = self.getValue(self.quads[i].op2)
             if(self.quads[i].res == None):
                 pass
             elif(type(self.quads[i].res) == str):
@@ -67,64 +66,56 @@ class maquinaVirtual:
                 else:
                     result = self.quads[i].res
             #Arithmetics
-            if(operator == Conversion['=']):
-                try:             
-                    if(type(result) == str):
-                        if(self.quads[i+1].operator == Conversion['Return']):
-                            #print(self.memory.globalVars)
-                            #print('a',self.quads[i].operator,self.quads[i].op1,self.quads[i].op2,self.quads[i].res)
-                            #print('b',self.memory.memory[-1])
-                            self.memory.memory[-1][self.quads[i].op1] = self.memory.popGlobal()[1]
-                            #print('v',self.memory.memory[-1])
-                    else:
-                        #print(opLeft,'=',self.quads[i].res)
-                        self.memory.memory[-1][self.quads[i].res] = opLeft
-                except:
-                    pass
+            if(operator == Conversion['=']):       
+                if(type(self.quads[i].res) == str):
+                    if(self.quads[i+1].operator == Conversion['Return']):
+                        self.memory.memory[-1][self.quads[i].op1] = self.memory.popGlobal()[1]
+                else:
+                    self.memory.memory[-1][self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
                 #print(self.memory.memory)
                 #print(opLeft,'+',opRight,self.quads[i].res)
-                value = opLeft + self.getValue(self.quads[i].op2)
+                value = self.getValue(self.quads[i].op1) + self.getValue(self.quads[i].op2)
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['-']):
-                value = opLeft - opRight
+                value = self.getValue(self.quads[i].op1) - self.getValue(self.quads[i].op2)
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['*']):
-                value = opLeft * opRight
+                value = self.getValue(self.quads[i].op1) * self.getValue(self.quads[i].op2)
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['/']):
-                value = opLeft / opRight
+                value = self.getValue(self.quads[i].op1) / self.getValue(self.quads[i].op2)
                 self.setValue(self.quads[i].res,value)
             
             #Relational
             if(operator == Conversion['<']):
-                if(opLeft < opRight):
+                if(self.getValue(self.quads[i].op1) < self.getValue(self.quads[i].op2)):
                     #print(opLeft,'<',opRight)
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['>']):
-                if(opLeft > opRight):
+                if(self.getValue(self.quads[i].op1) > self.getValue(self.quads[i].op2)):
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['<=']):
-                if(opLeft <= opRight):
+                if(self.getValue(self.quads[i].op1) <= self.getValue(self.quads[i].op2)):
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['>=']):
-                if(opLeft >= opRight):
+                if(self.getValue(self.quads[i].op1) >= self.getValue(self.quads[i].op2)):
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['!=']):
-                if(not(opLeft == opRight)):
+                if(not(self.getValue(self.quads[i].op1) == self.getValue(self.quads[i].op2))):
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
             elif(operator == Conversion['==']):
-                if(opLeft == opRight):
+                if(self.getValue(self.quads[i].op1) == self.getValue(self.quads[i].op2)):
                     self.setValue(self.quads[i].res,1)
                 else:
                     self.setValue(self.quads[i].res,0)
@@ -150,13 +141,15 @@ class maquinaVirtual:
                     if(self.funcDir[j].id == result):
                         for key in ((self.funcDir[j].tablaDeVariables.keys())):
                             self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir'])
-                        funcionIdTemp.append(result)
+                        for key in ((self.funcDir[j].temps.keys())):
+                            self.memory.addVar(key)
+                        funcionIdTemp = result
 
             #Param
             if(operator == Conversion['Param']):
                 size = len(self.funcDir)-1
                 for j in range(size):
-                    if(self.funcDir[j].id == funcionIdTemp[-1]):
+                    if(self.funcDir[j].id == funcionIdTemp):
                         key = list(self.funcDir[j].param.keys())[contParam]
                         self.memory.addVar(self.funcDir[j].param[key]['dirV'])
                         self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.getValue(self.quads[i].res)
@@ -185,7 +178,7 @@ class maquinaVirtual:
                     self.memory.globalVars[key] = self.getValue(self.quads[i-1].op1)
                 else:
                     for j in range(len(self.funcDir)):
-                        if(self.funcDir[j].id == funcionIdTemp.pop()):
+                        if(self.funcDir[j].id == funcionIdTemp):
                             #print('entre',self.memory.globalVars)
                             self.memory.addVarGlobalType(self.funcDir[j].type)
                             key = list(self.memory.globalVars)[-1]

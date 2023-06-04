@@ -70,6 +70,7 @@ class tablaFunc :
         self.fin = None
         self.param = {}
         self.tablaDeVariables = {}
+        self.temps = {}
         self.ints = 0
         self.floats = 0
         self.chars = 0
@@ -93,6 +94,23 @@ class tablaFunc :
             temp = self.bools + 5000
             self.bools += 1
             return temp
+
+    def addTemp(self,type):
+        dirV = 0
+        if type == Conversion['int']:
+            dirV = self.ints + 2000
+            self.ints += 1
+        elif type == Conversion['float']:
+            dirV = self.floats + 3000
+            self.floats += 1
+        elif type == Conversion['char']:
+            dirV = self.chars + 4000
+            self.chars += 1
+        elif type == Conversion['bool']:
+            dirV = self.bools + 5000
+            self.bools += 1
+        self.temps.update({dirV : {'value' : 0}})
+        return dirV
 
     def addParam(self,type,id,dirV):
         if type == Conversion['int']:
@@ -118,6 +136,7 @@ class tablaFunc :
         print(json.dumps("Chars: " + str(self.chars),indent=4,sort_keys=False))
         print(json.dumps(self.param,indent=4,sort_keys=False))
         print(json.dumps(self.tablaDeVariables,indent=4,sort_keys=False))
+        print(json.dumps(self.temps,indent=4,sort_keys=False))
 
 class dictFunc :
     def __init__(self):
