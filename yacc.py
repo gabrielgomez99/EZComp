@@ -795,9 +795,15 @@ def p_endProg(p):
 	endProg	: 
 	'''	
 	for key in ((dictFunciones.list[-1].tablaDeVariables.keys())):
-		mem.addVar(dictFunciones.list[-1].tablaDeVariables[key]['dir'])
+		xAxis = dictFunciones.list[-1].tablaDeVariables[key]['xAxis']
+		yAxis = dictFunciones.list[-1].tablaDeVariables[key]['yAxis']
+		for k in range(xAxis*yAxis):
+			print('x',k)
+			mem.addVar(dictFunciones.list[-1].tablaDeVariables[key]['dir']+k)
+			print(mem.localVars)
 	for key in ((dictFunciones.list[-1].temps.keys())):
 		mem.addVar(key)
+	print(mem.localVars)
 	mem.updateMain()
 	quads.genEnd()
 
@@ -841,9 +847,9 @@ if errorFlag == False:
     quads.imprimirQuadruplos()
     quads.imprimirQuadStacks()
     #mem.printMem()
-    for i in range(len(dictFunciones.list)):
-    	dictFunciones.list[i].imprimirFunc()
-    #maquina.startMaquinaVirtual()
+    """ for i in range(len(dictFunciones.list)):
+    	dictFunciones.list[i].imprimirFunc() """
+    maquina.startMaquinaVirtual()
 else:
 	print("No se compilo correctamente")
 

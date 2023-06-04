@@ -140,7 +140,12 @@ class maquinaVirtual:
                 for j in range(size):
                     if(self.funcDir[j].id == result):
                         for key in ((self.funcDir[j].tablaDeVariables.keys())):
-                            self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir'])
+                            xAxis = self.funcDir[j].tablaDeVariables[key]['xAxis']
+                            yAxis = self.funcDir[j].tablaDeVariables[key]['yAxis']
+                            for k in range(xAxis*yAxis):
+                                print('x',k)
+                                self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir']+k)
+                                print(self.memory.localVars)
                         for key in ((self.funcDir[j].temps.keys())):
                             self.memory.addVar(key)
                         funcionIdTemp = result
