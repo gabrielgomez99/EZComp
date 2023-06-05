@@ -63,7 +63,15 @@ class maquinaVirtual:
                     if(self.quads[i+1].operator == Conversion['Return']):
                         self.memory.memory[-1][self.quads[i].op1] = self.memory.popGlobal()[1]
                 elif(self.quads[i-1].operator == Conversion['ARREGLO']):
-                    self.memory.memory[-1][self.quads[i-1].res + self.getValue(self.quads[i].res)] = opLeft
+                    key = 0
+                    for keys in self.funcDir[-1].tablaDeVariables.keys():
+                        if(self.funcDir[-1].tablaDeVariables[keys]['dir'] == self.quads[i-1].res):
+                            key = keys
+                    if(self.quads[i-1].res + self.getValue(self.quads[i].res) < self.funcDir[-1].tablaDeVariables[key]['dir'] + self.funcDir[-1].tablaDeVariables[key]['xAxis'] * self.funcDir[-1].tablaDeVariables[key]['yAxis']):
+                        self.memory.memory[-1][self.quads[i-1].res + self.getValue(self.quads[i].res)] = opLeft
+                    else:
+                        print('ERROR: Se esta indexando fuera del rango de la variable')
+                        exit()
                 else:
                     self.memory.memory[-1][self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
@@ -142,7 +150,7 @@ class maquinaVirtual:
                         self.memory.memory[-1][self.quads[i].res] = float(value)
                 elif(self.quads[i].res < 5000):
                         self.memory.memory[-1][self.quads[i].res] = str(value)
-                        
+
             #ERA
             if(operator == Conversion['ERA']):
                 size = len(self.funcDir)-1

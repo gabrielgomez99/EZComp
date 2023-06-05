@@ -889,7 +889,7 @@ maquina = maquinaVirtual()
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
-    quads.imprimirQuadStacks()
+    #quads.imprimirQuadStacks()
     #mem.printMem()
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i].imprimirFunc() """
