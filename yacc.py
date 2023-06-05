@@ -255,9 +255,11 @@ def p_solveVar(p):
 	if(dim == 2):
 		quads.genQuadVar1Dim()
 		mem.addVarGlobal(quads.arrPointer-1)
+		dim = 0
 	elif(dim == 3):
 		quads.genQuadVar2Dim(dictFunciones.list[-1].addTemp(Conversion['int']))
 		mem.addVarGlobal(quads.arrPointer-1)
+		dim = 0
 
 def p_EXP(p):
 	'''
@@ -633,7 +635,6 @@ def p_solve_read(p):
 	'''
 	solve_read	: 
 	'''	
-	#mem.searchDir(quads.getOperando())
 	quads.solveRead()
 
 def p_solve_Print(p):
@@ -714,12 +715,16 @@ def p_meter_Return(p):
 	'''
 	global esLlamada
 	quads.pushOperator(Conversion['Return'])
-	if(esLlamada):
-		quads.pushReturnLL(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
-		esLlamada = False
+	if(not dictFunciones.list[-1].type == Conversion['void']):
+		if(esLlamada):
+			quads.pushReturnLL(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
+			esLlamada = False
+		else:
+			quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
 	else:
-		quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
-
+		print('ERROR: No se puede hacer return en funcion VOID')
+		exit()
+		
 #Expresions
 def p_push_Op(p):
 	'''
