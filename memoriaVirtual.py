@@ -4,6 +4,7 @@ global variables: (0 - 1999)
 	float		: (500 - 999)
 	char		: (1000 - 1499)
 	bool 		: (1500 - 1999)
+    arrPointer  : (10000)
 
 local variables	: (2000 - 5999)		# incluye variables temporales
 	int			: (2000 - 2999)
@@ -54,7 +55,7 @@ class memoria:
         self.counterFloatGlobal = 0
         self.counterCharGlobal = 0
         self.counterBoolGlobal = 0
-        self.lastUpdate = 0
+        self.arrPointer = 0
 
     def printMem(self):
         print('Globales',self.globalVars)
@@ -86,17 +87,12 @@ class memoria:
         self.localVars = {}
 
     def updateMemory(self):
-        #print(self.memory, 'aaaaa')
-        #print(self.memory[-1])
         self.memory[-1].update(self.localVars)
         self.localVars = {}
 
     def updateParams(self):
-        #print(self.localVars)
         for key in (self.localVars.keys()):
-            #print('esta llave: ',key,'valor: ',self.memory[-1][key],'asigna: ',self.localVars[key])
             self.memory[-1][key] = self.localVars[key]
-            #print(self.memory[-1][key])
     
     def popGlobal(self):
         dir , value = self.globalVars.popitem()
@@ -109,37 +105,38 @@ class memoria:
                 self.counterCharGlobal -= 1
             else:
                 self.counterBoolGlobal -= 1
-            self.lastUpdate = [dir,value]
             return dir , value
 
 
     def addVarGlobal(self,dir):
-        if dir < 1999:
-            if (dir > 0 and dir < 500): 
-                if self.counterIntGlobal < CONSTMAXGLOBALINTS:
-                    self.counterIntGlobal +=1
-                else:
-                    print(f"ERROR: ran out of memory for global Ints.")
-                    exit()
-            elif (dir > 499 and dir < 1000): 
-                if self.counterFloatGlobal < CONSTMAXGLOBALFLOATS:
-                    self.counterFloatGlobal +=1
-                else:
-                    print(f"ERROR: ran out of memory for global Floats.")
-                    exit()
-            elif (dir > 999 and dir < 1500):
-                if self.counterCharGlobal < CONSTMAXGLOBALCHARS:
-                    self.counterCharGlobal +=1
-                else:
-                    print(f"ERROR: ran out of memory for global Chars.")
-                    exit()
+        print('dir',dir)
+        if (dir > 0 and dir < 500): 
+            if self.counterIntGlobal < CONSTMAXGLOBALINTS:
+                self.counterIntGlobal +=1
             else:
-                if self.counterBoolGlobal < CONSTMAXGLOBALBOOLS:
-                    self.counterBoolGlobal += 1
-                else:
-                    print(f"ERROR: ran out of memory for global Bools.")
-                    exit()
-            self.globalVars.update({dir : 0})
+                print(f"ERROR: ran out of memory for global Ints.")
+                exit()
+        elif (dir > 499 and dir < 1000): 
+            if self.counterFloatGlobal < CONSTMAXGLOBALFLOATS:
+                self.counterFloatGlobal +=1
+            else:
+                print(f"ERROR: ran out of memory for global Floats.")
+                exit()
+        elif (dir > 999 and dir < 1500):
+            if self.counterCharGlobal < CONSTMAXGLOBALCHARS:
+                self.counterCharGlobal +=1
+            else:
+                print(f"ERROR: ran out of memory for global Chars.")
+                exit()
+        elif(dir > 1499 and dir < 2000):
+            if self.counterBoolGlobal < CONSTMAXGLOBALBOOLS:
+                self.counterBoolGlobal += 1
+            else:
+                print(f"ERROR: ran out of memory for global Bools.")
+                exit()
+        else:
+            self.arrPointer += 1
+        self.globalVars.update({dir : 0})
 
     def addVarGlobalType(self,type):
         dirTemp = 0
@@ -280,3 +277,4 @@ class memoria:
         self.counterFloatGlobal = 0
         self.counterCharGlobal = 0
         self.counterBoolGlobal = 0
+        self.arrPointer = 0

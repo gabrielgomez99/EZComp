@@ -21,7 +21,7 @@ class listQuads :
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
         self.tempVControl = [] #Sirve para poder controlar la variable de control de los For loops
-        self.opDimensionados = [] 
+        self.arrPointer = 10000
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -114,15 +114,23 @@ class listQuads :
             #self.pushOperando_Type(self.popOperando(),self.popType())
         self.pointer += 1
 
-    def genQuadVar1Dim(self,dir):
-        self.lista.append(quadruplo(Conversion['='],self.popOperando(),None,dir))
+    def genQuadVar1Dim(self):
+        self.lista.append(quadruplo(Conversion['+'],dir,self.getOperando(),self.arrPointer))
+        self.lista.append(quadruplo(Conversion['ARREGLO'],None,None,self.popOperando()))
+        self.pushOperando_Type(self.arrPointer,Conversion['int'])
         self.pointer += 1
+        self.arrPointer += 1
         self.pushOperando_Type(dir,Conversion['int'])
 
     def genQuadVar2Dim(self,dir):
-        self.lista.append(quadruplo(Conversion['+'],self.popOperando(),self.popOperando(),dir))
+        self.lista.append(quadruplo(Conversion['*'],self.popOperando(),self.popOperando(),dir))
         self.pointer += 1
-        self.pushOperando_Type(dir,Conversion['int'])
+        self.lista.append(quadruplo(Conversion['+'],dir,self.getOperando(),self.arrPointer))
+        self.pointer += 1
+        self.lista.append(quadruplo(Conversion['ARREGLO'],None,None,self.popOperando()))
+        self.pushOperando_Type((self.arrPointer),Conversion['int'])
+        self.arrPointer += 1
+        
 
     def dumpQuadLL(self,dir):
         operator = self.popOperator()

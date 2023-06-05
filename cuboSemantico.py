@@ -30,7 +30,8 @@ Conversion = {
 'Param' : 28,
 'ERA' : 29,
 '(' : 30,
-'END' : 31
+'ARREGLO' : 31,
+'END' : 32
 }
 
 cuboSemantico = {

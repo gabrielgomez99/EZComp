@@ -253,9 +253,11 @@ def p_solveVar(p):
 	'''	
 	global dim
 	if(dim == 2):
-		quads.genQuadVar1Dim(dictFunciones.list[-1].addTemp(Conversion['int']))
+		quads.genQuadVar1Dim()
+		mem.addVarGlobal(quads.arrPointer-1)
 	elif(dim == 3):
 		quads.genQuadVar2Dim(dictFunciones.list[-1].addTemp(Conversion['int']))
+		mem.addVarGlobal(quads.arrPointer-1)
 
 def p_EXP(p):
 	'''
@@ -839,12 +841,9 @@ def p_endProg(p):
 		xAxis = dictFunciones.list[-1].tablaDeVariables[key]['xAxis']
 		yAxis = dictFunciones.list[-1].tablaDeVariables[key]['yAxis']
 		for k in range(xAxis*yAxis):
-			print('x',k)
 			mem.addVar(dictFunciones.list[-1].tablaDeVariables[key]['dir']+k)
-			print(mem.localVars)
 	for key in ((dictFunciones.list[-1].temps.keys())):
 		mem.addVar(key)
-	print(mem.localVars)
 	mem.updateMain()
 	quads.genEnd()
 

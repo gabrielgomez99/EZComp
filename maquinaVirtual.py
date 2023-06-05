@@ -17,7 +17,7 @@ class maquinaVirtual:
     def getValue(self,op):
         if(op == None):
             return
-        if(op < 2000):
+        if(op < 2000 or op > 9999):
             #print('value',self.memory.globalVars[op])
             try:
                 return self.memory.globalVars[op]
@@ -32,7 +32,7 @@ class maquinaVirtual:
         
     def setValue(self,dir,value):
         #print(dir,value)
-        if(dir < 2000):
+        if(dir < 2000 or dir > 9999):
             self.memory.globalVars[dir] = value
         elif(dir < 6000):
             #print(value)
@@ -48,12 +48,9 @@ class maquinaVirtual:
         self.memory.printMem()
         while(True):
             operator = self.quads[i].operator
-            #print(self.quads[i].operator,self.quads[i].op1,self.quads[i].op2,self.quads[i].res)
-            #print('i',i,self.memory.globalVars)
             if(type(self.quads[i].op1) == str):
                 opLeft = self.quads[i].op1
             else:
-                #print(self.memory.memory[-1])
                 try:
                     opLeft = self.getValue(self.quads[i].op1)
                 except:
@@ -70,11 +67,12 @@ class maquinaVirtual:
                 if(type(self.quads[i].res) == str):
                     if(self.quads[i+1].operator == Conversion['Return']):
                         self.memory.memory[-1][self.quads[i].op1] = self.memory.popGlobal()[1]
+                elif(self.quads[i-1].operator == Conversion['ARREGLO']):
+                    print(self.memory.globalVars)
+                    self.memory.memory[-1][self.quads[i-1].res + self.getValue(self.quads[i].res)] = opLeft
                 else:
                     self.memory.memory[-1][self.quads[i].res] = opLeft
             elif(operator == Conversion['+']):
-                #print(self.memory.memory)
-                #print(opLeft,'+',opRight,self.quads[i].res)
                 value = self.getValue(self.quads[i].op1) + self.getValue(self.quads[i].op2)
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['-']):
@@ -143,9 +141,7 @@ class maquinaVirtual:
                             xAxis = self.funcDir[j].tablaDeVariables[key]['xAxis']
                             yAxis = self.funcDir[j].tablaDeVariables[key]['yAxis']
                             for k in range(xAxis*yAxis):
-                                print('x',k)
                                 self.memory.addVar(self.funcDir[j].tablaDeVariables[key]['dir']+k)
-                                print(self.memory.localVars)
                         for key in ((self.funcDir[j].temps.keys())):
                             self.memory.addVar(key)
                         funcionIdTemp = result
