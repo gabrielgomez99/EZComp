@@ -21,6 +21,7 @@ class listQuads :
         self.resTemp = 0 #Stack que guarda los resultados
         self.pointer = 0 #Nos apunta hacia adelante de la instruccion que hicimos
         self.tempVControl = [] #Sirve para poder controlar la variable de control de los For loops
+        self.opDimensionados = [] 
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
@@ -112,6 +113,16 @@ class listQuads :
             self.lista.append(quadruplo(operator,dirTemp,None,self.popOperando()))
             #self.pushOperando_Type(self.popOperando(),self.popType())
         self.pointer += 1
+
+    def genQuadVar1Dim(self,dir):
+        self.lista.append(quadruplo(Conversion['='],self.popOperando(),None,dir))
+        self.pointer += 1
+        self.pushOperando_Type(dir,Conversion['int'])
+
+    def genQuadVar2Dim(self,dir):
+        self.lista.append(quadruplo(Conversion['+'],self.popOperando(),self.popOperando(),dir))
+        self.pointer += 1
+        self.pushOperando_Type(dir,Conversion['int'])
 
     def dumpQuadLL(self,dir):
         operator = self.popOperator()

@@ -15,6 +15,8 @@ from maquinaVirtual import maquinaVirtual
 tempQDecVar = queue.Queue()
 tempTipo = ''
 tempYAxis = 0
+dim = 1
+tempId = ''
 seenAxis = False
 tempScope = 0
 tempVars = tablaVar()
@@ -25,7 +27,6 @@ dictFunciones = dictFunc()
 quads = listQuads()
 elseFlag = True
 mem = memoria()
-stackMemoria = []
 esLlamada = False
 stackLlamadaId = []
 
@@ -202,21 +203,60 @@ def p_TIPO_COMPUESTO(p):
 
 def p_VARIABLE(p):
 	'''
-	VARIABLE	: ID VARIABLE_1
+	VARIABLE	: ID pushID VARIABLE_1 solveVar
 	'''
-	temp = dictFunciones.getVarDir(p[1])
-	quads.pushOperando_Type(temp,dictFunciones.getVarType(p[1]))
 def p_VARIABLE_1(p):
 	'''
-	VARIABLE_1	: '[' EXP ']' VARIABLE_2
+	VARIABLE_1	: '[' insert_Paren checarDim EXP ']' pop_Paren VARIABLE_2
     	| empty
 	'''	
 def p_VARIABLE_2(p):
 	'''
-	VARIABLE_2	: '[' EXP ']'
+	VARIABLE_2	: '[' insert_Paren checarDimY EXP ']' pop_Paren
     	| empty
 	'''			
-	
+def p_pushID(p):
+	'''
+	pushID	: 
+	'''	
+	global tempId
+	tempId = p[-1]
+	quads.pushOperando_Type(dictFunciones.list[-1].tablaDeVariables[p[-1]]['dir'],dictFunciones.list[-1].tablaDeVariables[p[-1]]['type'])
+
+def p_checarDim(p):
+	'''
+	checarDim	: 
+	'''	
+	global dim
+	if(dictFunciones.list[-1].tablaDeVariables[tempId]['xAxis'] > 1):
+		pass
+	else:
+		print('ERROR: Variable solo tiene una dimension')
+		exit()
+	dim += 1
+		
+def p_checarDimY(p):
+	'''
+	checarDimY	: 
+	'''	
+	global dim
+	if(dictFunciones.list[-1].tablaDeVariables[tempId]['yAxis'] > 1):
+		pass
+	else:
+		print('ERROR: Variable solo tiene dos dimension')
+		exit()
+	dim += 1
+
+def p_solveVar(p):
+	'''
+	solveVar	: 
+	'''	
+	global dim
+	if(dim == 2):
+		quads.genQuadVar1Dim(dictFunciones.list[-1].addTemp(Conversion['int']))
+	elif(dim == 3):
+		quads.genQuadVar2Dim(dictFunciones.list[-1].addTemp(Conversion['int']))
+
 def p_EXP(p):
 	'''
 	EXP	: T_EXP EXP_1 solve_EXP update_memVmain
@@ -635,6 +675,7 @@ def p_meter_ERA(p):
 		pass
 	else:
 		print("Error funcion no declarada")	
+		exit()
 
 def p_meter_param(p):
 	'''
