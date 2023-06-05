@@ -874,8 +874,10 @@ def p_error(p):
 # Crea el objeto parser
 parser = yacc.yacc()
 
+text = input("Ingresa archivo con extension .txt para leer: ")
+
 # Lee de un archivo de entrada
-with open('texto copy.txt', 'r') as f:
+with open(text, 'r') as f:
     input_data = f.read()
 
 # Parsea el input

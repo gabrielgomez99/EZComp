@@ -17,15 +17,14 @@ class maquinaVirtual:
     def getValue(self,op):
         if(op == None):
             return
-        if(op < 2000 or op > 9999):
-            try:
-                return self.memory.globalVars[op]
-            except:
-                pass
+        if(op < 2000):
+            return self.memory.globalVars[op]
         elif(op < 6000):
             return self.memory.memory[-1][op]
-        else:
+        elif(op < 9999):
             return self.memory.constants[op]
+        else:
+            return self.memory.globalVars[op]
         
     def setValue(self,dir,value):
         if(dir < 2000 or dir > 9999):
@@ -207,9 +206,8 @@ class maquinaVirtual:
                         
             
             if(operator == Conversion['END']):
-                print('Se acabo ejecucion')
-                
-                #self.memory.eraseAll()
+                print('Se acabo ejecucion')  
+                self.memory.eraseAll()
                 self.memory.printMem()
                 exit()
             i += 1
