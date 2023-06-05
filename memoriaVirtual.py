@@ -109,7 +109,6 @@ class memoria:
 
 
     def addVarGlobal(self,dir):
-        print('dir',dir)
         if (dir > 0 and dir < 500): 
             if self.counterIntGlobal < CONSTMAXGLOBALINTS:
                 self.counterIntGlobal +=1

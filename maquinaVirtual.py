@@ -18,24 +18,19 @@ class maquinaVirtual:
         if(op == None):
             return
         if(op < 2000 or op > 9999):
-            #print('value',self.memory.globalVars[op])
             try:
                 return self.memory.globalVars[op]
             except:
                 pass
         elif(op < 6000):
-            #print('value',self.memory.memory)
             return self.memory.memory[-1][op]
         else:
-            #print('value',self.memory.constants[op])
             return self.memory.constants[op]
         
     def setValue(self,dir,value):
-        #print(dir,value)
         if(dir < 2000 or dir > 9999):
             self.memory.globalVars[dir] = value
         elif(dir < 6000):
-            #print(value)
             self.memory.memory[-1][dir] = value
         else:
             self.memory.constants = value
@@ -68,7 +63,6 @@ class maquinaVirtual:
                     if(self.quads[i+1].operator == Conversion['Return']):
                         self.memory.memory[-1][self.quads[i].op1] = self.memory.popGlobal()[1]
                 elif(self.quads[i-1].operator == Conversion['ARREGLO']):
-                    print(self.memory.globalVars)
                     self.memory.memory[-1][self.quads[i-1].res + self.getValue(self.quads[i].res)] = opLeft
                 else:
                     self.memory.memory[-1][self.quads[i].res] = opLeft
@@ -132,6 +126,23 @@ class maquinaVirtual:
                 else:
                     print(self.getValue(self.quads[i].res))
 
+            #Read
+            if(operator == Conversion['Read']):
+                value = input()
+                if(self.quads[i].res < 500):
+                        value = int(value)
+                        self.memory.globalVars[self.quads[i].res] = int(value)
+                elif(self.quads[i].res < 1000):
+                        self.memory.globalVars[self.quads[i].res] = float(value)
+                elif(self.quads[i].res < 1500):
+                        self.memory.globalVars[self.quads[i].res] = str(value)
+                elif(self.quads[i].res < 3000):
+                        self.memory.memory[-1][self.quads[i].res] = int(value)
+                elif(self.quads[i].res < 4000):
+                        self.memory.memory[-1][self.quads[i].res] = float(value)
+                elif(self.quads[i].res < 5000):
+                        self.memory.memory[-1][self.quads[i].res] = str(value)
+                        
             #ERA
             if(operator == Conversion['ERA']):
                 size = len(self.funcDir)-1
@@ -169,23 +180,17 @@ class maquinaVirtual:
             #Return
             if(operator == Conversion['Return']):
                 if(self.quads[i-1].operator == Conversion['=']):
-                    #print('lista', self.memory.globalVars)
                     for j in range(len(self.funcDir)):
                         if(self.funcDir[j].id == self.quads[i].res):
-                            #print('entre',self.funcDir[j].type)
                             self.memory.addVarGlobalType(self.funcDir[j].type)
                     key = list(self.memory.globalVars)[-1]
-                    #print('listaf',self.memory.globalVars[key] ,self.quads[i-1].op1,key)
                     self.memory.globalVars[key] = self.getValue(self.quads[i-1].op1)
                 else:
                     for j in range(len(self.funcDir)):
                         if(self.funcDir[j].id == funcionIdTemp):
-                            #print('entre',self.memory.globalVars)
                             self.memory.addVarGlobalType(self.funcDir[j].type)
                             key = list(self.memory.globalVars)[-1]
-                            #print('entre',self.memory.globalVars)
                         self.memory.globalVars[key] = self.getValue(self.quads[i].op1)
-                #self.memory.memory.pop()
                 i = int(jumpEndProc.pop())
             
             #EndFunc

@@ -604,7 +604,6 @@ def p_meter_expFor(p):
 	'''	
 	#se crea una variable entera para variable de control para el GoToF
 	dirTemp = dictFunciones.list[-1].addTemp(Conversion['int'])
-	print('dirTemp')
 	quads.operandos.append(dirTemp)
 	quads.solveExpFor()
 

@@ -233,7 +233,7 @@ class listQuads :
         self.tempVControl.pop()
 
     def solveRead(self):
-        self.lista.append(quadruplo(Conversion['Read'],None,None,self.tempVControl))
+        self.lista.append(quadruplo(Conversion['Read'],None,None,self.operandos.pop()))
         self.pointer += 1
 
     def solvePrint(self):
