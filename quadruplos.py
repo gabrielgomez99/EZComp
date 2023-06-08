@@ -280,6 +280,9 @@ class listQuads :
     def genQuadFEsp(self):
         self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
 
+    def genQuadHist(self):
+        self.lista.append(quadruplo(self.popOperator(),self.popOperando(),self.popOperando(),self.popOperando()))
+
     def genEnd(self):
         self.lista.append(quadruplo(Conversion['END'],None,None,None))
         self.pointer += 1

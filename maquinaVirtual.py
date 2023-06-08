@@ -1,5 +1,6 @@
 import pickle
 import pandas as pd
+import matplotlib.pyplot as plt
 from cuboSemantico import Conversion
 from tablas import tablaVar
 from tablas import tablaFunc
@@ -203,10 +204,47 @@ class maquinaVirtual:
 
             #MEAN
             if(operator == Conversion['MEAN']):
-                df = pd.read_csv(self.quads[i].res)
+                df = pd.read_csv(self.quads[i].res.replace('"',''))
                 mean_value = df.mean()
                 # Print the mean value
-                print(mean_value)
+                print('Mean: ',mean_value)
+
+            #MEDIAN
+            if(operator == Conversion['MEDIAN']):
+                df = pd.read_csv(self.quads[i].res.replace('"',''))
+                median_value = df.median()
+                # Print the mean value
+                print('Median: ',median_value)
+
+            #MODE
+            if(operator == Conversion['MODE']):
+                df = pd.read_csv(self.quads[i].res.replace('"',''))
+                mode_value = df.mode()
+                # Print the mean value
+                print('Mode: ',mode_value)
+
+            #VARIANCE
+            if(operator == Conversion['VARIANCE']):
+                df = pd.read_csv(self.quads[i].res.replace('"',''))
+                var_value = df.var()
+                # Print the mean value
+                print('Variance: ',var_value)
+
+            #VARIANCE
+            if(operator == Conversion['STDDEV']):
+                df = pd.read_csv(self.quads[i].res.replace('"',''))
+                std_value = df.std()
+                # Print the mean value
+                print('Standard Deviation: ',std_value)
+
+            #HISTOGRAM
+            if(operator == Conversion['HISTOGRAM']):
+                df = pd.read_csv(self.quads[i].res.replace('"',''))
+                df[self.quads[i].op2].plot.hist(bins=self.quads[i].op1)  # Adjust the number of bins as desired
+                # Set labels and title
+                plt.xlabel(self.quads[i].op2)
+                # Display the histogram
+                plt.show()
                                     
             
             #EndFunc
