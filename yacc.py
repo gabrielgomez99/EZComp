@@ -340,33 +340,51 @@ def p_FUNC_ESPECIALES(p):
 
 def p_MEAN_F(p):
 	'''
-	MEAN_F	: MEAN '(' VARIABLE ')' ';'
+	MEAN_F	: MEAN '(' DATAFRAME ')' ';'
 	'''	
+	quads.operandos.append(p[3])
+	quads.operator.append(Conversion['MEAN'])
+	quads.genQuadFEsp()
 
 def p_MEDIAN_F(p):
 	'''
-	MEDIAN_F	: MEDIAN '(' VARIABLE ')' ';'
+	MEDIAN_F	: MEDIAN '(' DATAFRAME ')' ';'
 	'''	
+	quads.operandos.append(p[3])
+	quads.operator.append(Conversion['MEDIAN'])
+	quads.genQuadFEsp()
 
 def p_MODE_F(p):
 	'''
-	MODE_F	: MODE '(' VARIABLE ')' ';'
+	MODE_F	: MODE '(' DATAFRAME ')' ';'
 	'''	
+	quads.operandos.append(p[3])
+	quads.operator.append(Conversion['MODE'])
+	quads.genQuadFEsp()
 
 def p_VARIANCE_F(p):
 	'''
-	VARIANCE_F	: VARIANCE '(' VARIABLE ')' ';'
+	VARIANCE_F	: VARIANCE '(' DATAFRAME ')' ';'
 	'''	
+	quads.operandos.append(p[3])
+	quads.operator.append(Conversion['VARIANCE'])
+	quads.genQuadFEsp()
 
 def p_STANDARD_DEV(p):
 	'''
-	STANDARD_DEV	: STDDEV '(' VARIABLE ')' ';'
+	STANDARD_DEV	: STDDEV '(' DATAFRAME ')' ';'
 	'''		
+	quads.operandos.append(Conversion[3])
+	quads.operator.append(Conversion['STDDEV'])
+	quads.genQuadFEsp()
 
 def p_HISTOGRAMA(p):
 	'''
-	HISTOGRAMA	: HISTOGRAM '(' VARIABLE ')' ';'
+	HISTOGRAMA	: HISTOGRAM '(' DATAFRAME ')' ';'
 	'''	
+	quads.operandos.append(p[3])
+	quads.operator.append(Conversion['HISTOGRAM'])
+	quads.genQuadFEsp()
 
 def p_RETURN_F(p):
 	'''

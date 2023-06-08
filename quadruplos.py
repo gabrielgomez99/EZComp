@@ -277,6 +277,9 @@ class listQuads :
             self.lista.append(quadruplo(self.popOperator(),None,None,id))
             self.pointer += 1
 
+    def genQuadFEsp(self):
+        self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
+
     def genEnd(self):
         self.lista.append(quadruplo(Conversion['END'],None,None,None))
         self.pointer += 1
