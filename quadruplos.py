@@ -282,11 +282,15 @@ class listQuads :
 
     def genQuadFEsp(self):
         self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
+        self.pointer += 1
+
+    def genQuadHist(self):
+        self.lista.append(quadruplo(self.popOperator(),self.popOperando(),self.popOperando(),self.popOperando()))
+        self.pointer += 1
 
     def genEnd(self):
         self.lista.append(quadruplo(Conversion['END'],None,None,None))
         self.pointer += 1
-
 
     def imprimirQuadruplos(self):
         for i in range(len(self.lista)):

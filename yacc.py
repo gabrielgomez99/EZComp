@@ -380,11 +380,13 @@ def p_STANDARD_DEV(p):
 
 def p_HISTOGRAMA(p):
 	'''
-	HISTOGRAMA	: HISTOGRAM '(' DATAFRAME ')' ';'
+	HISTOGRAMA	: HISTOGRAM '(' DATAFRAME ',' CHAR ',' CTEINT ')' ';'
 	'''	
 	quads.operandos.append(p[3])
+	quads.operandos.append(p[5])
+	quads.operandos.append(p[7])
 	quads.operator.append(Conversion['HISTOGRAM'])
-	quads.genQuadFEsp()
+	quads.genQuadHist()
 
 def p_RETURN_F(p):
 	'''
@@ -881,13 +883,11 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-         print(f"Syntax error at token {p.type} ({p.value}) in line {p.lineno}")
-         # Se descarta el token y dice que siga avanzando reportantodo el error
-         errorFlag = True
-         parser.errok()
+        # Print the line number and character position where the error occurred
+        print(f"Syntax error at line {p.lineno}: unexpected {p.value}")
     else:
-         errorFlag = True
-         print("Syntax error at EOF")
+        print("Syntax error: unexpected end of input")
+    exit()
 
     	
 # Crea el objeto parser
@@ -910,7 +910,7 @@ maquina = maquinaVirtual()
 if errorFlag == False:
     print("Se compilo correctamente")
     quads.imprimirQuadruplos()
-    #quads.imprimirQuadStacks()
+    quads.imprimirQuadStacks()
     #mem.printMem()
     """ for i in range(len(dictFunciones.list)):
     	dictFunciones.list[i].imprimirFunc() """
