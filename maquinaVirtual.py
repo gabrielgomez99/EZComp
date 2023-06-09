@@ -1,4 +1,5 @@
 import pickle
+import pandas as pd
 from cuboSemantico import Conversion
 from tablas import tablaVar
 from tablas import tablaFunc
@@ -196,6 +197,14 @@ class maquinaVirtual:
                 self.memory.globalVars[key] = self.getValue(self.quads[i].res)
                 self.memory.memory.pop()
                 i = int(jumpEndProc.pop())
+
+            #MEAN
+            if(operator == Conversion['MEAN']):
+                df = pd.read_csv(self.quads[i].res)
+                mean_value = df.mean()
+                # Print the mean value
+                print(mean_value)
+                                    
             
             #EndFunc
             if(operator == Conversion['EndFunc']):

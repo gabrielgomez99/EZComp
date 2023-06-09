@@ -55,7 +55,6 @@ reserved = {
    'variance' : 'VARIANCE',
    'stdDev' : 'STDDEV',
    'histogram' : 'HISTOGRAM',
-   'dataframe' : 'DATAFRAME',
    'file' : 'FILE',
    'read' : 'READ',
    'arr' : 'ARR',
@@ -67,6 +66,10 @@ reserved = {
 
 # Tokens que son de un valor y son literales
 literals = [ '+','-','*','/','=','(',')',';',':','[',']','{','}','>','<','.',',','"','&']
+
+def t_DATAFRAME(t):
+    r'\"[\w\d]*\.csv\"'
+    return t
 
 def t_COMMENT(t):
     r'\#.*'

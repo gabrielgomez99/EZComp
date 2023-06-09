@@ -31,7 +31,13 @@ Conversion = {
 'ERA' : 29,
 '(' : 30,
 'ARREGLO' : 31,
-'END' : 32
+'MEAN' : 32,
+'MEDIAN' : 33,
+'MODE' : 34,
+'VARIANCE' : 35,
+'STDDEV' : 36,
+'HISTOGRAM' : 37,
+'END' : 38
 }
 
 cuboSemantico = {
