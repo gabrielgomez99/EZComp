@@ -10,43 +10,43 @@ class tablaVar :
         self.variables = {}#Se crea un diccionario vacio que se ira actualizando con las varibales
 
     #Aqui se anaden las variables a la tabla
-    def addVar(self,id,scope,type,xAxis,yAxis):
+    def addVar(self,id,scope,type,xAxis,yAxis,ints,floats,chars):
         temp = 0
         if type == Conversion['int']:
             if scope == 0:
                 if self.counterInt >= 500:
                     print(f"ERROR: ran out of memory for global Ints.")
                     exit()
-                temp = self.counterInt
+                temp = ints + self.counterInt
             else:
                 if self.counterInt >= 1000:
                     print(f"ERROR: ran out of memory for Local Ints.")
                     exit()
-                temp = self.counterInt + 2000
+                temp = ints + self.counterInt + 2000
             self.counterInt += 1
         elif type == Conversion['float']:
             if scope == 0:
                 if self.counterFloat >= 500:
                     print(f"ERROR: ran out of memory for global Floats.")
                     exit()
-                temp = self.counterFloat
+                temp = floats + self.counterFloat
             else:
                 if self.counterFloat >= 1000:
                     print(f"ERROR: ran out of memory for Local Floats.")
                     exit()
-                temp = self.counterFloat + 3000
+                temp = floats + self.counterFloat + 3000
             self.counterFloat += 1
         else:
             if scope == 0:
                 if self.counterChar >= 500:
                     print(f"ERROR: ran out of memory for global Chars.")
                     exit()
-                temp = self.counterChar
+                temp = chars + self.counterChar
             else:
                 if self.counterChar >= 1000:
                     print(f"ERROR: ran out of memory for Local Chars.")
                     exit()
-                temp = self.counterChar + 4000
+                temp = chars + self.counterChar + 4000
             self.counterChar += 1
         self.variables.update({
                 id : {

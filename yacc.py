@@ -221,7 +221,7 @@ def p_pushID(p):
 	'''	
 	global tempId
 	tempId = p[-1]
-	quads.pushOperando_Type(dictFunciones.list[-1].tablaDeVariables[p[-1]]['dir'],dictFunciones.list[-1].tablaDeVariables[p[-1]]['type'])
+	quads.pushOperando_Type(dictFunciones.getVarDir(tempId),dictFunciones.getVarType(tempId))
 
 def p_checarDim(p):
 	'''
@@ -445,7 +445,7 @@ def p_meter_Dec_Var(p):
 	meter_Dec_Var	: 
 	'''
 	global tempQDecVar
-	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get())
+	tempVars.addVar(tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempQDecVar.get(),tempFuncion.ints,tempFuncion.floats,tempFuncion.chars)
 
 def p_meter_Dec_Arr(p):
 	'''
@@ -526,7 +526,7 @@ def p_solve_Asig(p):
 		for i in range (len(dictFunciones.list)):
 			if(temp == dictFunciones.list[i].id):
 				#mem.addVarGlobalType(dictFunciones.list[i].type)
-				dirTemp = dictFunciones.list[i].addToCounterType(dictFunciones.list[i].type)
+				dirTemp = quads.lista[quads.pointer-1].op1
 		quads.dumpQuadLL(dirTemp)
 		esLlamada = False
 	else:
@@ -698,11 +698,11 @@ def p_meter_GoSub(p):
 			if(not dictFunciones.list[i].type == Conversion['void']):
 				id = dictFunciones.list[i].id
 				if(dictFunciones.list[i].type == Conversion['int']):
-					quads.pushParcheGuadalupano((dictFunciones.list[i].ints+2000),id)
+					quads.pushParcheGuadalupano((dictFunciones.list[i].addTemp(Conversion['int'])),id)
 				if(dictFunciones.list[i].type == Conversion['float']):
-					quads.pushParcheGuadalupano((dictFunciones.list[i].ints+3000),id)
+					quads.pushParcheGuadalupano((dictFunciones.list[i].floats+3000),id)
 				if(dictFunciones.list[i].type == Conversion['char']):
-					quads.pushParcheGuadalupano((dictFunciones.list[i].ints+4000),id)
+					quads.pushParcheGuadalupano((dictFunciones.list[i].char+4000),id)
 			flag = True
 	if(flag):
 		pass
@@ -720,7 +720,7 @@ def p_meter_Return(p):
 			quads.pushReturnLL(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
 			esLlamada = False
 		else:
-			quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type)
+			quads.pushReturn(dictFunciones.list[len(dictFunciones.list)-1].type,dictFunciones.list[len(dictFunciones.list)-1].id)
 	else:
 		print('ERROR: No se puede hacer return en funcion VOID')
 		exit()
@@ -771,7 +771,7 @@ def p_solve_EXP(p):
 	if (quads.getOperator() == Conversion['||']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addTemp(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -783,7 +783,7 @@ def p_solve_T_EXP(p):
 	if (quads.getOperator() == Conversion['&']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addTemp(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -796,7 +796,7 @@ def p_solve_G_EXP(p):
 	if (quads.getOperator() == Conversion['<'] or quads.getOperator() == Conversion['>'] or quads.getOperator() == Conversion['=='] or quads.getOperator() == Conversion['!='] or quads.getOperator() == Conversion['<='] or quads.getOperator() == Conversion['>=']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addTemp(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -807,7 +807,7 @@ def p_solve_M_EXP(p):
 	if (quads.getOperator() == Conversion['+'] or quads.getOperator() == Conversion['-']):
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addTemp(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 
@@ -817,9 +817,10 @@ def p_solve_T(p):
 	'''	
 	global quads
 	if (quads.getOperator() == Conversion['*'] or quads.getOperator() == Conversion['/']):
+
 		quads.checkTypeMismatch()
 		#Se toma el type que se pusheo en CheckTypeMismatch yluego se suma a los contadores de su tipo y se asigna direccion
-		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addToCounterType(quads.getType())
+		dirTemp = dictFunciones.list[len(dictFunciones.list)-1].addTemp(quads.getType())
 		mem.addVar(dirTemp)
 		quads.dumpQuad(dirTemp)
 

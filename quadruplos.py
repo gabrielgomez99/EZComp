@@ -25,34 +25,34 @@ class listQuads :
 
 # Aqui se inserta todo a sus listas
     def pushOperando_Type(self,newOperando, newType):
-        print("push operando", newOperando,"push type",newType)
+       #print("push operando", newOperando,"push type",newType)
         self.operandos.append(newOperando)
         self.types.append(newType)
 
     def pushOperator(self, newOperator):
-        print("push operator", newOperator)
+        #print("push operator", newOperator)
         self.operator.append(newOperator)
 
     def pushJump(self):
-        print("push jump", (self.pointer))
+        #print("push jump", (self.pointer))
         self.jumps.append((self.pointer))
 
     # Pop de Stacks
     def popOperator(self):
         operator = self.operator.pop()
-        print("pop Operator",operator)
+        #print("pop Operator",operator)
         return operator
 
     def popOperando(self):
         operando = self.operandos.pop()
-        print("pop operando",operando)
+        #print("pop operando",operando)
         return operando
 
     def popType(self):
         return self.types.pop()
 
     def popJump(self):
-        print("pop jump",self.getJump())
+        #print("pop jump",self.getJump())
         return self.jumps.pop()
 
     def popParen(self):
@@ -89,6 +89,7 @@ class listQuads :
             if (Cubo[leftType][rightType][operator]):
                 self.types.append(Cubo[leftType][rightType][operator])
         except:
+            self.imprimirQuadruplos()
             print(leftType,rightType,operator)
             print("ERROR: TypeMismatch")
             exit()
@@ -115,12 +116,13 @@ class listQuads :
         self.pointer += 1
 
     def genQuadVar1Dim(self):
-        self.lista.append(quadruplo(Conversion['+'],dir,self.getOperando(),self.arrPointer))
+        self.lista.append(quadruplo(Conversion['+'],self.popOperando(),self.getOperando(),self.arrPointer))
+        self.pointer += 1
         self.lista.append(quadruplo(Conversion['ARREGLO'],None,None,self.popOperando()))
         self.pushOperando_Type(self.arrPointer,Conversion['int'])
         self.pointer += 1
         self.arrPointer += 1
-        self.pushOperando_Type(dir,Conversion['int'])
+        self.pushOperando_Type(self.popOperando(),Conversion['int'])
 
     def genQuadVar2Dim(self,dir):
         self.lista.append(quadruplo(Conversion['*'],self.popOperando(),self.popOperando(),dir))
@@ -181,7 +183,8 @@ class listQuads :
             exp = self.popOperando()
             controlType = self.getType()
             self.resTemp += 1
-            typeFinal = self.checkTypeMismatchP(controlType,rightType,operator)
+            self.checkTypeMismatchP(controlType,rightType,operator)
+            typeFinal = self.popType()
             self.tempVControl.append(vControl)
             self.lista.append(quadruplo(operator,exp,None,vControl))
             self.pushOperando_Type(vControl,typeFinal)
@@ -260,13 +263,13 @@ class listQuads :
         self.lista.append(quadruplo(Conversion['='],dir,None,id))
         self.pointer += 1
 
-    def pushReturn(self,type):
+    def pushReturn(self,type,id):
         if(type==Conversion['void']):
             print(f"ERROR: Function is void type, return is not allowed")
             exit()
         else:
             self.checkTypeMismatchP(type,self.getType(),Conversion['='])
-            self.lista.append(quadruplo(self.popOperator(),None,None,self.popOperando()))
+            self.lista.append(quadruplo(self.popOperator(),None,id,self.popOperando()))
             self.pointer += 1
     
     def pushReturnLL(self,type,id):
@@ -287,10 +290,8 @@ class listQuads :
             self.lista[i].Imprimir(i)
 
     def imprimirQuadStacks(self):
-        print(self.lista)
         print(self.operandos)
         print(self.operator)
         print(self.jumps)
-        print(self.resTemp)
         print(self.pointer)
 

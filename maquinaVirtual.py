@@ -39,7 +39,7 @@ class maquinaVirtual:
         contParam = 0 #Se cuenta los parametros
         funcionIdTemp = '' #Sirve para luego buscar en tablaDeVariables y Param de funcDir
         jumpEndProc = []
-        self.memory.printMem()
+        #self.memory.printMem()
         while(True):
             operator = self.quads[i].operator
             if(type(self.quads[i].op1) == str):
@@ -57,22 +57,23 @@ class maquinaVirtual:
                 else:
                     result = self.quads[i].res
             #Arithmetics
-            if(operator == Conversion['=']):       
+            if(operator == Conversion['=']):     
+                #print(self.quads[i].operator,self.quads[i].op1,'val',self.getValue(self.quads[i].op1),self.quads[i].op2,self.quads[i].res)  
                 if(type(self.quads[i].res) == str):
-                    if(self.quads[i+1].operator == Conversion['Return']):
+                    if(self.quads[i-1].operator == Conversion['GoSub']):
                         self.memory.memory[-1][self.quads[i].op1] = self.memory.popGlobal()[1]
                 elif(self.quads[i-1].operator == Conversion['ARREGLO']):
                     key = 0
                     for keys in self.funcDir[-1].tablaDeVariables.keys():
                         if(self.funcDir[-1].tablaDeVariables[keys]['dir'] == self.quads[i-1].res):
                             key = keys
-                    if(self.quads[i-1].res + self.getValue(self.quads[i].res) < self.funcDir[-1].tablaDeVariables[key]['dir'] + self.funcDir[-1].tablaDeVariables[key]['xAxis'] * self.funcDir[-1].tablaDeVariables[key]['yAxis']):
-                        self.memory.memory[-1][self.quads[i-1].res + self.getValue(self.quads[i].res)] = opLeft
-                    else:
+                    #if(self.quads[i-1].res + self.getValue(self.quads[i].res) < self.funcDir[-1].tablaDeVariables[key]['dir'] + self.funcDir[-1].tablaDeVariables[key]['xAxis'] * self.funcDir[-1].tablaDeVariables[key]['yAxis']):
+                    self.memory.memory[-1][self.quads[i-1].res + self.getValue(self.quads[i].res)] = opLeft
+                    """ else:
                         print('ERROR: Se esta indexando fuera del rango de la variable')
-                        exit()
+                        exit() """
                 else:
-                    self.memory.memory[-1][self.quads[i].res] = opLeft
+                    self.memory.memory[-1][self.quads[i].res] = self.getValue(self.quads[i].op1)
             elif(operator == Conversion['+']):
                 value = self.getValue(self.quads[i].op1) + self.getValue(self.quads[i].op2)
                 self.setValue(self.quads[i].res,value)
@@ -81,6 +82,7 @@ class maquinaVirtual:
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['*']):
                 value = self.getValue(self.quads[i].op1) * self.getValue(self.quads[i].op2)
+                #print(self.quads[i].operator,self.quads[i].op1,'val',self.getValue(self.quads[i].op1),self.quads[i].op2,self.quads[i].res,value)
                 self.setValue(self.quads[i].res,value)
             elif(operator == Conversion['/']):
                 value = self.getValue(self.quads[i].op1) / self.getValue(self.quads[i].op2)
@@ -129,9 +131,12 @@ class maquinaVirtual:
             #Print
             if(operator == Conversion['Print']):
                 if(type(self.quads[i].res) == str):
-                    print(self.quads[i].res)
+                    if(r"\n" in self.quads[i].res):
+                        print("\n",end="")
+                    else:
+                        print(self.quads[i].res,end=" ")
                 else:
-                    print(self.getValue(self.quads[i].res))
+                    print(self.getValue(self.quads[i].res),end=" ")
 
             #Read
             if(operator == Conversion['Read']):
@@ -172,8 +177,6 @@ class maquinaVirtual:
                         key = list(self.funcDir[j].param.keys())[contParam]
                         self.memory.addVar(self.funcDir[j].param[key]['dirV'])
                         self.memory.localVars[self.funcDir[j].param[key]['dirV']] = self.getValue(self.quads[i].res)
-                        temp = self.funcDir[j].ints + 2000 - 1
-                        self.memory.addVar(temp)
                         self.memory.memory.append(self.memory.localVars)
                         self.memory.localVars = {}
                         contParam += 1
@@ -186,18 +189,12 @@ class maquinaVirtual:
 
             #Return
             if(operator == Conversion['Return']):
-                if(self.quads[i-1].operator == Conversion['=']):
-                    for j in range(len(self.funcDir)):
-                        if(self.funcDir[j].id == self.quads[i].res):
-                            self.memory.addVarGlobalType(self.funcDir[j].type)
-                    key = list(self.memory.globalVars)[-1]
-                    self.memory.globalVars[key] = self.getValue(self.quads[i-1].op1)
-                else:
-                    for j in range(len(self.funcDir)):
-                        if(self.funcDir[j].id == funcionIdTemp):
-                            self.memory.addVarGlobalType(self.funcDir[j].type)
-                            key = list(self.memory.globalVars)[-1]
-                        self.memory.globalVars[key] = self.getValue(self.quads[i].op1)
+                for j in range(len(self.funcDir)):
+                    if(self.funcDir[j].id == self.quads[i].op2):
+                        self.memory.addVarGlobalType(self.funcDir[j].type)
+                key = list(self.memory.globalVars)[-1]
+                self.memory.globalVars[key] = self.getValue(self.quads[i].res)
+                self.memory.memory.pop()
                 i = int(jumpEndProc.pop())
             
             #EndFunc
@@ -208,6 +205,6 @@ class maquinaVirtual:
             if(operator == Conversion['END']):
                 print('Se acabo ejecucion')  
                 self.memory.eraseAll()
-                self.memory.printMem()
+                #self.memory.printMem()
                 exit()
             i += 1
