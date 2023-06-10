@@ -196,7 +196,7 @@ class maquinaVirtual:
                         self.memory.addVarGlobalType(self.funcDir[j].type)
                 key = list(self.memory.globalVars)[-1]
                 self.memory.globalVars[key] = self.getValue(self.quads[i].res)
-                self.memory.memory.pop()
+                self.memory.popMem()
                 i = int(jumpEndProc.pop())
 
             #MEAN

@@ -259,6 +259,18 @@ class memoria:
                 return key
         return 0
 
+    def popMem(self):
+        for key in self.memory[-1].keys():
+            if key < 3000:
+                self.counterInt -= 1
+            elif key < 4000:
+                self.counterFloat -= 1
+            elif key < 5000:
+                self.counterChar -= 1
+            else:
+                self.counterBool -= 1
+        self.memory.pop()
+
     def eraseAll(self):
         self.memory = []
         self.globalVars = {}
